@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Qué leer ahora</title>
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-title" content="Qué leer ahora">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Literata:opsz,wght@7..72,400;7..72,600&display=swap">
@@ -1523,9 +1529,19 @@ function crearEscena3D(op) {
   // ---------- Cartas (páginas que salen volando) ----------
   var cartas = [], CW = 0.9, CH = 1.18;
   var gCarta = guarda(new T.PlaneGeometry(CW, CH));
+  // Reverso liso: al girar en el aire la carta muestra su espalda, no el dibujo en espejo
+  var texReverso = textura(320, 420, function (g, w, h) {
+    redondo(g, 6, 6, w - 12, h - 12, 30); g.fillStyle = '#fffaf6'; g.fill();
+    var gr = g.createLinearGradient(0, 20, 0, h - 20); gr.addColorStop(0, '#f7d7e6'); gr.addColorStop(1, '#e6dbf6');
+    redondo(g, 20, 20, w - 40, h - 40, 22); g.fillStyle = gr; g.fill();
+    redondo(g, 36, 36, w - 72, h - 72, 16); g.strokeStyle = 'rgba(184,69,122,0.35)'; g.lineWidth = 3; g.stroke();
+    ICONOS.chispa(g, w / 2, h / 2, 58, 'rgba(184,69,122,0.55)');
+  });
+  var mReverso = guarda(new T.MeshStandardMaterial({ map: texReverso, transparent: true, alphaTest: 0.4, side: T.FrontSide, roughness: 0.7 }));
   texCartas.forEach(function (tx, i) {
-    var m = guarda(new T.MeshStandardMaterial({ map: tx, transparent: true, alphaTest: 0.4, side: T.DoubleSide, roughness: 0.7 }));
+    var m = guarda(new T.MeshStandardMaterial({ map: tx, transparent: true, alphaTest: 0.4, side: T.FrontSide, roughness: 0.7 }));
     var mesh = new T.Mesh(gCarta, m); mesh.visible = false; escena.add(mesh);
+    var dorso = new T.Mesh(gCarta, mReverso); dorso.rotation.y = Math.PI; mesh.add(dorso);
     cartas.push({ m: mesh, i: i });
   });
 

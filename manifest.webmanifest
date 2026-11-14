@@ -1,0 +1,16 @@
+{
+  "name": "Qué leer ahora",
+  "short_name": "Qué leer ahora",
+  "description": "Cuéntame cómo estás y te ayudo a encontrar el libro que necesitas hoy.",
+  "lang": "es-MX",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#2f1a3b",
+  "theme_color": "#2f1a3b",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
