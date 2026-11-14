@@ -1,0 +1,2188 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Qué leer ahora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Literata:opsz,wght@7..72,400;7..72,600&display=swap">
+<style>
+:root {
+  --paper: #f2f5f1;
+  --surface: #ffffff;
+  --ink: #1d263d;
+  --ink-soft: #4b556e;
+  --cobalt: #2c479f;
+  --cobalt-soft: #e2e8f7;
+  --sage: #557560;
+  --sage-soft: #e3ebe4;
+  --line: #d3dad2;
+  --help-bg: #1d263d;
+  --help-ink: #ffffff;
+  --note-bg: #f3ecda;
+  --note-ink: #574616;
+  --serif: 'Literata', Georgia, 'Times New Roman', serif;
+  --sans: 'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color-scheme: light;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #10141d;
+    --surface: #181d29;
+    --ink: #e7eaf1;
+    --ink-soft: #a7afc2;
+    --cobalt: #8ea2ec;
+    --cobalt-soft: #212a44;
+    --sage: #94b29c;
+    --sage-soft: #1d2822;
+    --line: #2a3142;
+    --help-bg: #e7eaf1;
+    --help-ink: #10141d;
+    --note-bg: #2a2516;
+    --note-ink: #e6d6a2;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #10141d;
+  --surface: #181d29;
+  --ink: #e7eaf1;
+  --ink-soft: #a7afc2;
+  --cobalt: #8ea2ec;
+  --cobalt-soft: #212a44;
+  --sage: #94b29c;
+  --sage-soft: #1d2822;
+  --line: #2a3142;
+  --help-bg: #e7eaf1;
+  --help-ink: #10141d;
+  --note-bg: #2a2516;
+  --note-ink: #e6d6a2;
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: inherit; }
+html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 72px); }
+html, body { margin: 0; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.55;
+  -webkit-text-size-adjust: 100%;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  z-index: 10;
+  background: var(--paper);
+}
+.top {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 5;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+.top-row {
+  max-width: 36rem;
+  margin: 0 auto;
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.marca { font-family: var(--serif); font-size: 1.02rem; font-weight: 600; letter-spacing: -0.005em; }
+.marca small { display: block; font-family: var(--sans); font-weight: 400; font-size: 0.74rem; color: var(--ink-soft); letter-spacing: 0; }
+.ayuda {
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  background: var(--help-bg);
+  color: var(--help-ink);
+  font: 700 0.86rem/1 var(--sans);
+  padding: 11px 14px;
+  min-height: 40px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.progreso { height: 3px; background: transparent; }
+.progreso span { display: block; height: 100%; background: var(--cobalt); width: 0; transition: width 0.25s ease; }
+
+main { max-width: 36rem; margin: 0 auto; padding: 28px 18px 56px; }
+h1, h2, h3 { font-family: var(--serif); font-weight: 600; letter-spacing: -0.01em; margin: 0; }
+h1 { font-size: 2.05rem; line-height: 1.15; }
+h2.pregunta { font-size: 1.42rem; line-height: 1.32; }
+h2 { font-size: 1.35rem; line-height: 1.3; }
+h3 { font-size: 1.1rem; line-height: 1.35; }
+h1:focus, h2:focus { outline: none; }
+p { margin: 0 0 14px; }
+.lead { font-size: 1.08rem; color: var(--ink-soft); }
+.suave { color: var(--ink-soft); }
+.chico { font-size: 0.88rem; color: var(--ink-soft); }
+.contexto { font-size: 0.92rem; color: var(--ink-soft); margin: 0 0 10px; }
+.bloque { margin-top: 26px; }
+
+.opciones { display: grid; gap: 10px; margin-top: 22px; }
+.opcion {
+  appearance: none;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 16px;
+  min-height: 52px;
+  cursor: pointer;
+}
+.opcion .marcador {
+  flex: none;
+  width: 20px; height: 20px;
+  margin-top: 2px;
+  border: 1.5px solid var(--ink-soft);
+  border-radius: 50%;
+}
+.opcion[data-multi] .marcador { border-radius: 5px; }
+.opcion[aria-pressed="true"] { border: 2px solid var(--cobalt); background: var(--cobalt-soft); padding: 13px 15px; }
+.opcion[aria-pressed="true"] .marcador { border-color: var(--cobalt); background: var(--cobalt); box-shadow: inset 0 0 0 3px var(--cobalt-soft); }
+.opcion:disabled { opacity: 0.45; cursor: default; }
+
+.acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 26px; }
+.btn {
+  appearance: none;
+  border: 0;
+  border-radius: 12px;
+  background: var(--cobalt);
+  color: #fff;
+  font: 700 1rem/1.2 var(--sans);
+  padding: 15px 22px;
+  min-height: 50px;
+  cursor: pointer;
+}
+:root[data-theme="dark"] .btn { color: #10141d; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn { color: #10141d; } }
+.btn:disabled { opacity: 0.4; cursor: default; }
+.btn-sec {
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  border-radius: 12px;
+  font: 700 0.96rem/1.2 var(--sans);
+  padding: 13px 18px;
+  min-height: 48px;
+  cursor: pointer;
+}
+.link {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 10px 2px;
+  color: var(--cobalt);
+  font: 700 0.95rem var(--sans);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.atras { margin-bottom: 14px; padding-top: 0; }
+:focus-visible { outline: 3px solid var(--cobalt); outline-offset: 2px; }
+
+.aviso { background: var(--note-bg); color: var(--note-ink); border-radius: 12px; padding: 14px 16px; margin: 18px 0; font-size: 0.95rem; }
+.aviso p:last-child { margin-bottom: 0; }
+
+.linea { border-top: 1px solid var(--line); padding: 14px 0; display: flex; justify-content: space-between; align-items: center; gap: 14px; }
+.linea:last-child { border-bottom: 1px solid var(--line); }
+.linea strong { display: block; }
+.linea .chico { margin: 2px 0 0; }
+.tel {
+  flex: none;
+  text-decoration: none;
+  background: var(--cobalt-soft);
+  color: var(--cobalt);
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 11px 14px;
+  white-space: nowrap;
+}
+.mensaje { background: var(--surface); border: 1px dashed var(--line); border-radius: 12px; padding: 14px 16px; font-family: var(--serif); margin: 10px 0; }
+
+/* Resultado */
+.lectura h3 { margin: 22px 0 8px; }
+.area-item { margin: 0 0 14px; }
+.area-item strong { font-family: var(--serif); font-weight: 600; }
+.fichas { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 16px; }
+.ficha {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px 14px 14px 6px;
+  padding: 18px 18px 16px 64px;
+}
+.ficha::before {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0; left: 50px;
+  width: 1.5px;
+  background: var(--cobalt);
+  opacity: 0.55;
+}
+.ficha .num {
+  position: absolute;
+  left: 0; top: 14px;
+  width: 50px;
+  text-align: center;
+  font-family: var(--serif);
+  font-size: 1.9rem;
+  line-height: 1;
+  color: var(--cobalt);
+}
+.ficha .titulo { font-family: var(--serif); font-size: 1.16rem; font-weight: 600; line-height: 1.3; margin: 0; }
+.ficha .autor { margin: 2px 0 10px; color: var(--ink-soft); }
+.etiquetas { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 10px; padding: 0; list-style: none; }
+.etiquetas li { font-size: 0.8rem; border-radius: 999px; padding: 3px 10px; background: var(--sage-soft); color: var(--sage); font-weight: 700; }
+.etiquetas li.ahora { background: var(--cobalt-soft); color: var(--cobalt); }
+.etiquetas li.despues { background: transparent; color: var(--ink-soft); border: 1px solid var(--line); }
+.ficha p { font-size: 0.97rem; margin: 0 0 8px; }
+.ficha .porque { margin-top: 6px; }
+.ficha .cuidado { font-size: 0.9rem; color: var(--ink-soft); }
+.despues-sep { font-family: var(--serif); font-size: 1rem; color: var(--ink-soft); margin: 10px 0 -4px; }
+
+details.calculo { margin-top: 30px; border-top: 1px solid var(--line); padding-top: 14px; }
+details.calculo summary { cursor: pointer; color: var(--cobalt); font-weight: 700; }
+details.calculo table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.88rem; }
+details.calculo td, details.calculo th { text-align: left; padding: 6px 4px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.tabla-scroll { overflow-x: auto; }
+
+.hoja-fondo { position: fixed; inset: 0; background: rgba(10, 14, 22, 0.55); z-index: 20; display: flex; align-items: flex-end; justify-content: center; }
+.hoja {
+  background: var(--paper);
+  width: 100%;
+  max-width: 36rem;
+  max-height: 88vh;
+  overflow-y: auto;
+  border-radius: 18px 18px 0 0;
+  padding: 22px 18px calc(22px + env(safe-area-inset-bottom, 0px));
+}
+.hoja-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .revela .ficha { animation: entra 0.5s ease both; }
+  .revela .ficha:nth-child(2) { animation-delay: 0.08s; }
+  .revela .ficha:nth-child(3) { animation-delay: 0.16s; }
+  .revela .ficha:nth-child(4) { animation-delay: 0.24s; }
+  .revela .ficha:nth-child(5) { animation-delay: 0.32s; }
+  .revela .ficha:nth-child(6) { animation-delay: 0.4s; }
+  .revela .ficha:nth-child(7) { animation-delay: 0.48s; }
+}
+@keyframes entra { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* ===== v2 ===== */
+:root { --rosa-bg: #fde6f0; --rosa: #b0185a; --rosa-ink: #7d1242; --papel: #fbfcfa; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --rosa-bg: #3a1629; --rosa: #f48cba; --rosa-ink: #f9c4dc; --papel: #171c27; } }
+:root[data-theme="dark"] { --rosa-bg: #3a1629; --rosa: #f48cba; --rosa-ink: #f9c4dc; --papel: #171c27; }
+
+.nota-rosa { background: var(--rosa-bg); color: var(--rosa-ink); border-radius: 12px; padding: 12px 16px; margin: 16px 0; font-size: 0.95rem; }
+.nota-rosa p { margin: 0; }
+.nota-rosa p + p { margin-top: 8px; }
+
+.estante { display: block; width: 100%; height: auto; margin: 4px 0 22px; }
+.capitulo .num-cap { font-family: var(--serif); color: var(--cobalt); font-size: 1rem; margin: 0 0 6px; }
+.capitulo h1 { font-size: 2.2rem; }
+.capitulo .frase { font-family: var(--serif); font-size: 1.15rem; line-height: 1.5; color: var(--ink-soft); margin-top: 14px; }
+
+.pagina { background: var(--papel); border: 1px solid var(--line); border-radius: 16px; padding: 20px 18px 22px; position: relative; }
+.cinta { position: absolute; top: -1px; right: 22px; width: 18px; height: 34px; background: var(--rosa); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%); }
+.donde { font-size: 0.85rem; color: var(--ink-soft); margin: 0 0 8px; }
+
+/* deslizador */
+.termo { margin-top: 26px; }
+.termo-valor { font-family: var(--serif); font-size: 3rem; line-height: 1; color: var(--cobalt); text-align: center; margin-bottom: 10px; }
+.termo input[type=range] { width: 100%; height: 44px; accent-color: var(--cobalt); }
+.termo-ext { display: flex; justify-content: space-between; gap: 16px; font-size: 0.9rem; color: var(--ink-soft); }
+.termo-ext span:last-child { text-align: right; }
+
+/* balanza */
+.frase-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; font-family: var(--serif); font-size: 1.04rem; line-height: 1.45; }
+.balanza { display: grid; gap: 10px; margin-top: 20px; }
+.escala { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.escala button { appearance: none; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 12px; min-height: 64px; padding: 8px 4px; font: 700 0.8rem/1.2 var(--sans); cursor: pointer; }
+.escala button[aria-pressed="true"] { border: 2px solid var(--cobalt); background: var(--cobalt-soft); color: var(--cobalt); }
+.escala-guia { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--ink-soft); }
+
+/* transición */
+.transicion { text-align: center; padding-top: 10px; }
+.transicion svg { width: 100%; max-width: 360px; height: auto; margin: 0 auto 18px; display: block; }
+.transicion .linea-t { font-family: var(--serif); font-size: 1.1rem; color: var(--ink-soft); min-height: 1.6em; }
+@media (prefers-reduced-motion: no-preference) {
+  .main-anim { animation: hoja 0.28s ease both; }
+  .cae { animation: cae 0.5s cubic-bezier(.2,.8,.3,1.2) both; }
+  .luz { animation: luz 1.6s ease-in-out infinite alternate; }
+}
+@keyframes hoja { from { opacity: 0.2; transform: translateX(14px); } to { opacity: 1; transform: none; } }
+@keyframes cae { from { transform: translateY(-120px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes luz { from { opacity: 0.35; } to { opacity: 0.85; } }
+
+.hero { margin-bottom: 8px; }
+.leido { appearance: none; background: none; border: 1px solid var(--line); color: var(--ink-soft); border-radius: 999px; font: 700 0.82rem var(--sans); padding: 8px 12px; cursor: pointer; margin-top: 4px; }
+.beneficios { margin-top: 30px; }
+.beneficio { border-left: 3px solid var(--sage); padding: 2px 0 2px 14px; margin: 16px 0; }
+.beneficio h3 { font-size: 1.02rem; margin-bottom: 4px; }
+.beneficio p { margin: 0 0 4px; font-size: 0.96rem; }
+.beneficio .fuente { font-size: 0.82rem; color: var(--ink-soft); }
+.meta-lectura { font-family: var(--serif); font-size: 1.12rem; line-height: 1.5; background: var(--sage-soft); border-radius: 12px; padding: 14px 16px; margin-top: 18px; }
+
+/* ===== Escena animada de biblioteca ===== */
+.escena { position: relative; height: 360vh; margin: -12px 0 0; }
+.escenario {
+  --a: 0; --b: 0; --c: 0; --p: 0;
+  position: sticky; top: calc(env(safe-area-inset-top, 0px) + 70px);
+  height: calc(100vh - 86px - env(safe-area-inset-top, 0px)); min-height: 460px;
+  overflow: hidden; border-radius: 20px; color: #f3f1ea; isolation: isolate;
+}
+.escenario.compacta { position: relative; top: 0; height: 330px; min-height: 0; }
+.escenario.estatica { position: relative; top: 0; height: 560px; }
+.cielo, .calido { position: absolute; inset: 0; z-index: -2; }
+.cielo { background: radial-gradient(120% 80% at 50% 0%, #26336a 0%, #121a36 55%, #0b1024 100%); }
+.calido { background: radial-gradient(110% 75% at 50% 38%, #6b3b2a 0%, #3a2238 45%, #141a33 100%); opacity: var(--a); }
+.letra { position: absolute; font-family: var(--serif); color: rgba(240, 236, 255, 0.55); opacity: calc(0.85 - var(--a) * 0.5); will-change: transform; }
+.resplandor { position: absolute; left: 50%; top: 36%; width: 340px; height: 340px; border-radius: 50%; z-index: -1;
+  background: radial-gradient(circle, rgba(255, 214, 140, 0.85) 0%, rgba(255, 190, 110, 0.25) 40%, transparent 68%);
+  transform: translate(-50%, -50%) scale(calc(0.5 + var(--a) * 0.8)); opacity: calc(0.15 + var(--a) * 0.85); }
+.libro-wrap { position: absolute; left: 50%; top: 36%; width: 132px; height: 180px; transform: translate(-50%, -50%); perspective: 900px; }
+.compacta .libro-wrap { width: 96px; height: 130px; }
+.libro { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transform: rotateX(10deg) rotateZ(calc((1 - var(--a)) * -5deg)) translateX(calc(var(--a) * 34%)); }
+.contratapa { position: absolute; inset: 0; background: #7d1242; border-radius: 3px 10px 10px 3px; box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45); }
+.hoja { position: absolute; inset: 5px 6px 5px 0; background: linear-gradient(90deg, #e9e1cc, #fbf7ec 30%); border-radius: 0 6px 6px 0; transform-origin: left center; transform: rotateY(calc(var(--a) * var(--giro))); }
+.tapa { position: absolute; inset: 0; background: linear-gradient(135deg, #c2266b, #8e1450); border-radius: 3px 10px 10px 3px; transform-origin: left center; transform: rotateY(calc(var(--a) * -168deg)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; box-shadow: inset 6px 0 0 rgba(0, 0, 0, 0.18); }
+.tapa-linea { width: 56%; height: 2px; background: rgba(255, 233, 196, 0.8); }
+.tapa-signo { font-family: var(--serif); font-size: 2rem; color: #ffe9c4; }
+.repisa { position: absolute; left: 8%; right: 8%; top: 80%; height: 7px; border-radius: 3px; background: rgba(255, 233, 196, 0.75); opacity: var(--b); box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35); }
+.vuela { position: absolute; left: 50%; top: 36%; border-radius: 2px; opacity: 0; box-shadow: inset -3px 0 0 rgba(0, 0, 0, 0.18), inset 0 8px 0 rgba(255, 255, 255, 0.18); will-change: transform, opacity; }
+.rotulo { position: absolute; left: 6%; right: 6%; top: 7%; margin: 0; text-align: center; font-family: var(--serif); font-size: 1.28rem; line-height: 1.4; color: #fbf6ea; text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5); }
+.final { position: absolute; left: 0; right: 0; top: 5%; padding: 0 22px; text-align: center; opacity: var(--c); transform: translateY(calc((1 - var(--c)) * 18px)); }
+.final h1 { color: #fffaf0; font-size: 2.2rem; }
+.final p { color: #f1e9da; margin: 10px auto 0; max-width: 26rem; }
+.final .btn { margin-top: 16px; background: #f4c97a; color: #1d1830; }
+.desliza { position: absolute; left: 0; right: 0; bottom: 4%; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 0.88rem; color: #e9e3f5; }
+@media (prefers-reduced-motion: no-preference) { .desliza svg { animation: brinca 1.4s ease-in-out infinite; } }
+@keyframes brinca { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
+.prisa { display: flex; justify-content: flex-end; margin: -10px 0 6px; }
+
+/* pasar de página entre preguntas */
+@media (prefers-reduced-motion: no-preference) {
+  .main-anim { animation: pagina 0.36s cubic-bezier(.2,.7,.3,1) both; transform-origin: left center; }
+}
+@keyframes pagina { from { opacity: 0.15; transform: perspective(900px) rotateY(-16deg) translateX(14px); } to { opacity: 1; transform: none; } }
+
+/* ===== Portada limpia y sin encimarse ===== */
+.portada .top { display: none; }
+.portada main { padding-top: 8px; }
+.portada .escenario { top: calc(env(safe-area-inset-top, 0px) + 8px); height: calc(100vh - 16px - env(safe-area-inset-top, 0px)); }
+.libro-wrap, .vuela { top: 30%; }
+.resplandor { top: 30%; width: 300px; height: 300px; opacity: calc((0.15 + var(--a) * 0.85) * (1 - var(--c) * 0.45)); }
+.repisa { top: 60%; }
+.final { top: auto; bottom: 5%; }
+.final h1 { font-size: 2rem; }
+
+/* ===== Escena 3D ===== */
+.escena-larga { height: 420vh; }
+.lienzo-3d { position: absolute; inset: 0; z-index: 0; }
+.lienzo-3d canvas { display: block; width: 100%; height: 100%; }
+.escenario-3d .rotulo, .escenario-3d .final, .escenario-3d .desliza { z-index: 2; }
+.escenario-3d .final { opacity: 0; }
+
+/* ===== Portada pop-up: paleta rosa, lila y durazno ===== */
+.escenario-rosa .cielo, .escenario:not(.escenario-3d) .cielo {
+  background: radial-gradient(120% 85% at 50% 8%, #fff6ef 0%, #fbe0e8 32%, #ecd6f5 62%, #cdbcf0 100%);
+}
+.escenario:not(.escenario-3d) .calido { background: radial-gradient(110% 70% at 50% 32%, #ffe3cf 0%, #f7cfe0 45%, rgba(205,188,240,0) 100%); }
+.escenario-rosa, .escenario:not(.escenario-3d) { color: #4a2246; }
+.escenario-rosa .rotulo, .escenario:not(.escenario-3d) .rotulo { color: #4a2246; text-shadow: 0 1px 10px rgba(255, 245, 240, 0.9); }
+.escenario:not(.escenario-3d) .letra { color: rgba(122, 64, 112, 0.45); }
+.escenario-rosa .final, .escenario:not(.escenario-3d) .final { top: 6%; bottom: auto; }
+.escenario-rosa .final h1, .escenario:not(.escenario-3d) .final h1 { color: #4a2246; }
+.escenario-rosa .final p, .escenario:not(.escenario-3d) .final p { color: #6a3d63; }
+.escenario-rosa .final .btn, .escenario:not(.escenario-3d) .final .btn { background: #b8457a; color: #fff; box-shadow: 0 8px 22px rgba(184, 69, 122, 0.35); }
+.escenario-rosa .desliza, .escenario:not(.escenario-3d) .desliza { color: #6a3d63; }
+
+/* ===== Una sola identidad: la del amanecer de la portada en toda la app ===== */
+:root {
+  --paper: #fdf3f1; --surface: #fffaf8; --papel: #fffaf8;
+  --ink: #3d1f3a; --ink-soft: #7a5672;
+  --cobalt: #b8457a; --cobalt-soft: #fbe3ec;
+  --sage: #7a62c9; --sage-soft: #efe8fb;
+  --line: #ecd8e1;
+  --help-bg: #4a2246; --help-ink: #ffffff;
+  --note-bg: #fff0e3; --note-ink: #6b3f22;
+  --rosa-bg: #fde4ee; --rosa: #b8457a; --rosa-ink: #7a2752;
+  --fondo: radial-gradient(120% 70% at 50% 0%, #fff6ef 0%, #fbe3ea 45%, #ece0f7 100%);
+  --barra-fondo: rgba(253, 243, 241, 0.86);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #1d1424; --surface: #2a1d31; --papel: #2a1d31;
+    --ink: #f7e9f1; --ink-soft: #cdb0c7;
+    --cobalt: #f290ba; --cobalt-soft: #3d2338;
+    --sage: #c5b4f6; --sage-soft: #2e2442;
+    --line: #3e2b43;
+    --help-bg: #f7e9f1; --help-ink: #1d1424;
+    --note-bg: #3a2a1f; --note-ink: #f6d9bf;
+    --rosa-bg: #3d1f33; --rosa: #f290ba; --rosa-ink: #f9c6dc;
+    --fondo: radial-gradient(120% 70% at 50% 0%, #4a2a4f 0%, #2b1b38 50%, #1d1424 100%);
+    --barra-fondo: rgba(29, 20, 36, 0.86);
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #1d1424; --surface: #2a1d31; --papel: #2a1d31;
+  --ink: #f7e9f1; --ink-soft: #cdb0c7;
+  --cobalt: #f290ba; --cobalt-soft: #3d2338;
+  --sage: #c5b4f6; --sage-soft: #2e2442;
+  --line: #3e2b43;
+  --help-bg: #f7e9f1; --help-ink: #1d1424;
+  --note-bg: #3a2a1f; --note-ink: #f6d9bf;
+  --rosa-bg: #3d1f33; --rosa: #f290ba; --rosa-ink: #f9c6dc;
+  --fondo: radial-gradient(120% 70% at 50% 0%, #4a2a4f 0%, #2b1b38 50%, #1d1424 100%);
+  --barra-fondo: rgba(29, 20, 36, 0.86);
+}
+body { background: var(--fondo); background-color: var(--paper); background-attachment: fixed; min-height: 100vh; }
+.top { background: var(--barra-fondo); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-bottom-color: var(--line); }
+body::before { background: var(--barra-fondo); }
+.btn { color: #fff; }
+:root[data-theme="dark"] .btn { color: #1d1424; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn { color: #1d1424; } }
+.marca { color: var(--ink); }
+.ficha { border-color: var(--line); }
+.opcion { border-color: var(--line); }
+/* la portada también en modo oscuro: un atardecer ciruela */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .escenario-rosa .cielo, :root:not([data-theme="light"]) .escenario:not(.escenario-3d) .cielo { background: radial-gradient(120% 85% at 50% 8%, #6a3d63 0%, #4a2a4f 35%, #2b1b38 70%, #1d1424 100%); }
+  :root:not([data-theme="light"]) .escenario-rosa .rotulo, :root:not([data-theme="light"]) .escenario-rosa .final h1, :root:not([data-theme="light"]) .escenario-rosa .final p, :root:not([data-theme="light"]) .escenario-rosa .desliza { color: #fbe9f2; text-shadow: 0 1px 10px rgba(29, 20, 36, 0.8); }
+}
+
+/* ===== Flecha para invitar a bajar ===== */
+.desliza { gap: 8px; }
+.desliza .flecha { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%;
+  background: rgba(255, 250, 248, 0.78); color: #b8457a; box-shadow: 0 6px 18px rgba(184, 69, 122, 0.25), inset 0 0 0 1.5px rgba(184, 69, 122, 0.35); }
+.desliza .pista-texto { font-family: var(--serif); font-size: 0.98rem; letter-spacing: 0.01em; }
+@media (prefers-reduced-motion: no-preference) { .desliza .flecha { animation: invita 1.8s ease-in-out infinite; } }
+@keyframes invita { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(7px); } }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .desliza .flecha { background: rgba(42, 29, 49, 0.8); color: #f290ba; } }
+
+
+/* ===== Portada moderna a pantalla completa ===== */
+.portada .escena { margin: 0; }
+.portada main { padding: 0; max-width: none; }
+.portada .escenario { top: 0; height: 100vh; height: 100svh; border-radius: 0; }
+.escenario-moderno .rotulo { top: 9%; font-size: 1.32rem; }
+/* Flecha para bajar, bien visible */
+.escenario .desliza { bottom: calc(5% + env(safe-area-inset-bottom, 0px)); gap: 12px; z-index: 3; }
+.desliza .flecha { position: relative; width: 64px; height: 64px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+  background: #b8457a; color: #fff; box-shadow: 0 12px 28px rgba(184, 69, 122, 0.45); }
+.desliza .flecha::after { content: ""; position: absolute; inset: -7px; border-radius: 50%; border: 2px solid rgba(184, 69, 122, 0.6); opacity: 0; }
+.desliza .pista-texto { background: rgba(255, 250, 248, 0.94); color: #4a2246; font-family: var(--sans); font-weight: 700; font-size: 0.98rem;
+  padding: 8px 16px; border-radius: 999px; box-shadow: 0 6px 16px rgba(90, 42, 82, 0.14); text-shadow: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .desliza .flecha { animation: invita 1.6s ease-in-out infinite; }
+  .desliza .flecha::after { animation: onda 1.6s ease-out infinite; }
+}
+@keyframes invita { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
+@keyframes onda { from { transform: scale(0.85); opacity: 0.9; } to { transform: scale(1.5); opacity: 0; } }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .desliza .flecha { background: #e2649c; color: #fff; }
+  :root:not([data-theme="light"]) .desliza .pista-texto { background: rgba(255, 245, 250, 0.95); color: #4a2246; text-shadow: none; }
+}
+
+/* ===== Portada: ceja de marca y titular ===== */
+.escenario-rosa .final p.ceja { font-family: var(--sans); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #b8457a; margin: 0 auto 8px; }
+.escenario-rosa .final h1 { font-size: 1.9rem; line-height: 1.18; max-width: 20rem; margin: 0 auto; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .escenario-rosa .final p.ceja { color: #f6a9c8; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-row">
+    <div class="marca">Qué leer ahora</div>
+  </div>
+  <div class="progreso" aria-hidden="true"><span id="barra"></span></div>
+</header>
+<main id="main" aria-live="polite"></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+// ===== Datos: biblioteca, preguntas y plantillas (según el documento de diseño) =====
+// tipo: N narrativa · L poesía y ensayo literario · D divulgación · P práctico
+// f: E estabilizar · C comprender · K construir · P profundizar
+// nv: 1 introductorio · 2 intermedio · 3 avanzado
+function bk(n, t, a, tipo, ar, f, nv, pp, ay, cu, o) {
+  o = o || {};
+  return { n: n, t: t, a: a, tipo: tipo, ar: ar, f: f, nv: nv, pp: pp, ay: ay, cu: cu, hi: !!o.hi, ed: o.ed || 3 };
+}
+
+var BOOKS = [
+  bk(1, 'La trampa de la felicidad', 'Russ Harris', 'P', ['ANS','MIE'], 'E', 1, 250, 'dejar de pelear contra pensamientos y emociones difíciles y actuar según lo que te importa', 'No promete eliminar la ansiedad: enseña a convivir con ella.', { ed: 1 }),
+  bk(2, 'Mindfulness en la vida cotidiana', 'Jon Kabat-Zinn', 'P', ['ANS','HAB'], 'E', 1, 272, 'estar más presente y bajar el ruido mental con prácticas sencillas', 'Si la ansiedad es muy intensa o hay trauma, la meditación puede inquietar más: mejor con acompañamiento.'),
+  bk(3, 'Cuando todo se derrumba', 'Pema Chödrön', 'D', ['RUP','ANS','MIE'], 'E', 1, 190, 'sostenerte cuando algo se rompe, sin buscar soluciones inmediatas', 'Tiene un marco budista y no da pasos prácticos.'),
+  bk(4, 'El poder del ahora', 'Eckhart Tolle', 'D', ['ANS','SEN'], 'E', 1, 220, 'soltar la rumiación sobre el pasado y el futuro', 'Su tono es espiritual y puede sentirse abstracto en plena ansiedad.', { ed: 2 }),
+  bk(5, 'Los cuatro acuerdos', 'Miguel Ruiz', 'P', ['REL','MIE','HER'], 'E', 1, 150, 'no tomarte todo como algo personal y cuidar lo que dices', 'Es muy esquemático; si otros te hicieron daño, puede sonar a «todo depende de ti».'),
+  bk(6, 'Los dones de la imperfección', 'Brené Brown', 'D', ['MIE','HER'], 'C', 1, 190, 'soltar la exigencia de perfección y la vergüenza que paraliza', 'Mezcla investigación y reflexión personal; no da pasos concretos.'),
+  bk(7, 'Sé amable contigo mismo', 'Kristin Neff', 'P', ['HER','MIE','RUP'], 'C', 1, 336, 'tratarte con comprensión en lugar de autocrítica', 'Es más largo de lo que parece; si hay trauma, haz los ejercicios con acompañamiento.'),
+  bk(8, 'Sobre el duelo y el dolor', 'Elisabeth Kübler-Ross y David Kessler', 'D', ['RUP'], 'C', 1, 280, 'entender el duelo y sus vaivenes después de una pérdida', 'Puede ser muy intenso si la pérdida es de hace pocas semanas; las «etapas» no son una lista que se cumple en orden.'),
+  bk(9, 'El año del pensamiento mágico', 'Joan Didion', 'L', ['RUP'], 'C', 2, 220, 'acompañarte con un relato honesto sobre el duelo', 'Narra la muerte de su pareja y no da consejos.', { hi: true }),
+  bk(10, 'Maneras de amar', 'Amir Levine y Rachel Heller', 'D', ['REL','RUP'], 'C', 1, 256, 'entender cómo tu estilo de apego influye en tus vínculos', 'Usa los estilos de apego como hipótesis, no como etiqueta, sobre todo en plena ruptura.'),
+  bk(11, 'El arte de amar', 'Erich Fromm', 'D', ['REL'], 'C', 2, 150, 'ver el amor como una práctica que se aprende', 'Es denso, de 1956, y no da pasos prácticos.'),
+  bk(12, 'Los 5 lenguajes del amor', 'Gary Chapman', 'P', ['REL'], 'C', 1, 200, 'conversar sobre cómo cada quien da y recibe cariño', 'Su respaldo científico es limitado; no sirve para «arreglar» a la pareja ni en relaciones con maltrato.'),
+  bk(13, 'Reinventa tu vida', 'Jeffrey Young y Janet Klosko', 'P', ['HER','REL'], 'C', 2, 350, 'reconocer patrones que se repiten en tus relaciones', 'Puede remover recuerdos; mejor con acompañamiento.', { hi: true }),
+  bk(14, 'El hombre en busca de sentido', 'Viktor Frankl', 'L', ['SEN','CRI'], 'C', 2, 160, 'encontrar sentido en medio del sufrimiento y de los límites', 'La primera parte narra la vida en campos de concentración.', { hi: true, ed: 1 }),
+  bk(15, 'Ikigai', 'Héctor García y Francesc Miralles', 'D', ['SEN','PRO'], 'C', 1, 190, 'explorar qué te da energía y razón de ser en lo cotidiano', 'Es divulgativo y simplificado.'),
+  bk(16, 'El alquimista', 'Paulo Coelho', 'N', ['SEN'], 'C', 1, 200, 'reconectar con la idea de buscar un camino propio', 'El mensaje es simple; no da herramientas.'),
+  bk(17, 'El monje que vendió su Ferrari', 'Robin Sharma', 'N', ['SEN','HAB'], 'C', 1, 230, 'replantear prioridades y rutinas desde una historia', 'Tiene tono de gurú y sus ideas son generales.'),
+  bk(18, 'Empieza por el porqué', 'Simon Sinek', 'D', ['SEN','PRO','LID'], 'C', 2, 260, 'entender para qué haces lo que haces y comunicarlo', 'Su marco es de negocios más que personal.'),
+  bk(19, 'Mindset', 'Carol Dweck', 'D', ['PRO','BLO','MIE'], 'C', 1, 300, 'ver cómo creer que se puede aprender cambia tu forma de enfrentar errores y retos', 'Si te culpas con facilidad, puede leerse como «si no avanzas es tu actitud».', { ed: 2 }),
+  bk(20, '¿Quién se ha llevado mi queso?', 'Spencer Johnson', 'N', ['PRO','MIE'], 'C', 1, 100, 'enfrentar un cambio sin quedarte paralizado', 'Ignora causas que no dependen de ti, como despidos o abusos laborales.'),
+  bk(21, 'Atrévete a no gustar', 'Ichiro Kishimi y Fumitake Koga', 'D', ['MIE','REL','SEN'], 'C', 2, 272, 'soltar la necesidad de aprobación ajena', 'Si arrastras heridas del pasado, su idea de que el pasado no te determina puede sentirse invalidante.'),
+  bk(22, 'Inteligencia emocional', 'Daniel Goleman', 'D', ['REL','LID'], 'C', 2, 420, 'entender cómo las emociones influyen en decisiones y relaciones', 'Es largo y algunas de sus afirmaciones se han matizado desde 1995.'),
+  bk(23, 'Los líderes comen al final', 'Simon Sinek', 'D', ['LID'], 'C', 2, 350, 'crear equipos donde la gente se siente segura y confía', 'Usa analogías biológicas muy simplificadas.'),
+  bk(24, 'El líder que no tenía cargo', 'Robin Sharma', 'N', ['LID'], 'C', 1, 200, 'ejercer influencia sin autoridad formal', 'Tiene un tono muy motivacional.'),
+  bk(25, 'Libera tu magia', 'Elizabeth Gilbert', 'D', ['BLO','MIE'], 'C', 1, 310, 'vivir la creatividad con menos miedo y más curiosidad', 'Es más inspirador que práctico.', { ed: 1 }),
+  bk(26, 'Cartas a un joven poeta', 'Rainer Maria Rilke', 'L', ['BLO','SEN'], 'C', 1, 100, 'acompañarte cuando dudas de si vale la pena crear', 'Es poético y abstracto.'),
+  bk(27, 'Cómo hacer que te pasen cosas buenas', 'Marian Rojas Estapé', 'D', ['ANS','HAB'], 'C', 1, 300, 'entender cómo el estrés afecta al cuerpo y qué hábitos ayudan', 'Simplifica temas de neurociencia y no sustituye una terapia.'),
+  bk(28, 'Hábitos atómicos', 'James Clear', 'P', ['HAB','BLO','PRO'], 'K', 1, 330, 'armar hábitos pequeños y sostenibles', 'Sin energía o en crisis, puede sentirse como una exigencia más.'),
+  bk(29, 'El poder de los hábitos', 'Charles Duhigg', 'D', ['HAB'], 'K', 1, 400, 'entender cómo se forman y cambian los hábitos', 'Es extenso y anecdótico.'),
+  bk(30, 'Esencialismo', 'Greg McKeown', 'P', ['HAB','PRO','LID'], 'K', 2, 270, 'priorizar y decir que no cuando todo parece urgente', 'Si no controlas tu agenda, puede frustrar.'),
+  bk(31, 'Organízate con eficacia', 'David Allen', 'P', ['HAB','PRO'], 'K', 2, 352, 'vaciar la cabeza de pendientes con un sistema', 'Exige montar un sistema completo.'),
+  bk(32, 'Los 7 hábitos de la gente altamente efectiva', 'Stephen Covey', 'P', ['HAB','PRO','LID'], 'K', 2, 450, 'ordenar prioridades y relaciones desde principios', 'Es largo, corporativo y algo anticuado.'),
+  bk(33, 'Design de vida', 'Bill Burnett y Dave Evans', 'P', ['SEN','PRO','CRI'], 'K', 1, 320, 'explorar caminos con experimentos pequeños en lugar de decidir a ciegas', 'Algunos ejercicios suponen margen para experimentar, y puede costar conseguirlo en México.'),
+  bk(34, 'El obstáculo es el camino', 'Ryan Holiday', 'P', ['MIE','PRO','ANS'], 'K', 1, 220, 'usar las dificultades como material de trabajo', 'En un duelo, «todo obstáculo es una oportunidad» puede sonar frío.'),
+  bk(35, 'El gerente al minuto', 'Kenneth Blanchard y Spencer Johnson', 'N', ['LID'], 'K', 1, 120, 'fijar metas, reconocer y corregir con claridad', 'Es muy simplificado para equipos complejos.'),
+  bk(36, 'Comunicación no violenta', 'Marshall Rosenberg', 'P', ['REL','LID'], 'K', 2, 230, 'expresar lo que necesitas y escuchar sin acusar', 'Sus fórmulas pueden sonar artificiales; no es para situaciones de abuso.'),
+  bk(37, 'Conversaciones cruciales', 'Kerry Patterson y otros', 'P', ['REL','LID'], 'K', 2, 330, 'hablar de temas difíciles sin evitarlos ni explotar', 'Es largo y de tono corporativo.'),
+  bk(38, 'Cómo ganar amigos e influir sobre las personas', 'Dale Carnegie', 'P', ['REL','LID'], 'K', 1, 280, 'aplicar reglas sencillas de trato con los demás', 'Sus ejemplos son de otra época.'),
+  bk(39, 'El camino del artista', 'Julia Cameron', 'P', ['BLO','HER'], 'K', 2, 280, 'retomar la creatividad con prácticas diarias', 'Pide tiempo cada día y usa lenguaje espiritual.'),
+  bk(40, 'Roba como un artista', 'Austin Kleon', 'P', ['BLO'], 'K', 1, 150, 'empezar a crear sin esperar una originalidad perfecta', 'Es muy breve; no es un método detallado.', { ed: 1 }),
+  bk(41, 'La guerra del arte', 'Steven Pressfield', 'P', ['BLO'], 'K', 1, 200, 'reconocer la «resistencia» que te frena al empezar', 'Su tono duro puede aumentar la autoexigencia.'),
+  bk(42, 'Atrévete a ser líder', 'Brené Brown', 'P', ['LID','MIE'], 'K', 2, 350, 'liderar con valentía en conversaciones difíciles y al dar feedback', 'No es un manual técnico de gestión.'),
+  bk(43, 'Sentirse bien', 'David Burns', 'P', ['ANS','HAB'], 'K', 2, 650, 'reconocer pensamientos que empeoran el ánimo y trabajar con ellos', 'Es muy largo y no sustituye atención profesional.'),
+  bk(44, 'Sal de tu mente, entra en tu vida', 'Steven Hayes', 'P', ['ANS','MIE'], 'K', 3, 410, 'desarrollar flexibilidad psicológica con ejercicios', 'Es denso; rinde más después de La trampa de la felicidad.'),
+  bk(45, '¿Por qué las cebras no tienen úlcera?', 'Robert Sapolsky', 'D', ['ANS','HAB'], 'P', 3, 500, 'entender cómo funciona el estrés en el cuerpo', 'Es largo y técnico; en plena ansiedad puede aumentar la hipervigilancia.'),
+  bk(46, 'Meditaciones', 'Marco Aurelio', 'D', ['SEN','CRI','MIE','ANS'], 'P', 2, 250, 'distinguir lo que puedes y lo que no puedes controlar', 'Es denso y fragmentario; elige una edición con introducción.'),
+  bk(47, 'El cuerpo lleva la cuenta', 'Bessel van der Kolk', 'D', ['HER'], 'P', 3, 500, 'entender cómo el trauma se vive en el cuerpo', 'Puede ser muy removedor; mejor con acompañamiento profesional.', { hi: true }),
+  bk(48, 'Mujeres que corren con los lobos', 'Clarissa Pinkola Estés', 'L', ['HER','BLO'], 'P', 3, 500, 'recuperar la intuición y la creatividad a través de relatos', 'Es largo y simbólico.'),
+  bk(49, 'Fluir', 'Mihaly Csikszentmihalyi', 'D', ['SEN','BLO'], 'P', 3, 400, 'entender cuándo estamos plenamente absortos en algo', 'Es teórico y académico.'),
+  bk(50, 'El desafío del liderazgo', 'James Kouzes y Barry Posner', 'D', ['LID'], 'P', 3, 400, 'conocer prácticas de liderazgo basadas en investigación', 'Es denso y pensado para quien ya dirige.'),
+  bk(51, 'El principito', 'Antoine de Saint-Exupéry', 'N', ['REL','SEN'], 'E', 1, 100, 'mirar con calma lo que importa en los vínculos y en la vida', 'Es breve y simbólico.'),
+  bk(52, 'Siddhartha', 'Hermann Hesse', 'N', ['SEN','CRI'], 'C', 2, 150, 'acompañar una búsqueda de sentido que pasa por el error y el cambio', 'Incluye un pasaje de desesperación.', { hi: true }),
+  bk(53, 'El viejo y el mar', 'Ernest Hemingway', 'N', ['MIE','SEN'], 'C', 1, 110, 'perseverar y mantener la dignidad frente a la derrota', 'El final es agridulce.'),
+  bk(54, 'Como agua para chocolate', 'Laura Esquivel', 'N', ['REL','HER'], 'C', 1, 220, 'mirar emociones guardadas, familia y amor contados desde la cocina', 'Hay una madre autoritaria y un final trágico.'),
+  bk(55, 'Las batallas en el desierto', 'José Emilio Pacheco', 'N', ['RUP','HER'], 'C', 1, 70, 'recorrer la nostalgia, el primer amor y la pérdida en la Ciudad de México', 'Tiene un tono triste; evítalo con un duelo muy reciente.'),
+  bk(56, 'La casa en Mango Street', 'Sandra Cisneros', 'N', ['SEN','HER'], 'C', 1, 130, 'pensar la identidad y el deseo de un lugar propio, en viñetas cortas', 'Algunas viñetas tratan violencia.', { hi: true }),
+  bk(57, 'El libro de los abrazos', 'Eduardo Galeano', 'N', ['REL','SEN'], 'C', 1, 130, 'leer textos de una o dos páginas, poco y seguido', 'No tiene una trama continua.'),
+  bk(58, 'Veinte poemas de amor y una canción desesperada', 'Pablo Neruda', 'L', ['RUP','REL'], 'C', 1, 90, 'ponerle palabras al amor y al desamor', 'Con una ruptura reciente, la «canción desesperada» no consuela.', { hi: true }),
+  bk(59, 'Un cuarto propio', 'Virginia Woolf', 'L', ['BLO','SEN'], 'C', 2, 130, 'ver cómo el tiempo, el espacio y el dinero condicionan la creación', 'Es de 1929 y no trae ejercicios.'),
+  bk(60, 'Mientras escribo', 'Stephen King', 'P', ['BLO'], 'K', 1, 320, 'trabajar la escritura con disciplina', 'Incluye pasajes sobre su adicción y un accidente grave.'),
+  bk(61, 'Una pena en observación', 'C. S. Lewis', 'L', ['RUP','CRI'], 'C', 2, 110, 'acompañarte con un diario honesto sobre el duelo y la fe', 'Narra el duelo por la muerte de su esposa.', { hi: true }),
+  bk(62, 'Amar o depender', 'Walter Riso', 'P', ['REL','RUP'], 'C', 1, 280, 'distinguir amar de depender', 'Es esquemático; si hay violencia en la pareja, busca ayuda profesional.'),
+  bk(63, 'Fragmentos de un discurso amoroso', 'Roland Barthes', 'L', ['RUP','REL'], 'P', 3, 300, 'reconocer las figuras del enamoramiento y del abandono', 'Es denso y teórico.'),
+  bk(64, 'La muerte de Iván Ilich', 'León Tolstói', 'N', ['SEN','CRI'], 'C', 2, 100, 'preguntarte si una vida organizada por las apariencias valió la pena', 'Narra una enfermedad terminal y una muerte.', { hi: true }),
+  bk(65, 'Sobre la brevedad de la vida', 'Séneca', 'D', ['SEN','CRI','HAB'], 'C', 1, 100, 'revisar cómo usas tu tiempo', 'Tiene un tono severo y un lenguaje clásico.'),
+  bk(66, 'El camino menos transitado', 'M. Scott Peck', 'D', ['SEN','CRI','REL'], 'C', 2, 320, 'crecer con disciplina, amor y responsabilidad sobre tu vida', 'Es largo y la última parte usa lenguaje religioso.'),
+  bk(67, 'El milagro de mindfulness', 'Thich Nhat Hanh', 'P', ['ANS','HAB'], 'E', 1, 120, 'practicar la atención plena en tareas cotidianas', 'Con ansiedad intensa o trauma, empieza con acompañamiento.'),
+  bk(68, 'Manual de vida (Enquiridión)', 'Epicteto', 'D', ['ANS','MIE'], 'E', 1, 100, 'distinguir lo que depende de ti de lo que no', 'Tiene un tono seco; en un duelo puede sonar duro.'),
+  bk(69, 'Matar a un ruiseñor', 'Harper Lee', 'N', ['MIE','REL'], 'C', 2, 350, 'actuar con integridad aunque cueste', 'Aborda racismo y violencia.'),
+  bk(70, 'Momo', 'Michael Ende', 'N', ['HAB','PRO','SEN'], 'C', 1, 300, 'pensar qué haces con tu tiempo y cómo la prisa se lo come', 'Si trabajas sin margen, puede leerse como una culpa más.')
+];
+
+var ACOMPANAMIENTO = [3, 6];
+
+var AREA = {
+  SEN: { nombre: 'Sentido y dirección', en: 'el sentido y la dirección' },
+  REL: { nombre: 'Relaciones cercanas', en: 'las relaciones cercanas' },
+  HAB: { nombre: 'Hábitos y energía', en: 'los hábitos y la energía' },
+  MIE: { nombre: 'Miedos actuales', en: 'los miedos' },
+  PRO: { nombre: 'Etapa profesional', en: 'la etapa profesional' },
+  ANS: { nombre: 'Ansiedad', en: 'la ansiedad' },
+  RUP: { nombre: 'Rupturas y pérdidas', en: 'las rupturas y pérdidas' },
+  HER: { nombre: 'Heridas emocionales', en: 'las heridas emocionales' },
+  CRI: { nombre: 'Crisis de propósito', en: 'la crisis de propósito' },
+  LID: { nombre: 'Liderazgo', en: 'el liderazgo' },
+  BLO: { nombre: 'Bloqueo creativo', en: 'el bloqueo creativo' }
+};
+var BASE = ['SEN', 'REL', 'HAB', 'MIE', 'PRO'];
+var MODULOS = ['ANS', 'RUP', 'HER', 'CRI', 'LID', 'BLO'];
+
+var FREQ = ['Casi nunca', 'A veces', 'Con frecuencia', 'Casi siempre'];
+var B_OPTS = ['Nunca', 'Algunos días', 'Más de la mitad de los días', 'Casi todos los días'];
+
+// Preguntas del bloque de lectura
+var Q_A = {
+  A1: { q: '¿Con qué frecuencia lees libros completos, en papel, digital o audio?', opts: [['Casi nunca', 0], ['Algunas veces al año', 1], ['Una o dos veces al mes', 2], ['Casi cada semana', 3], ['Casi todos los días', 4]] },
+  A2: { q: '¿Cuál de estas frases se acerca más a lo que piensas hoy sobre leer?', shuffle: true, opts: [['Me gusta leer, pero casi nunca encuentro el momento', 'sin_tiempo'], ['Empiezo libros y suelo abandonarlos a la mitad', 'abandona'], ['Leo con gusto y suelo terminar lo que empiezo', 'gusto'], ['Aprendo mejor con audio, video o conversaciones que con libros', 'audio'], ['No suelo leer y no me llama la atención', 'no_llama']] },
+  A3: { q: '¿Qué te llevó a abrir este cuestionario hoy?', opts: [['Estoy pasando por un momento difícil y busco apoyo', 'dificil'], ['Siento que algo en mi vida necesita cambiar', 'cambio'], ['Quiero conocerme mejor, sin urgencia', 'conocerme'], ['Alguien me lo recomendó', 'recomendacion'], ['Curiosidad, quería ver de qué se trata', 'curiosidad']] },
+  A4: { q: 'Pensando en una semana normal, ¿cuánto tiempo real, no el ideal, podrías dedicar a leer?', opts: [['Muy poco: unos minutos algunos días', 0], ['De 15 a 30 minutos al día', 1], ['De 30 a 60 minutos al día', 2], ['Más de una hora al día', 3]] },
+  A5: { q: '¿Qué te gustaría leer?', hint: 'Elige hasta dos.', multi: 2, opts: [['Novelas y cuentos', 'N'], ['Poesía y ensayo literario', 'L'], ['Libros para entender (psicología, filosofía)', 'D'], ['Libros prácticos, con ejercicios', 'P'], ['Me da igual', 'igual']], exclusive: 'igual' }
+};
+var A2_AJUSTE = { sin_tiempo: 0, abandona: -1, gusto: 1, audio: -1, no_llama: -1 };
+
+var Q_B = {
+  B1: '¿Con qué frecuencia te has sentido decaído o decaída, sin ganas o sin esperanza?',
+  B2: '¿Con qué frecuencia te has sentido nervioso o nerviosa, en tensión o con una preocupación difícil de detener?'
+};
+
+var Q_C0 = {
+  q: 'De estas situaciones, ¿cuáles te pesan más ahora?', hint: 'Elige hasta dos.', multi: 2, exclusive: 'none',
+  opts: [['Una ruptura o una pérdida reciente', 'RUP'], ['Siento que no sé para qué hago lo que hago', 'CRI'], ['Una preocupación o tensión que no logro apagar', 'ANS'], ['Cosas del pasado que siguen presentes en cómo reacciono hoy', 'HER'], ['Guiar o dirigir a otras personas', 'LID'], ['Quiero crear algo y no logro empezarlo o terminarlo', 'BLO'], ['Nada de esto en particular', 'none']]
+};
+
+// Preguntas de áreas: om (opción múltiple con puntos), fr (frecuencia), fi (frecuencia inversa)
+var Q_AREAS = {
+  SEN: [
+    { tipo: 'om', q: 'Piensa en un día cualquiera de los últimos 3 meses. Al terminarlo, ¿qué solías sentir sobre lo que habías hecho?', opts: [['Que fue un día mío, con cosas que me importan', 0], ['Que cumplí con lo necesario', 1], ['Que se me fue en cosas que no elegí', 2], ['Que no sé para qué hago lo que hago', 3]] },
+    { tipo: 'fr', q: 'En los últimos 3 meses, ¿con qué frecuencia hiciste cosas por obligación o por costumbre, y no porque las eligieras?' },
+    { tipo: 'fi', q: 'En los últimos 3 meses, ¿con qué frecuencia pudiste explicar con claridad qué es lo que más te importa en esta etapa de tu vida?' }
+  ],
+  REL: [
+    { tipo: 'om', q: 'La última vez que algo te preocupó de verdad en estos 3 meses, ¿qué hiciste?', opts: [['Se lo conté a alguien cercano', 0], ['Lo hablé solo a medias, o con alguien poco cercano', 1], ['Lo guardé y lo resolví por mi cuenta', 2], ['Lo guardé y me alejé de la gente por un tiempo', 3]], na: 'No me ocurrió' },
+    { tipo: 'fr', q: 'En los últimos 3 meses, ¿con qué frecuencia tuviste tensiones o discusiones con alguien cercano que quedaron sin resolver?' },
+    { tipo: 'fi', q: 'En los últimos 3 meses, ¿con qué frecuencia sentiste que había al menos una persona a quien podías llamar si lo necesitabas?' }
+  ],
+  HAB: [
+    { tipo: 'om', q: 'En una semana típica de los últimos 3 meses, ¿cómo fue tu sueño?', opts: [['Dormí lo suficiente casi todas las noches', 0], ['Algunas noches dormí poco o mal', 1], ['Muchas noches dormí poco o mal', 2], ['Casi todas las noches dormí poco o mal, o a horarios muy cambiantes', 3]] },
+    { tipo: 'fr', q: 'En los últimos 3 meses, ¿con qué frecuencia empezaste una rutina que querías sostener (ejercicio, estudio, orden) y la dejaste en pocos días?' },
+    { tipo: 'fi', q: 'En los últimos 3 meses, ¿con qué frecuencia tuviste energía suficiente para hacer lo que te habías propuesto en el día?' }
+  ],
+  MIE: [
+    { tipo: 'om', q: 'Piensa en una decisión importante que tenías pendiente en estos 3 meses. ¿Qué pasó con ella?', opts: [['La tomé y avancé', 0], ['La tomé, pero con mucha duda o a último momento', 1], ['La fui posponiendo', 2], ['La evité o dejé que otros la decidieran', 3]], na: 'No tuve decisiones pendientes' },
+    { tipo: 'fr', q: 'En los últimos 3 meses, ¿con qué frecuencia dejaste de hacer algo que querías por miedo a equivocarte, a que te juzgaran o a perder lo que ya tienes?' },
+    { tipo: 'fi', q: 'En los últimos 3 meses, ¿con qué frecuencia hiciste algo que te daba miedo, aunque lo sintieras?' }
+  ],
+  PRO: [
+    { tipo: 'om', q: '¿Cuál de estas frases describe mejor tu actividad principal (trabajo, estudios, emprendimiento, cuidado de otros) en los últimos 3 meses?', opts: [['Me exige y me hace crecer', 0], ['Es estable, sin grandes cambios', 1], ['Siento que me estanqué, o que me exigen más de lo que doy', 2], ['Estoy en transición o sin actividad y no tengo claro el siguiente paso', 3]] },
+    { tipo: 'fr', q: 'En los últimos 3 meses, ¿con qué frecuencia pensaste en cambiar de actividad (trabajo, carrera, proyecto) sin tener claro hacia dónde?' },
+    { tipo: 'fi', q: 'En los últimos 3 meses, ¿con qué frecuencia sentiste que tu actividad principal aprovechaba lo que sabes y lo que quieres desarrollar?' }
+  ],
+  ANS: [
+    { tipo: 'om', q: 'Cuando algo te preocupó en estos 3 meses, ¿qué pasó con más frecuencia?', opts: [['La preocupación tenía sentido y se iba al resolver el asunto', 0], ['Volvía de vez en cuando, pero podía seguir con mi día', 1], ['Volvía muchas veces y me costaba concentrarme', 2], ['No lograba detenerla y afectó mi sueño, mi cuerpo o lo que tenía que hacer', 3]] },
+    { tipo: 'fr', q: 'En los últimos 3 meses, ¿con qué frecuencia notaste señales de alerta en el cuerpo (tensión, respiración corta, corazón acelerado, nudo en el estómago) sin una amenaza real a la vista?' },
+    { tipo: 'fi', q: 'En los últimos 3 meses, ¿con qué frecuencia lograste calmarte (con una actividad, respirando, hablando con alguien o descansando) cuando te sentiste alterado o alterada?' }
+  ],
+  RUP: [
+    { tipo: 'om', q: 'Pensando en esa ruptura o pérdida, ¿en qué momento estás?', opts: [['La siento asimilada y la recuerdo con calma', 0], ['Hay días de tristeza, pero mi vida sigue su curso', 1], ['Pasaron semanas y sigue ocupando buena parte de mis pensamientos', 2], ['Es muy reciente o intensa y me cuesta hacer mi vida normal', 3]] },
+    { tipo: 'fr', q: 'En los últimos 3 meses, ¿con qué frecuencia revisaste mensajes, redes o fotos relacionadas con esa persona o esa etapa, o buscaste contacto, aunque después te sintieras peor?' },
+    { tipo: 'fi', q: 'En los últimos 3 meses, ¿con qué frecuencia pudiste disfrutar de un momento sin que la ruptura estuviera en tu cabeza?' }
+  ],
+  HER: [
+    { tipo: 'om', intro: 'Estas preguntas no te piden contar qué te pasó, solo cómo se nota hoy. Puedes saltarlas.', q: 'Cuando alguien te critica, te rechaza o te deja de lado, ¿qué ocurre dentro de ti la mayoría de las veces?', opts: [['Me duele un momento y lo proceso', 0], ['Me afecta varios días, pero logro ubicarlo', 1], ['Reacciono con mucha intensidad (enojo, llanto, retirada) que luego no entiendo', 2], ['Se me mueve algo muy antiguo y me cuesta separarlo de lo que pasa hoy', 3]] },
+    { tipo: 'fr', q: 'En los últimos 3 meses, ¿con qué frecuencia repetiste un patrón en tus vínculos que ya habías notado antes (elegir situaciones parecidas, complacer en exceso, alejarte cuando alguien se acerca)?' },
+    { tipo: 'fi', q: 'En los últimos 3 meses, ¿con qué frecuencia lograste tratarte con amabilidad ante un error o una situación dolorosa?' }
+  ],
+  CRI: [
+    { tipo: 'om', q: '¿Qué describe mejor lo que sientes hoy sobre aquello que antes le daba sentido a tu vida (trabajo, rol, proyecto, creencia)?', opts: [['Sigue dándome sentido', 0], ['Perdió algo de brillo, pero lo sostengo', 1], ['Ya no me dice lo que antes y no sé qué lo reemplazaría', 2], ['Siento un vacío: mi vida se armó sobre algo que ya no siento mío', 3]] },
+    { tipo: 'fr', q: 'En los últimos 3 meses, ¿con qué frecuencia te preguntaste «¿para qué hago todo esto?» sin encontrar una respuesta?' },
+    { tipo: 'fi', q: 'En los últimos 3 meses, ¿con qué frecuencia hubo algo en tu semana que hiciste con la sensación clara de que valía la pena?' }
+  ],
+  LID: [
+    { tipo: 'om', q: 'Cuando tuviste que dar una mala noticia o un comentario difícil a alguien de tu equipo (o de tu familia o comunidad), ¿qué hiciste con más frecuencia?', opts: [['Lo dije con claridad y a tiempo', 0], ['Lo dije, pero tan suavizado que casi no se entendió', 1], ['Lo postergué hasta que fue un problema mayor', 2], ['Lo resolví yo para no tener esa conversación', 3]], na: 'No tuve que hacerlo' },
+    { tipo: 'fr', q: 'En los últimos 3 meses, ¿con qué frecuencia cargaste tú con decisiones o tareas que otros podrían haber sostenido?' },
+    { tipo: 'fi', q: 'En los últimos 3 meses, ¿con qué frecuencia las personas que guías te trajeron problemas o desacuerdos con confianza, sin esconderlos?' }
+  ],
+  BLO: [
+    { tipo: 'om', q: 'Cuando te sentaste a trabajar en algo creativo o propio en estos 3 meses, ¿qué pasó con más frecuencia?', opts: [['Avancé, aunque no siempre con resultados que me gustaran', 0], ['Me costó empezar, pero una vez en marcha seguí', 1], ['Empecé varias veces y no terminé nada', 2], ['Casi no logré empezar, o lo abandoné antes de empezar', 3]] },
+    { tipo: 'fr', q: 'En los últimos 3 meses, ¿con qué frecuencia descartaste una idea o un borrador antes de mostrárselo a alguien porque «no estaba suficientemente bueno»?' },
+    { tipo: 'fi', q: 'En los últimos 3 meses, ¿con qué frecuencia hiciste algo creativo solo por el gusto de hacerlo, sin pensar en el resultado?' }
+  ]
+};
+
+var Q_F1 = {
+  q: '¿Qué has probado ya para sentirte mejor o avanzar en lo que te pesa?', hint: 'Elige hasta tres.', multi: 3, exclusive: 'nada',
+  opts: [['Leer o escuchar libros', 'libros'], ['Hablar con alguien de confianza', 'confianza'], ['Ir con un profesional (psicólogo, coach u otro)', 'prof'], ['Cambiar hábitos o rutinas', 'habitos'], ['Escribir, meditar o hacer ejercicio', 'practicas'], ['Todavía nada', 'nada']]
+};
+var Q_F2 = {
+  q: 'Si dentro de 6 meses algo fuera distinto y tú lo notaras, ¿qué te gustaría que fuera?', hint: 'Elige hasta dos.', multi: 2,
+  opts: [['Más calma y menos preocupación', 'ANS'], ['Tener claro hacia dónde voy', 'SEN'], ['Llevarme mejor con la gente cercana', 'REL'], ['Tener rutinas y energía estables', 'HAB'], ['Decidir sin tanto miedo', 'MIE'], ['Avanzar en mi trabajo o estudios', 'PRO'], ['Sentirme en paz con una ruptura o pérdida', 'RUP'], ['Sentirme mejor conmigo y con mi pasado', 'HER'], ['Liderar con más seguridad', 'LID'], ['Terminar algo creativo mío', 'BLO']]
+};
+
+// Plantillas por área y nivel (sección 7)
+var PLANTILLA = {
+  SEN: ['Hoy sientes bastante coherencia entre lo que haces y lo que te importa. Es una base que vale la pena cuidar.', 'A veces lo que haces y lo que te importa no terminan de encajar. Es común en ciertas etapas y se puede ordenar con buenas preguntas.', 'Tus respuestas sugieren que últimamente cuesta sentir que tu día a día va hacia un lugar que sea tuyo. Es incómodo, y merece atención sin apuro.'],
+  REL: ['Parece que cuentas con vínculos que te sostienen y con alguien a quien acudir cuando lo necesitas.', 'Hay cierta distancia o tensión en alguna relación cercana que no se ha terminado de resolver.', 'Tus respuestas sugieren que tus vínculos cercanos están pesando: tensiones sin cerrar o poca sensación de contar con alguien. No tienes que resolverlo a solas.'],
+  HAB: ['Tu sueño, tu energía y tus rutinas parecen funcionar y te dan una base estable.', 'Tus rutinas tienen altibajos: empiezas cosas que luego cuesta sostener, o tu energía varía.', 'Parece que dormir, descansar o sostener rutinas se ha vuelto cuesta arriba, y cuando falta energía todo lo demás se siente más pesado.'],
+  MIE: ['Aun con miedo, sueles avanzar en lo que decides.', 'A veces el miedo te hace posponer o dudar de decisiones que te importan.', 'Tus respuestas sugieren que el miedo (a equivocarte, a que te juzguen o a perder algo) está frenando decisiones importantes. Evitar alivia en el momento, pero la decisión suele seguir ahí.'],
+  PRO: ['Tu etapa profesional parece darte espacio para crecer, o al menos estabilidad.', 'Hay cierto desajuste entre lo que haces y lo que quisieras desarrollar.', 'Tu situación actual (estancamiento, sobrecarga o una transición sin rumbo claro) parece estar pesando bastante.'],
+  ANS: ['Las preocupaciones aparecen, pero no te desbordan.', 'La preocupación vuelve con cierta frecuencia y a veces cuesta concentrarse o descansar.', 'Tus respuestas sugieren que la preocupación y la tensión del cuerpo ocupan mucho espacio. Esto no es un diagnóstico, pero si se mantiene por semanas, conversarlo con un profesional puede ayudar.'],
+  RUP: ['Parece que ya recorriste un buen tramo del camino con esa ruptura o pérdida.', 'Hay días en que duele y días en que puedes seguir; ese vaivén es frecuente en un duelo.', 'Parece una pérdida muy presente en tus días. Los tiempos del duelo no se pueden apurar, y cuidarte ahora es parte del camino.'],
+  HER: ['Cuando algo te duele, parece que logras ubicarlo y procesarlo.', 'Algunas situaciones activan reacciones que luego te cuesta entender.', 'Tus respuestas sugieren que cosas del pasado siguen muy activas en cómo reaccionas hoy. No hace falta revisarlo todo de golpe; ir a tu ritmo, y mejor con acompañamiento, suele ser más seguro.'],
+  CRI: ['Lo que antes te daba sentido sigue haciéndolo.', 'Algo de lo que te daba sentido perdió brillo. Puede ser una señal de que estás cambiando.', 'Parece que lo que antes sostenía tu sentido ya no alcanza. Es un momento desorientador, y preguntarse con calma suele ayudar más que buscar respuestas rápidas.'],
+  LID: ['Pareces sostener bien el rol de guiar a otros: dices lo difícil a tiempo y tu equipo confía en traerte los problemas.', 'En tu rol de guiar a otros hay fricción: conversaciones que se posponen o decisiones que cargas tú.', 'Tus respuestas sugieren que liderar está pesando: cargas mucho y las conversaciones difíciles se evitan o las resuelves por tu cuenta. Es agotador, y común en quienes se hacen responsables de otros.'],
+  BLO: ['Tu creatividad fluye: empiezas, avanzas y disfrutas el proceso.', 'Te cuesta empezar o terminar algunas cosas propias, aunque a veces fluye.', 'Parece que empezar o terminar lo tuyo se volvió muy difícil. Los bloqueos suelen tener varias causas y vale la pena explorarlas con curiosidad.']
+};
+
+var LINEAS = [
+  { nombre: 'Línea de la Vida', detalle: 'Gratuita, las 24 horas, todos los días. Atiende la Comisión Nacional de Salud Mental y Adicciones.', numero: '800 911 2000', tel: '8009112000' },
+  { nombre: 'Emergencias', detalle: 'Si tú o alguien más está en peligro inmediato.', numero: '911', tel: '911' },
+  { nombre: 'Orientación en salud mental del IMSS', detalle: 'Para derechohabientes. Marca la opción 4.', numero: '800 2222 668', tel: '8002222668' }
+];
+
+if (typeof module !== 'undefined') {
+  module.exports = { BOOKS: BOOKS, ACOMPANAMIENTO: ACOMPANAMIENTO, AREA: AREA, BASE: BASE, MODULOS: MODULOS, Q_AREAS: Q_AREAS, A2_AJUSTE: A2_AJUSTE, PLANTILLA: PLANTILLA, Q_F2: Q_F2 };
+}
+
+var CAPITULOS, BENEFICIOS;
+// ===== Versión 2: preguntas más claras y variadas, módulo de dinero, biblioteca de 120 libros =====
+(function () {
+  var G = (typeof module !== 'undefined') ? require('./data.js') : null;
+  var _BOOKS = G ? G.BOOKS : BOOKS, _AREA = G ? G.AREA : AREA, _MODULOS = G ? G.MODULOS : MODULOS, _PLANTILLA = G ? G.PLANTILLA : PLANTILLA;
+
+  // ---- 50 libros nuevos (71 a 120) ----
+  [
+    [71, 'La psicología del dinero', 'Morgan Housel', 'D', ['FIN','MIE'], 'C', 1, 250, 'entender por qué decides como decides con tu dinero', 'No es una guía paso a paso de inversión.', { ed: 1 }],
+    [72, 'El hombre más rico de Babilonia', 'George S. Clason', 'N', ['FIN','HAB'], 'C', 1, 150, 'aprender reglas básicas de ahorro con parábolas', 'Es de 1926 y sus ejemplos son antiguos.'],
+    [73, 'Pequeño cerdo capitalista', 'Sofía Macías', 'P', ['FIN'], 'K', 1, 250, 'ordenar tus finanzas personales con ejemplos de México', 'Algunas cifras y productos cambian con los años; busca la edición más reciente.', { ed: 1 }],
+    [74, 'Padre rico, padre pobre', 'Robert Kiyosaki', 'D', ['FIN','PRO'], 'C', 1, 240, 'cambiar tu forma de pensar sobre el dinero', 'Sus consejos de inversión son polémicos: tómalo como motivación, no como guía financiera.'],
+    [75, 'El inversor inteligente', 'Benjamin Graham', 'D', ['FIN'], 'P', 3, 600, 'entender la inversión a largo plazo con criterio', 'Es largo y técnico; rinde cuando ya tienes tus finanzas en orden.'],
+    [76, 'El arte de la felicidad', 'Dalai Lama y Howard C. Cutler', 'D', ['SEN','ANS','REL'], 'C', 1, 300, 'ver la felicidad como algo que se entrena', 'Mezcla budismo y psicología, con tono espiritual.'],
+    [77, 'El guerrero pacífico', 'Dan Millman', 'N', ['SEN','HAB'], 'C', 1, 250, 'replantear tu rumbo con la historia de un maestro y su aprendiz', 'Tiene tono espiritual e ideas generales.'],
+    [78, 'Martes con mi viejo profesor', 'Mitch Albom', 'L', ['SEN','RUP','REL'], 'C', 1, 200, 'pensar qué importa de verdad, de la mano de un maestro que se despide', 'Narra la enfermedad y la muerte de su profesor.', { hi: true }],
+    [79, 'Demian', 'Hermann Hesse', 'N', ['SEN','HER'], 'C', 2, 180, 'acompañar el paso hacia una identidad propia', 'Es simbólico y algo oscuro.'],
+    [80, 'El sutil arte de que (casi todo) te importe una mierda', 'Mark Manson', 'D', ['MIE','SEN'], 'C', 1, 220, 'elegir qué te importa y soltar lo demás', 'Es provocador y usa groserías.'],
+    [81, 'Cuatro mil semanas', 'Oliver Burkeman', 'D', ['SEN','HAB','PRO'], 'C', 1, 270, 'usar mejor tu tiempo aceptando que no alcanza para todo', 'No es un método de productividad con pasos.', { ed: 1 }],
+    [82, 'Céntrate (Deep Work)', 'Cal Newport', 'P', ['PRO','HAB'], 'K', 2, 320, 'concentrarte sin distracciones en el trabajo que importa', 'Está pensado para trabajo intelectual.'],
+    [83, 'Hazlo tan bien que no puedan ignorarte', 'Cal Newport', 'D', ['PRO','SEN'], 'C', 2, 260, 'construir una vocación con habilidades en lugar de esperar una pasión', 'Se enfoca en carreras de conocimiento.'],
+    [84, 'Originales', 'Adam Grant', 'D', ['BLO','PRO','LID'], 'C', 2, 350, 'defender ideas propias y crear sin esperar permiso', 'Usa muchos ejemplos de empresas de Estados Unidos.'],
+    [85, 'Dar y recibir', 'Adam Grant', 'D', ['REL','PRO','LID'], 'C', 2, 350, 'ver cómo la generosidad bien administrada impulsa tu trabajo', 'Su enfoque es más laboral que personal.'],
+    [86, 'Piénsalo otra vez', 'Adam Grant', 'D', ['MIE','PRO','LID'], 'C', 2, 320, 'cambiar de opinión a tiempo y decidir con más apertura', 'Es denso en estudios y ejemplos.'],
+    [87, 'El Elemento', 'Ken Robinson', 'D', ['SEN','BLO','PRO'], 'C', 1, 300, 'descubrir dónde se cruzan lo que te gusta y lo que se te da bien', 'Es inspirador, con pocos pasos concretos.'],
+    [88, 'Indistraíble', 'Nir Eyal', 'P', ['HAB','PRO'], 'K', 1, 300, 'controlar las distracciones del celular y del día', 'Algunas ideas suponen control sobre tu entorno de trabajo.'],
+    [89, 'La magia del orden', 'Marie Kondo', 'P', ['HAB'], 'K', 1, 220, 'ordenar tu casa y, de paso, tu cabeza', 'Su método es estricto; tómalo como inspiración.'],
+    [90, 'El club de las 5 de la mañana', 'Robin Sharma', 'N', ['HAB'], 'K', 1, 330, 'armar una rutina de mañana desde una historia', 'Madrugar no es para todos; si duermes poco, puede ser contraproducente.'],
+    [91, '¡Tráguese ese sapo!', 'Brian Tracy', 'P', ['HAB','PRO'], 'K', 1, 130, 'dejar de posponer lo importante con técnicas sencillas', 'Es básico y algo repetitivo.'],
+    [92, 'Respira', 'James Nestor', 'D', ['ANS','HAB'], 'C', 1, 320, 'entender cómo respiras y qué cambia cuando lo haces mejor', 'Algunas afirmaciones van más allá de la evidencia.'],
+    [93, 'Creatividad, S.A.', 'Ed Catmull', 'D', ['BLO','LID'], 'C', 2, 380, 'crear en equipo sin matar las ideas nuevas', 'Está muy centrado en Pixar y en dirigir equipos.'],
+    [94, 'El acto de crear', 'Rick Rubin', 'L', ['BLO'], 'C', 1, 430, 'vivir la creatividad como una forma de estar en el mundo', 'Es largo y algo espiritual; se lee por fragmentos.'],
+    [95, 'Los siete principios para hacer que el matrimonio funcione', 'John Gottman y Nan Silver', 'P', ['REL'], 'K', 1, 300, 'cuidar una relación de pareja con base en investigación', 'Es para parejas que siguen juntas; no para situaciones de violencia.'],
+    [96, 'El arte de no amargarse la vida', 'Rafael Santandreu', 'P', ['ANS','MIE','REL'], 'C', 1, 280, 'soltar las exigencias que convierten problemas en dramas', 'Es muy directo y simplifica algunas situaciones.'],
+    [97, 'El poder de ser vulnerable', 'Brené Brown', 'D', ['MIE','HER','REL'], 'C', 1, 300, 'atreverte a mostrarte sin armadura', 'Repite ideas de Los dones de la imperfección.'],
+    [98, 'El amor en los tiempos del cólera', 'Gabriel García Márquez', 'N', ['REL','RUP'], 'C', 2, 490, 'mirar el amor, la espera y el paso del tiempo', 'Es larga; es para quien disfruta la novela.'],
+    [99, 'Orgullo y prejuicio', 'Jane Austen', 'N', ['REL'], 'C', 2, 400, 'ver cómo los prejuicios propios nublan los vínculos', 'Tiene el ritmo y el contexto del siglo XIX.'],
+    [100, '¿Por qué nadie me lo dijo antes?', 'Julie Smith', 'P', ['ANS','HER','MIE'], 'E', 1, 352, 'tener herramientas sencillas para los altibajos del día a día', 'Es una guía general; no sustituye una terapia.'],
+    [101, 'La ridícula idea de no volver a verte', 'Rosa Montero', 'L', ['RUP','SEN'], 'C', 2, 240, 'acompañar el duelo entre memoria, ensayo y la vida de Marie Curie', 'Nace del duelo de la autora por su pareja.', { hi: true }],
+    [102, 'El drama del niño dotado', 'Alice Miller', 'D', ['HER'], 'P', 2, 160, 'entender de dónde viene la necesidad de complacer', 'Puede remover recuerdos de infancia; mejor con acompañamiento.', { hi: true }],
+    [103, 'Hijos adultos de padres emocionalmente inmaduros', 'Lindsay C. Gibson', 'P', ['HER','REL'], 'C', 1, 309, 'entender cómo te marcó crecer con padres poco disponibles y poner límites', 'Puede remover temas familiares; avanza a tu ritmo.'],
+    [104, 'Aunque tenga miedo, hágalo igual', 'Susan Jeffers', 'P', ['MIE'], 'K', 1, 220, 'actuar a pesar del miedo con ejercicios concretos', 'Es muy optimista y de los años ochenta.'],
+    [105, 'Las 21 leyes irrefutables del liderazgo', 'John C. Maxwell', 'P', ['LID'], 'K', 1, 300, 'conocer principios básicos para guiar a otros', 'Sus ejemplos son de Estados Unidos y tiene algo de tono religioso.'],
+    [106, 'Las cinco disfunciones de un equipo', 'Patrick Lencioni', 'N', ['LID','REL'], 'K', 1, 230, 'detectar qué frena a tu equipo, en forma de fábula', 'Simplifica la vida real de los equipos.'],
+    [107, 'Pedro Páramo', 'Juan Rulfo', 'N', ['RUP','HER'], 'P', 2, 130, 'mirar la memoria, la culpa y los muertos que cargamos, en la gran novela mexicana', 'Es fragmentaria, exige atención y su tema es la muerte.'],
+    [108, 'El laberinto de la soledad', 'Octavio Paz', 'L', ['SEN'], 'P', 3, 250, 'pensar la identidad y la soledad desde lo mexicano', 'Es un ensayo denso de 1950.'],
+    [109, 'La tregua', 'Mario Benedetti', 'N', ['REL','RUP','SEN'], 'C', 1, 200, 'pensar el amor y la rutina en la mitad de la vida', 'El final es triste.'],
+    [110, 'Juan Salvador Gaviota', 'Richard Bach', 'N', ['SEN','MIE'], 'C', 1, 100, 'atreverte a salir de lo esperado, en una fábula breve', 'Su mensaje es simple e individualista.'],
+    [111, 'El caballero de la armadura oxidada', 'Robert Fisher', 'N', ['HER','SEN'], 'C', 1, 100, 'mirar las defensas que te alejan de los demás, en una fábula', 'Es sencillo y simbólico.'],
+    [112, 'Déjame que te cuente', 'Jorge Bucay', 'N', ['SEN','REL','MIE'], 'E', 1, 280, 'pensar tus dilemas a través de cuentos breves', 'Algunas reflexiones son simplistas.'],
+    [113, 'El profeta', 'Khalil Gibran', 'L', ['SEN','REL','RUP'], 'E', 1, 120, 'leer reflexiones poéticas breves sobre el amor, el dolor y el trabajo', 'Tiene un tono místico.'],
+    [114, 'Cartas a un joven novelista', 'Mario Vargas Llosa', 'L', ['BLO'], 'C', 2, 150, 'entender cómo se construye una novela y perderle miedo a escribir', 'Es útil sobre todo si escribes ficción.'],
+    [115, 'Vivir la vida con sentido', 'Víctor Küppers', 'D', ['SEN','MIE'], 'C', 1, 200, 'recuperar la actitud y el entusiasmo en lo cotidiano', 'Tiene un tono motivacional.'],
+    [116, 'Esto también pasará', 'Milena Busquets', 'N', ['RUP'], 'C', 1, 170, 'acompañar el duelo por una madre con humor y ligereza', 'Narra un duelo reciente.', { hi: true }],
+    [117, 'La paradoja', 'James C. Hunter', 'N', ['LID'], 'K', 1, 180, 'entender el liderazgo como servicio, en forma de relato', 'Tiene trasfondo religioso y simplifica.'],
+    [118, 'El hombre que plantaba árboles', 'Jean Giono', 'N', ['SEN','HAB'], 'E', 1, 60, 'ver la fuerza de la constancia en un relato muy breve', 'Es brevísimo y poético.'],
+    [119, 'La sociedad del cansancio', 'Byung-Chul Han', 'D', ['HAB','PRO','SEN'], 'P', 3, 100, 'entender por qué el exceso de rendimiento nos agota', 'Es un ensayo filosófico denso.'],
+    [120, 'Pensar rápido, pensar despacio', 'Daniel Kahneman', 'D', ['MIE','PRO','FIN'], 'P', 3, 600, 'conocer los atajos mentales que sesgan tus decisiones', 'Es largo y técnico; algunos estudios que cita no se han replicado.']
+  ].forEach(function (r) {
+    var o = r[10] || {};
+    _BOOKS.push({ n: r[0], t: r[1], a: r[2], tipo: r[3], ar: r[4], f: r[5], nv: r[6], pp: r[7], ay: r[8], cu: r[9], hi: !!o.hi, ed: o.ed || 3 });
+  });
+
+  [3, 7, 95, 103].forEach(function (n) { _BOOKS.forEach(function (b) { if (b.n === n) b.ed = 1; }); });
+
+  _AREA.FIN = { nombre: 'Dinero y finanzas', en: 'el dinero' };
+  _AREA.SEN.nombre = 'Rumbo y sentido';
+  _AREA.SEN.en = 'el rumbo de tu vida';
+  _AREA.HAB.nombre = 'Energía, hábitos y orden';
+  _AREA.HAB.en = 'la energía, los hábitos y el orden';
+  _AREA.PRO.nombre = 'Trabajo y desarrollo';
+  _AREA.PRO.en = 'el trabajo y tu desarrollo';
+  if (_MODULOS.indexOf('FIN') < 0) _MODULOS.push('FIN');
+  _PLANTILLA.FIN = [
+    'Tus finanzas parecen bajo control: sabes en qué se va tu dinero y tienes algo de colchón.',
+    'El dinero está a medias: algunos meses bien, otros con sobresaltos o sin claridad de en qué se fue.',
+    'Tus respuestas sugieren que el dinero te está pesando: deudas, poco ahorro o poca claridad. Es un área muy práctica, y suele mejorar con pasos pequeños y constantes.'
+  ];
+  _PLANTILLA.SEN = [
+    'Tienes bastante claro hacia dónde vas y qué te importa. Es una base que vale la pena cuidar.',
+    'A ratos lo que haces y lo que te importa no terminan de encajar. Es común en ciertas etapas y se ordena con buenas preguntas.',
+    'Tus respuestas sugieren que hoy cuesta ver hacia dónde vas. Es incómodo, y también un buen momento para preguntarte qué quieres.'
+  ];
+  _PLANTILLA.HAB = [
+    'Tu energía, tus rutinas y tu orden parecen funcionar y te dan una base estable.',
+    'Tus rutinas tienen altibajos: hay días con energía y orden, y otros en que lo importante se pospone.',
+    'Parece que la energía, el descanso o el orden se volvieron cuesta arriba, y cuando faltan, todo lo demás pesa más.'
+  ];
+  _PLANTILLA.PRO = [
+    'Tu trabajo parece darte espacio para crecer, o al menos una estabilidad que te basta.',
+    'Hay cierto desajuste entre lo que haces y lo que quisieras desarrollar.',
+    'Tu situación de trabajo (estancamiento, sobrecarga o un cambio sin rumbo claro) parece estar pesando bastante.'
+  ];
+
+  if (G) { G.MODULOS = _MODULOS; return; }
+
+  // ---- Preguntas (solo en el navegador) ----
+  // Formatos: escena (situación con opciones), termo (deslizador 0 a 10), balanza (dos frases), lista (casillas)
+  Q_AREAS = {
+    SEN: [
+      { f: 'termo', q: '¿Qué tan claro tienes hacia dónde quieres ir en los próximos años?', izq: 'Nada claro', der: 'Muy claro', carga: 'izq' },
+      { f: 'escena', q: 'Si mañana tuvieras una tarde libre, sin compromisos, ¿qué pasaría más probablemente?', opts: [['La usaría en algo que de verdad me importa', 0], ['Haría algo agradable, sin pensarlo mucho', 1], ['Se me iría en el celular o en pendientes', 2], ['No sabría muy bien qué hacer con ella', 3]] },
+      { f: 'lista', q: '¿Cuáles de estas tienes hoy?', opts: ['Una meta concreta para este año', 'Algo que aprendo o practico por gusto', 'Claridad sobre lo que no quiero en mi vida', 'Al menos una actividad a la semana en la que me siento yo'] }
+    ],
+    REL: [
+      { f: 'escena', q: 'Te llega una buena noticia. ¿Qué haces primero?', opts: [['Se la cuento a alguien cercano que sé que se alegrará', 0], ['Se la cuento a alguien, aunque no sé bien a quién', 1], ['La publico o la comento, sin decírsela a nadie en especial', 2], ['Me la guardo: no tengo con quién compartirla', 3]] },
+      { f: 'balanza', q: '¿Cuál se parece más a ti?', a: 'Cuando algo de alguien cercano me molesta, se lo digo y lo hablamos.', b: 'Cuando algo me molesta, me lo guardo o exploto después.' },
+      { f: 'termo', q: 'En las últimas semanas, ¿qué tanto has sentido que cuentas con gente cercana?', izq: 'Nada', der: 'Mucho', carga: 'izq' }
+    ],
+    HAB: [
+      { f: 'termo', q: '¿Con cuánta energía terminas un día normal?', izq: 'Sin nada de energía', der: 'Con energía de sobra', carga: 'izq' },
+      { f: 'lista', q: '¿Cuáles de estas hiciste la semana pasada?', opts: ['Dormí 7 horas o más casi todas las noches', 'Me moví o hice ejercicio al menos 3 días', 'Terminé lo más importante que tenía pendiente', 'Tuve mis cosas (casa, escritorio, pendientes) más o menos en orden'] },
+      { f: 'escena', q: 'Tienes una tarea importante que no es urgente. ¿Qué suele pasar?', opts: [['La hago a tiempo, con un plan', 0], ['La hago, pero a última hora', 1], ['La pospongo hasta que se vuelve urgente', 2], ['Se me olvida o la abandono', 3]] }
+    ],
+    MIE: [
+      { f: 'escena', q: 'Piensa en algo que quieres hacer desde hace tiempo y no has hecho: un cambio, una conversación, un proyecto. ¿Qué lo frena más?', opts: [['Nada en especial: ya lo estoy haciendo o lo haré pronto', 0], ['Me falta tiempo o dinero, más que valor', 1], ['Las dudas: ¿y si sale mal?', 2], ['El miedo a fallar, a que me juzguen o a perder lo que tengo', 3]] },
+      { f: 'balanza', q: '¿Cuál se parece más a ti?', a: 'Prefiero equivocarme intentándolo que quedarme con la duda.', b: 'Prefiero no intentar algo si no estoy seguro de que saldrá bien.' },
+      { f: 'termo', q: '¿Qué tanto pesa en tus decisiones lo que piensen los demás?', izq: 'Nada', der: 'Muchísimo', carga: 'der' }
+    ],
+    PRO: [
+      { f: 'escena', q: '¿Cuál se parece más a tu trabajo o actividad principal hoy?', opts: [['Estoy creciendo y aprendiendo', 0], ['Estoy estable: no crezco mucho, pero estoy bien', 1], ['Siento que me estanqué, o tengo más carga de la que puedo', 2], ['Estoy en un cambio o sin trabajo, sin claro el siguiente paso', 3]] },
+      { f: 'lista', q: '¿Cuáles de estas has hecho en los últimos tres meses?', opts: ['Aprendí algo nuevo para mi trabajo (curso, libro, práctica)', 'Pedí o recibí comentarios sobre lo que hago', 'Hablé de mis planes con alguien que me puede orientar', 'Tengo claro mi siguiente paso profesional'] },
+      { f: 'termo', q: '¿Qué tanto aprovecha tu actividad actual lo que sabes hacer?', izq: 'Nada', der: 'Totalmente', carga: 'izq' }
+    ],
+    ANS: [
+      { f: 'escena', q: 'Es de noche y algo te preocupa. ¿Qué suele pasar?', opts: [['Lo pienso un rato y me duermo', 0], ['Le doy vueltas, pero al final me duermo', 1], ['Me cuesta dormir porque no puedo soltarlo', 2], ['Me pasa casi todas las noches y lo noto en el cuerpo', 3]] },
+      { f: 'termo', q: 'En las últimas semanas, ¿cuánta tensión has sentido en el cuerpo (cuello, estómago, respiración)?', izq: 'Ninguna', der: 'Muchísima', carga: 'der' },
+      { f: 'balanza', q: '¿Cuál se parece más a ti?', a: 'Cuando me altero, sé qué hacer para calmarme.', b: 'Cuando me altero, no sé cómo bajarle.' }
+    ],
+    RUP: [
+      { f: 'escena', q: 'Pensando en esa ruptura o pérdida, ¿en qué momento estás?', opts: [['La siento asimilada y la recuerdo con calma', 0], ['Hay días de tristeza, pero mi vida sigue su curso', 1], ['Pasaron semanas y sigue ocupando buena parte de mis pensamientos', 2], ['Es muy reciente o intensa y me cuesta hacer mi vida normal', 3]] },
+      { f: 'balanza', q: '¿Cuál se parece más a ti hoy?', a: 'Puedo recordar lo que pasó sin que me desborde.', b: 'Cuando lo recuerdo, me desborda.' },
+      { f: 'termo', q: '¿Qué tanto ocupa esa pérdida tus pensamientos en un día normal?', izq: 'Casi nada', der: 'Casi todo el día', carga: 'der' }
+    ],
+    HER: [
+      { f: 'escena', intro: 'Aquí no te preguntamos qué te pasó, solo cómo se nota hoy.', q: 'Cuando alguien te critica o te deja de lado, ¿qué pasa dentro de ti la mayoría de las veces?', opts: [['Me duele un momento y lo proceso', 0], ['Me afecta varios días, pero logro ubicarlo', 1], ['Reacciono con mucha intensidad y luego no entiendo por qué', 2], ['Se me mueve algo muy antiguo y me cuesta separarlo de lo de hoy', 3]] },
+      { f: 'balanza', q: '¿Cuál se parece más a ti?', a: 'Cuando me equivoco, me hablo con paciencia.', b: 'Cuando me equivoco, me trato con mucha dureza.' },
+      { f: 'escena', q: '¿Notas que algo se repite en tus relaciones?', opts: [['No, cada relación ha sido distinta', 0], ['A veces veo algún patrón, pero lo manejo', 1], ['Sí, suelo terminar en situaciones parecidas', 2], ['Sí, y siento que no puedo salir de él', 3]] }
+    ],
+    CRI: [
+      { f: 'escena', q: '¿Qué describe mejor lo que sientes hoy por aquello que antes le daba sentido a tu vida (trabajo, rol, proyecto, creencia)?', opts: [['Sigue dándome sentido', 0], ['Perdió algo de brillo, pero lo sostengo', 1], ['Ya no me dice lo que antes y no sé qué lo reemplazaría', 2], ['Siento un vacío: lo de antes ya no lo siento mío', 3]] },
+      { f: 'termo', q: '¿Qué tan seguido te preguntas «¿para qué hago todo esto?»?', izq: 'Nunca', der: 'Todo el tiempo', carga: 'der' },
+      { f: 'lista', q: '¿Cuáles de estas te dan sentido hoy?', opts: ['Alguna persona o relación', 'Mi trabajo o lo que hago cada día', 'Un proyecto, una causa o una creencia', 'Algo que disfruto y me recuerda quién soy'] }
+    ],
+    LID: [
+      { f: 'escena', q: 'Tuviste que darle una mala noticia o un comentario difícil a alguien de tu equipo. ¿Qué hiciste?', opts: [['Lo dije con claridad y a tiempo', 0], ['Lo dije, pero tan suavizado que casi no se entendió', 1], ['Lo pospuse hasta que fue un problema mayor', 2], ['Lo resolví yo para no tener esa conversación', 3]], na: 'No me ha tocado' },
+      { f: 'lista', q: '¿Cuáles de estas pasan en el grupo que guías?', opts: ['La gente me trae los problemas sin miedo', 'Cada quien sabe qué le toca', 'Delego sin tener que revisar todo', 'Hablamos los desacuerdos de frente'] },
+      { f: 'termo', q: '¿Cuánto del trabajo del grupo terminas cargando tú?', izq: 'Lo justo', der: 'Casi todo', carga: 'der' }
+    ],
+    BLO: [
+      { f: 'escena', q: 'Cuando te sientas a trabajar en algo creativo o propio, ¿qué pasa con más frecuencia?', opts: [['Avanzo, aunque no siempre me guste el resultado', 0], ['Me cuesta empezar, pero luego sigo', 1], ['Empiezo varias veces y no termino nada', 2], ['Casi no logro empezar', 3]] },
+      { f: 'termo', q: '¿Qué tan seguido creas algo solo por gusto (escribir, dibujar, cocinar, música, un proyecto)?', izq: 'Nunca', der: 'Todo el tiempo', carga: 'izq' },
+      { f: 'balanza', q: '¿Cuál se parece más a ti?', a: 'Muestro lo que hago aunque no esté perfecto.', b: 'Si no está perfecto, no lo muestro.' }
+    ],
+    FIN: [
+      { f: 'lista', q: '¿Cuáles de estas puedes decir hoy?', opts: ['Sé cuánto gasté el mes pasado', 'Tengo un ahorro para emergencias', 'Pago mis tarjetas o deudas sin atrasarme', 'Ahorro o invierto algo cada mes'] },
+      { f: 'escena', q: 'Te llega un gasto inesperado del tamaño de un mes de tu ingreso. ¿Qué pasa?', opts: [['Lo cubro con mis ahorros', 0], ['Lo cubro, pero me deja sin colchón', 1], ['Tengo que pedir prestado o usar la tarjeta', 2], ['No sabría cómo cubrirlo', 3]] },
+      { f: 'termo', q: '¿Qué tanto te preocupa el dinero en un mes normal?', izq: 'Nada', der: 'Muchísimo', carga: 'der' }
+    ]
+  };
+
+  Q_B = {
+    B1: 'En las últimas dos semanas, ¿qué tan seguido has tenido el ánimo bajo o sin ganas?',
+    B2: '¿Y qué tan seguido has sentido tensión o preocupaciones que no se van?'
+  };
+  B_OPTS = ['Casi nunca', 'Algunos días', 'Más de la mitad de los días', 'Casi todos los días'];
+
+  Q_C0.opts.splice(6, 0, ['El dinero: deudas, poco ahorro o no saber en qué se me va', 'FIN']);
+  Q_F2.opts.push(['Tener mis finanzas en orden', 'FIN']);
+
+  CAPITULOS = {
+    lectura: { t: 'Tu forma de leer', f: 'Tu lista será tan precisa como tus respuestas. Responde pensando en cómo estás hoy, no en cómo te gustaría estar.' },
+    animo: { t: 'Cómo te has sentido', f: 'Dos preguntas rápidas. Nos ayudan a elegir lecturas que te acompañen bien.' },
+    SEN: { t: 'Tu rumbo', f: 'Piensa en las últimas semanas, no en tu mejor ni en tu peor día.' },
+    REL: { t: 'Tu gente', f: 'Cada respuesta honesta afina tu lista. Nadie más ve estas respuestas.' },
+    HAB: { t: 'Tu energía y tu orden', f: 'Vas a la mitad. Tu lista empieza a tomar forma.' },
+    MIE: { t: 'Lo que te frena', f: 'Responde lo que es, no lo que debería ser.' },
+    PRO: { t: 'Tu trabajo y tu desarrollo', f: 'Último capítulo de la parte que responde todo el mundo.' },
+    ANS: { t: 'Tus preocupaciones', f: '' },
+    RUP: { t: 'Lo que se terminó', f: '' },
+    HER: { t: 'Lo que traes de antes', f: '' },
+    CRI: { t: 'Lo que te da sentido', f: '' },
+    LID: { t: 'Guiar a otros', f: '' },
+    BLO: { t: 'Tu lado creativo', f: '' },
+    FIN: { t: 'Tu dinero', f: '' },
+    cierre: { t: 'Para cerrar', f: 'Dos preguntas más y armamos tu lista.' }
+  };
+
+  BENEFICIOS = [
+    { t: 'Los libros de ayuda bien elegidos sí ayudan', d: 'Varios metaanálisis encuentran que leer libros de autoayuda reduce el ánimo bajo leve o moderado, más que no hacer nada.', s: 'Cuijpers, 1997; den Boer y colegas, 2004; Anderson y colegas, 2005.' },
+    { t: 'Las novelas afinan un poco tu forma de entender a otros', d: 'Un metaanálisis de 14 estudios encontró que leer ficción mejora un poco la capacidad de entender lo que piensan y sienten los demás. El efecto es pequeño, pero real.', s: 'Dodell-Feder y Tamir, 2018.' },
+    { t: 'Quienes leen libros viven, en promedio, más', d: 'Un estudio de Yale siguió durante 12 años a más de 3,600 adultos mayores de 50: quienes leían libros tuvieron un 20 % menos de riesgo de morir en ese periodo. Bastaba con unos 30 minutos al día. Es una asociación, no prueba que leer sea la causa.', s: 'Bavishi, Slade y Levy, 2016.' }
+  ];
+})();
+
+// ===== Versión 3: comunicación, filosofía, candado de autoayuda y correcciones =====
+(function () {
+  var G = (typeof module !== 'undefined') ? require('./data.js') : null;
+  var _BOOKS = G ? G.BOOKS : BOOKS, _AREA = G ? G.AREA : AREA, _MODULOS = G ? G.MODULOS : MODULOS, _PLANTILLA = G ? G.PLANTILLA : PLANTILLA;
+
+  // ---- 20 libros nuevos: comunicación (121 a 128) y filosofía (129 a 140) ----
+  [
+    [121, 'El poder de los introvertidos', 'Susan Cain', 'D', ['COM','MIE'], 'C', 1, 400, 'entender que ser una persona reservada no es un defecto y encontrar tu forma de expresarte', 'Es largo y muy centrado en Estados Unidos.'],
+    [122, 'Charlas TED: la guía oficial TED para hablar en público', 'Chris Anderson', 'P', ['COM','LID'], 'K', 1, 288, 'preparar y dar una charla clara, aunque te pongan nervioso los públicos', 'Pensado para presentaciones; menos útil para la conversación diaria.', { ed: 1 }],
+    [123, 'Ideas que pegan', 'Chip Heath y Dan Heath', 'D', ['COM','LID'], 'C', 2, 330, 'contar tus ideas de forma que se entiendan y se recuerden', 'Muchos ejemplos de publicidad y empresas.'],
+    [124, 'Cómo hablar bien en público e influir en los hombres de negocios', 'Dale Carnegie', 'P', ['COM'], 'K', 1, 250, 'perder el miedo a hablar frente a otros con ejercicios sencillos', 'Ejemplos antiguos y lenguaje de otra época.'],
+    [125, 'El arte de escuchar', 'Erich Fromm', 'F', ['COM','REL'], 'C', 2, 200, 'aprender a escuchar de verdad, que es la mitad de comunicarse', 'Viene de su trabajo como terapeuta; algunas partes son técnicas.'],
+    [126, 'El viaje del escritor', 'Christopher Vogler', 'D', ['COM','BLO'], 'K', 2, 400, 'construir historias con una estructura clara (storytelling)', 'Pensado para guionistas; es largo.'],
+    [127, 'El héroe de las mil caras', 'Joseph Campbell', 'L', ['COM','BLO','SEN'], 'P', 3, 400, 'entender por qué ciertas historias nos mueven a todos', 'Es denso y académico.'],
+    [128, 'Retórica', 'Aristóteles', 'F', ['COM'], 'P', 3, 300, 'conocer de raíz el arte de convencer con palabras', 'Es un texto clásico y exigente; elige una edición con notas.'],
+    [129, 'Ética para Amador', 'Fernando Savater', 'F', ['SEN','REL'], 'C', 1, 180, 'pensar cómo vivir bien, explicado con sencillez', 'Está escrito para un adolescente; puede sentirse básico para lectores de filosofía.', { ed: 1 }],
+    [130, 'El mundo de Sofía', 'Jostein Gaarder', 'F', ['SEN'], 'C', 1, 640, 'recorrer la historia de la filosofía en forma de novela', 'Es muy largo.'],
+    [131, 'Las consolaciones de la filosofía', 'Alain de Botton', 'F', ['SEN','MIE','RUP'], 'C', 1, 280, 'usar a seis filósofos para pensar problemas cotidianos', 'Simplifica a los autores; es una puerta de entrada, no un estudio.', { ed: 1 }],
+    [132, 'Apología de Sócrates', 'Platón', 'F', ['SEN','MIE'], 'C', 2, 80, 'pensar en vivir según tus convicciones aunque cueste', 'Elige una edición con introducción.'],
+    [133, 'Ética a Nicómaco', 'Aristóteles', 'F', ['SEN','HAB'], 'P', 3, 350, 'entender la buena vida como hábito y virtud', 'Es exigente; conviene leerlo con notas.'],
+    [134, 'Ensayos', 'Michel de Montaigne', 'F', ['SEN','MIE','RUP'], 'P', 3, 400, 'pensarte a ti mismo con honestidad y humor', 'Es extenso; se lee por ensayos sueltos, en una selección.'],
+    [135, 'La consolación de la filosofía', 'Boecio', 'F', ['RUP','CRI','SEN'], 'P', 2, 200, 'buscar consuelo con la razón cuando todo se pierde', 'Escrito en prisión, tiene un tono grave.'],
+    [136, 'Así habló Zaratustra', 'Friedrich Nietzsche', 'F', ['SEN','CRI'], 'P', 3, 400, 'cuestionar los valores heredados y crear los propios', 'Es poético, ambiguo y exigente.'],
+    [137, 'El arte de la prudencia', 'Baltasar Gracián', 'F', ['LID','REL','MIE'], 'C', 2, 150, 'pensar cómo moverte entre la gente con sensatez, en aforismos', 'Es del siglo XVII y algunos consejos son calculadores.'],
+    [138, 'Más Platón y menos Prozac', 'Lou Marinoff', 'F', ['SEN','MIE','REL'], 'C', 1, 300, 'aplicar ideas de filósofos a problemas de la vida diaria', 'Es filosofía en formato de autoayuda; simplifica.', { aa: true }],
+    [139, 'El existencialismo es un humanismo', 'Jean-Paul Sartre', 'F', ['SEN','CRI'], 'C', 2, 100, 'asumir que tu vida es lo que haces con ella', 'Breve pero denso.'],
+    [140, 'Cartas a Lucilio', 'Séneca', 'F', ['SEN','ANS','RUP'], 'P', 2, 400, 'leer consejos estoicos sobre el miedo, el tiempo y la pérdida', 'Es largo; se lee por cartas, en una selección.']
+  ].forEach(function (r) {
+    var o = r[10] || {};
+    _BOOKS.push({ n: r[0], t: r[1], a: r[2], tipo: r[3], ar: r[4], f: r[5], nv: r[6], pp: r[7], ay: r[8], cu: r[9], hi: !!o.hi, ed: o.ed || 3, aa: !!o.aa });
+  });
+
+  // Libros existentes que también tocan la comunicación
+  [36, 37, 38, 60, 97, 114].forEach(function (n) { _BOOKS.forEach(function (b) { if (b.n === n && b.ar.indexOf('COM') < 0) b.ar.push('COM'); }); });
+  // Libros de filosofía que estaban como divulgación
+  [11, 46, 65, 68, 119].forEach(function (n) { _BOOKS.forEach(function (b) { if (b.n === n) b.tipo = 'F'; }); });
+  // Candado: libros del género autoayuda (se excluyen si la persona prefiere evitarlos)
+  [1, 2, 4, 5, 6, 7, 10, 12, 13, 15, 17, 18, 19, 20, 21, 23, 24, 25, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44,
+    62, 66, 67, 72, 73, 74, 76, 77, 80, 82, 83, 87, 88, 89, 90, 91, 95, 96, 97, 100, 103, 104, 105, 106, 110, 111, 112, 115, 117, 122, 124
+  ].forEach(function (n) { _BOOKS.forEach(function (b) { if (b.n === n) b.aa = true; }); });
+
+  _AREA.COM = { nombre: 'Expresarte y comunicar', en: 'tu forma de expresarte' };
+  if (_MODULOS.indexOf('COM') < 0) _MODULOS.push('COM');
+  _PLANTILLA.COM = [
+    'Te expresas con soltura: dices lo que piensas y la gente te sigue.',
+    'Te expresas bien en confianza, pero frente a un grupo o en temas difíciles te cuesta más.',
+    'Parece que expresarte se ha vuelto difícil: hablar frente a otros, contar tus ideas o decir lo que piensas. Es una habilidad, y se entrena.'
+  ];
+
+  if (G) return;
+
+  // ---- Correcciones de preguntas ----
+  Q_A.A5 = { q: '¿Qué tipo de libros te gustaría leer?', hint: 'Elige hasta dos. Si no lo sabes, elige «Sorpréndeme».', multi: 2, exclusive: 'igual',
+    opts: [['Historias: novelas y cuentos', 'N'], ['Poesía, cartas y memorias', 'L'], ['Filosofía: grandes preguntas sobre la vida', 'F'], ['Psicología y ciencia, explicadas para entender', 'D'], ['Guías prácticas, con ejercicios', 'P'], ['No sé todavía: sorpréndeme', 'igual']] };
+  Q_A.A6 = { q: '¿Qué piensas de los libros de autoayuda?', opts: [['Me gustan y me sirven', 'si'], ['Algunos sí, otros no', 'algunos'], ['Prefiero evitarlos: quiero literatura, filosofía o ensayo', 'no']] };
+
+  Q_AREAS.PRO[0].opts[3] = ['Estoy en un cambio o sin trabajo, y no tengo claro el siguiente paso', 3];
+  Q_AREAS.PRO[2] = { f: 'termo', q: 'En tu trabajo o actividad diaria, ¿qué tanto usas lo que sabes hacer bien?', izq: 'Casi nada', der: 'Todo el tiempo', carga: 'izq' };
+  Q_AREAS.BLO[0] = { f: 'escena', q: 'Cuando trabajas en algo propio (un proyecto, un negocio, algo creativo o algo que estás aprendiendo), ¿qué pasa con más frecuencia?',
+    opts: [['Avanzo a buen ritmo y lo termino', 0], ['Avanzo, pero me tardo más de lo que planeé', 1], ['Tengo muchos frentes abiertos y me cuesta terminar alguno', 2], ['Casi no logro empezar', 3]] };
+  Q_AREAS.FIN = [
+    { f: 'lista', q: '¿Cuáles de estas puedes decir hoy?', opts: ['Sé más o menos cuánto gasto al mes', 'Estoy recortando gastos para ahorrar', 'Tengo un ahorro para emergencias', 'Pago mis tarjetas o deudas a tiempo', 'Ahorro o invierto algo cada mes'] },
+    { f: 'escena', q: 'Te llega un gasto inesperado del tamaño de un mes de tu ingreso. ¿Qué pasa?', opts: [['Lo cubro con mis ahorros', 0], ['Lo cubro, pero me deja sin colchón', 1], ['Tengo que pedir prestado o usar la tarjeta', 2], ['No sabría cómo cubrirlo', 3]] },
+    { f: 'escena', q: '¿Cómo llegas a fin de mes, normalmente?', opts: [['Me sobra y lo ahorro', 0], ['Llego justo, pero llego', 1], ['A veces no llego y uso tarjeta o pido prestado', 2], ['Casi nunca llego', 3]] }
+  ];
+  Q_AREAS.COM = [
+    { f: 'escena', q: 'Tienes que presentar una idea frente a un grupo (trabajo, escuela, familia). ¿Qué pasa?', opts: [['Lo hago con gusto y me entienden', 0], ['Lo hago, aunque con nervios', 1], ['Lo evito o le pido a alguien más que lo haga', 2], ['Me bloqueo o no digo lo que quería', 3]] },
+    { f: 'balanza', q: '¿Cuál se parece más a ti?', a: 'Cuando cuento algo, la gente me sigue con interés.', b: 'Cuando cuento algo, siento que me enredo o pierdo a la gente.' },
+    { f: 'lista', q: '¿Cuáles de estas te salen con naturalidad?', opts: ['Explicar una idea en pocas palabras', 'Contar una anécdota que enganche', 'Decir que no sin dar mil explicaciones', 'Hablar frente a un grupo'] }
+  ];
+
+  Q_C0.opts.splice(Q_C0.opts.length - 1, 0, ['Expresarme: hablar en público, contar mis ideas o decir lo que pienso', 'COM']);
+  Q_F2.opts.splice(Q_F2.opts.length, 0, ['Expresarme con más seguridad', 'COM']);
+  Q_F2.multi = 3;
+  Q_F2.hint = 'Elige hasta tres.';
+
+  // Frases de capítulo neutras
+  CAPITULOS.ANS.f = 'Hablemos de cómo vives la preocupación.';
+  CAPITULOS.RUP.f = 'Ve a tu ritmo. Puedes saltar cualquier pregunta.';
+  CAPITULOS.HER.f = 'Aquí no te preguntamos qué pasó, solo cómo se nota hoy.';
+  CAPITULOS.CRI.f = 'Piensa en lo que antes te movía y en lo que te mueve hoy.';
+  CAPITULOS.LID.f = 'Piensa en tu equipo, tu familia o tu comunidad.';
+  CAPITULOS.BLO.f = 'Cuenta todo lo que creas o construyes: un proyecto, un negocio, algo que aprendes.';
+  CAPITULOS.FIN.f = 'Preguntas concretas, sin juicios.';
+  CAPITULOS.COM = { t: 'Tu voz', f: 'Hablar, escribir o contar una historia: todo cuenta.' };
+})();
+
+function pts(code, arr, o) { arr.forEach(function (v, i) { o[code + (i + 1)] = v; }); }
+function perfilA() {
+  var o = { A1: 0, A2: 'abandona', A3: 'dificil', A4: 0, A5: ['igual'], B1: 2, B2: 3, B3: 0, C0: ['RUP', 'ANS'], F1: ['nada'], F2: ['RUP'] };
+  pts('SEN', [2, 1, 1], o); pts('REL', [2, 2, 2], o); pts('HAB', [2, 2, 1], o); pts('MIE', [2, 2, 1], o); pts('PRO', [1, 1, 0], o);
+  pts('ANS', [3, 3, 2], o); pts('RUP', [3, 3, 2], o); return o;
+}
+function perfilB() {
+  var o = { A1: 4, A2: 'gusto', A3: 'cambio', A4: 2, A5: ['igual'], B1: 1, B2: 1, B3: 0, C0: ['CRI'], F1: ['libros'], F2: [] };
+  pts('SEN', [3, 2, 2], o); pts('REL', [1, 1, 1], o); pts('HAB', [1, 1, 0], o); pts('MIE', [2, 1, 1], o); pts('PRO', [2, 2, 2], o);
+  pts('CRI', [3, 2, 2], o); return o;
+}
+function perfilC() {
+  var o = { A1: 2, A2: 'sin_tiempo', A3: 'conocerme', A4: 1, A5: ['igual'], B1: 0, B2: 1, B3: 0, C0: ['LID', 'BLO'], F1: ['habitos'], F2: ['BLO', 'LID'] };
+  pts('SEN', [1, 1, 1], o); pts('REL', [1, 1, 0], o); pts('HAB', [2, 2, 1], o); pts('MIE', [2, 2, 2], o); pts('PRO', [2, 1, 1], o);
+  pts('LID', [2, 2, 2], o); pts('BLO', [3, 2, 2], o); return o;
+}
+var PRESETS = { a: perfilA, b: perfilB, c: perfilC };
+if (typeof module !== 'undefined') module.exports = PRESETS;
+
+// ===== Motor de reglas (sección 6 del documento) =====
+if (typeof require !== 'undefined' && typeof BOOKS === 'undefined') {
+  var D = require('./data.js');
+  var BOOKS = D.BOOKS, AREA = D.AREA, BASE = D.BASE, MODULOS = D.MODULOS, Q_AREAS = D.Q_AREAS, A2_AJUSTE = D.A2_AJUSTE;
+}
+
+var FASE_ORDEN = { E: 0, C: 1, K: 2, P: 3 };
+
+function topicOf(code) { return (code === 'SEN' || code === 'CRI') ? 'SENT' : code; }
+
+function lector(ans) {
+  var score = Math.max(0, (ans.A1 || 0) + (A2_AJUSTE[ans.A2] || 0));
+  var perfil = score <= 1 ? 'nuevo' : (score <= 3 ? 'intermitente' : 'habitual');
+  var pace = [25, 75, 150, 250][ans.A4 || 0];
+  return {
+    score: score,
+    perfil: perfil,
+    maxNivel: { nuevo: 1, intermitente: 2, habitual: 3 }[perfil],
+    cap: { nuevo: 250, intermitente: 350, habitual: Infinity }[perfil],
+    pace: pace,
+    budget: pace * 12,
+    audio: ans.A2 === 'audio'
+  };
+}
+
+function num(v) { return typeof v === 'number' ? v : 0; }
+
+// R0: seguridad
+function seguridad(ans) {
+  var b1 = ans.B1, b2 = ans.B2;
+  if (b1 === 3 && b2 === 3) return { nivel: 'cuidado', especial: true, acomp: true };
+  if (num(b1) + num(b2) >= 4) return { nivel: 'ambar', especial: false, banner: true };
+  return { nivel: 'verde', especial: false, banner: false };
+}
+
+function areaScore(ans, code) {
+  var vals = [1, 2, 3].map(function (i) { return ans[code + i]; });
+  if (vals.every(function (v) { return v === undefined; })) return null;
+  var ok = vals.filter(function (v) { return typeof v === 'number'; });
+  if (ok.length === 3) return ok[0] + ok[1] + ok[2];
+  if (ok.length === 2) return Math.round((ok[0] + ok[1]) * 3 / 2);
+  return null;
+}
+
+function levelOf(s) { return s === null || s === undefined ? null : (s <= 2 ? 0 : (s <= 5 ? 1 : 2)); }
+
+function recomendar(ans) {
+  var L = lector(ans);
+  var S = seguridad(ans);
+  var marked = (ans.C0 || []).filter(function (c) { return c !== 'none'; });
+  var f2 = ans.F2 || [];
+  var tipos = (ans.A5 || []).filter(function (t) { return t !== 'igual'; });
+  var dificil = ans.A3 === 'dificil';
+
+  var scores = {};
+  Object.keys(AREA).forEach(function (c) { scores[c] = areaScore(ans, c); });
+
+  // R3: índices por tema (Sentido y Crisis de propósito cuentan como uno)
+  var topics = {};
+  Object.keys(AREA).forEach(function (c) {
+    if (scores[c] === null) return;
+    var t = topicOf(c);
+    if (t === 'SENT') {
+      var base = Math.max(scores.SEN === null ? -1 : scores.SEN, scores.CRI === null ? -1 : scores.CRI);
+      topics.SENT = { id: 'SENT', idx: base + (marked.indexOf('CRI') >= 0 ? 2 : 0), area: (scores.CRI !== null && scores.CRI > (scores.SEN || 0)) ? 'CRI' : 'SEN' };
+    } else {
+      topics[t] = { id: t, idx: scores[c] + (marked.indexOf(c) >= 0 ? 2 : 0), area: c };
+    }
+  });
+  var orden = ['SENT', 'REL', 'HAB', 'MIE', 'PRO', 'ANS', 'RUP', 'HER', 'LID', 'BLO', 'FIN', 'COM'];
+  var f2topics = f2.map(topicOf);
+  // F2 solo desempata: medio punto nunca supera una diferencia real de un punto
+  Object.keys(topics).forEach(function (k) { if (f2topics.indexOf(k) >= 0) { topics[k].idx += 0.5; topics[k].f2 = true; } });
+  var lista = Object.keys(topics).map(function (k) { return topics[k]; });
+  lista.sort(function (x, y) {
+    if (y.idx !== x.idx) return y.idx - x.idx;
+    var fx = f2topics.indexOf(x.id) >= 0 ? 1 : 0, fy = f2topics.indexOf(y.id) >= 0 ? 1 : 0;
+    if (fy !== fx) return fy - fx;
+    var sx = num(ans[x.area + '1']), sy = num(ans[y.area + '1']);
+    if (sy !== sx) return sy - sx;
+    return orden.indexOf(x.id) - orden.indexOf(y.id);
+  });
+  var idxOf = {}; lista.forEach(function (t) { idxOf[t.id] = t.idx; });
+
+  // R2: modo estabilizar
+  var estab = num(ans.B1) + num(ans.B2) >= 4 ||
+    (scores.ANS !== null && scores.ANS >= 6) || (scores.RUP !== null && scores.RUP >= 6);
+
+  // R8: todo en nivel bajo
+  var conDato = Object.keys(scores).filter(function (c) { return scores[c] !== null; });
+  var todoBajo = conDato.length > 0 && conDato.every(function (c) { return scores[c] < 3; }) && !S.banner;
+
+  // R4: cuántos libros
+  var N = L.budget <= 300 ? 3 : (L.budget <= 900 ? 4 : (L.budget <= 1800 ? 5 : 7));
+  if (estab || dificil) N = Math.min(N, 4);
+
+  var top = lista.slice(0, 3).map(function (t) { return t.id; });
+  var modo = 'normal';
+  if (todoBajo) {
+    modo = 'sostenido';
+    top = f2topics.length ? f2topics.filter(function (t, i, a) { return a.indexOf(t) === i; }) : ['SENT'];
+    N = 3;
+  }
+
+  // R5: filtros de elegibilidad
+  var leidos = ans.leidos || [];
+  function elegible(b) {
+    if (leidos.indexOf(b.n) >= 0) return false;
+    if (ans.A6 === 'no' && b.aa) return false;
+    if (b.nv > L.maxNivel) return false;
+    if (b.pp > L.cap) return false;
+    if (b.f === 'E' && !estab) return false;
+    if (b.f === 'P' && !(L.perfil === 'habitual' && !estab && !dificil)) return false;
+    if (estab && b.hi) return false;
+    return true;
+  }
+  function cubre(b, t) { return b.ar.some(function (c) { return topicOf(c) === t; }); }
+  function claves(b, T) {
+    var otros = top.filter(function (t) { return t !== T; });
+    return [
+      estab ? (b.f === 'E' ? 1 : 0) : 0,
+      b.ar.some(function (c) { return marked.indexOf(c) >= 0; }) ? 1 : 0,
+      L.perfil === 'nuevo' ? (b.nv === 1 ? 1 : 0) : (L.perfil === 'habitual' ? (b.nv >= 2 ? 1 : 0) : 0),
+      tipos.length ? (tipos.indexOf(b.tipo) >= 0 ? 1 : 0) : 0,
+      otros.filter(function (t) { return cubre(b, t); }).length,
+      topicOf(b.ar[0]) === T ? 1 : 0,
+      -b.ed,
+      -b.pp,
+      -b.n
+    ];
+  }
+  function mejor(a, b, T) {
+    var ka = claves(a, T), kb = claves(b, T);
+    for (var i = 0; i < ka.length; i++) { if (ka[i] !== kb[i]) return ka[i] > kb[i] ? a : b; }
+    return a;
+  }
+
+  var elegidos = [];
+  var avanzados = 0;
+  var restoTemas = lista.map(function (t) { return t.id; });
+  for (var s = 0; s < N && top.length; s++) {
+    var T = top[s % top.length];
+    var intentos = [T].concat(top.filter(function (t) { return t !== T; }), restoTemas.filter(function (t) { return top.indexOf(t) < 0; }));
+    var elegido = null, temaCupo = null;
+    for (var i = 0; i < intentos.length && !elegido; i++) {
+      var t = intentos[i];
+      var cands = BOOKS.filter(function (b) {
+        return elegible(b) && elegidos.every(function (e) { return e.b.n !== b.n; }) && cubre(b, t) && (b.nv < 3 || avanzados < 1);
+      });
+      if (cands.length) {
+        elegido = cands.reduce(function (acc, b) { return mejor(acc, b, t); });
+        temaCupo = t;
+      }
+    }
+    if (!elegido) break;
+    if (elegido.nv === 3) avanzados++;
+    elegidos.push({ b: elegido, cupo: temaCupo });
+  }
+
+  // Regla de mezcla: si eligió novela o poesía, al menos un libro de ese tipo
+  var literarios = tipos.filter(function (t) { return t === 'N' || t === 'L' || t === 'F'; });
+  if (literarios.length && elegidos.length && !elegidos.some(function (e) { return literarios.indexOf(e.b.tipo) >= 0; })) {
+    var cand = BOOKS.filter(function (b) {
+      return elegible(b) && literarios.indexOf(b.tipo) >= 0 && top.some(function (t) { return cubre(b, t); }) &&
+        elegidos.every(function (e) { return e.b.n !== b.n; });
+    });
+    if (cand.length) {
+      var reemplazo = cand.reduce(function (acc, b) { return mejor(acc, b, top[0]); });
+      elegidos[elegidos.length - 1] = { b: reemplazo, cupo: top.filter(function (t) { return cubre(reemplazo, t); })[0], mezcla: true };
+    }
+  }
+
+  // R6: ordenar
+  function temaLibro(b) {
+    var m = -1;
+    b.ar.forEach(function (c) { var t = topicOf(c); if (idxOf[t] !== undefined && idxOf[t] > m) m = idxOf[t]; });
+    return m;
+  }
+  elegidos.sort(function (x, y) {
+    if (FASE_ORDEN[x.b.f] !== FASE_ORDEN[y.b.f]) return FASE_ORDEN[x.b.f] - FASE_ORDEN[y.b.f];
+    var tx = temaLibro(x.b), ty = temaLibro(y.b);
+    if (ty !== tx) return ty - tx;
+    if (x.b.ed !== y.b.ed) return x.b.ed - y.b.ed;
+    if (x.b.pp !== y.b.pp) return x.b.pp - y.b.pp;
+    return x.b.n - y.b.n;
+  });
+
+  // R7: ahora o después
+  var acum = 0;
+  elegidos.forEach(function (e, i) {
+    acum += e.b.pp;
+    e.ahora = i === 0 || acum <= L.budget;
+    e.acumulado = acum;
+  });
+
+  return {
+    lector: L, seguridad: S, scores: scores, temas: lista, top: top, estab: estab, dificil: dificil,
+    N: N, modo: modo, marked: marked, libros: elegidos, idxOf: idxOf
+  };
+}
+
+if (typeof module !== 'undefined') {
+  module.exports = { recomendar: recomendar, lector: lector, seguridad: seguridad, areaScore: areaScore, levelOf: levelOf, topicOf: topicOf };
+}
+
+// ===== Escena animada: un libro que se abre y llena un estante =====
+function crearEscena(op) {
+  op = op || {};
+  var COLORES = ['#2c479f', '#b0185a', '#557560', '#c58b2b', '#6b4e8c', '#2f7a7a', '#8a3b2e', '#3d5a9c', '#9a6b3f', '#d0648f'];
+  var LETRAS = 'abcdefghijlmnñopqrstuvyzáé¿?«»';
+  function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt) e.textContent = txt; return e; }
+  function clamp(v) { return v < 0 ? 0 : (v > 1 ? 1 : v); }
+  function fase(p, a, b) { return clamp((p - a) / (b - a)); }
+  function suave(t) { return t * t * (3 - 2 * t); }
+
+  var etapa = el('div', 'escenario' + (op.compacta ? ' compacta' : ''));
+  etapa.setAttribute('aria-hidden', op.final ? 'false' : 'true');
+  etapa.appendChild(el('div', 'cielo'));
+  etapa.appendChild(el('div', 'calido'));
+  var letras = [];
+  for (var i = 0; i < 26; i++) {
+    var l = el('span', 'letra', LETRAS.charAt(i % LETRAS.length));
+    l.style.left = ((i * 37) % 96 + 2) + '%';
+    l.style.top = ((i * 53) % 70 + 4) + '%';
+    l.style.fontSize = (12 + (i * 7) % 14) + 'px';
+    l.setAttribute('data-v', String(30 + (i * 13) % 90));
+    etapa.appendChild(l); letras.push(l);
+  }
+  etapa.appendChild(el('div', 'resplandor'));
+  var envoltura = el('div', 'libro-wrap');
+  var libro = el('div', 'libro');
+  libro.appendChild(el('div', 'contratapa'));
+  [-150, -118, -86, -54].forEach(function (g) { var h = el('div', 'hoja'); h.style.setProperty('--giro', g + 'deg'); libro.appendChild(h); });
+  var tapa = el('div', 'tapa');
+  tapa.appendChild(el('span', 'tapa-linea'));
+  tapa.appendChild(el('span', 'tapa-signo', '¿?'));
+  tapa.appendChild(el('span', 'tapa-linea'));
+  libro.appendChild(tapa);
+  envoltura.appendChild(libro);
+  etapa.appendChild(envoltura);
+  etapa.appendChild(el('div', 'repisa'));
+
+  var vuelan = [], N = 11;
+  for (var k = 0; k < N; k++) {
+    var v = el('span', 'vuela');
+    v.style.background = COLORES[k % COLORES.length];
+    v.style.width = (14 + (k * 5) % 9) + 'px';
+    v.style.height = (46 + (k * 17) % 34) + 'px';
+    etapa.appendChild(v); vuelan.push({ el: v, rot: ((k * 47) % 60) - 30 });
+  }
+
+  var rotulos = (op.rotulos || []).map(function (t) { var r = el('p', 'rotulo', t); etapa.appendChild(r); return r; });
+  var final = null;
+  if (op.final) { final = op.final; final.classList.add('final'); etapa.appendChild(final); }
+  var pista = null;
+  if (op.pista) {
+    pista = el('div', 'desliza');
+    pista.appendChild(el('span', null, op.pista));
+    var flecha = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    flecha.setAttribute('viewBox', '0 0 24 24'); flecha.setAttribute('width', '22'); flecha.setAttribute('height', '22');
+    var p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    p.setAttribute('d', 'M6 9l6 6 6-6'); p.setAttribute('fill', 'none'); p.setAttribute('stroke', 'currentColor'); p.setAttribute('stroke-width', '2'); p.setAttribute('stroke-linecap', 'round');
+    flecha.appendChild(p); pista.appendChild(flecha);
+    etapa.appendChild(pista);
+  }
+
+  function poner(prog) {
+    var a = suave(fase(prog, 0.10, 0.40)), b = fase(prog, 0.40, 0.80), c = suave(fase(prog, 0.80, 0.95));
+    etapa.style.setProperty('--a', a.toFixed(3));
+    etapa.style.setProperty('--b', b.toFixed(3));
+    etapa.style.setProperty('--c', c.toFixed(3));
+    etapa.style.setProperty('--p', prog.toFixed(3));
+    var W = etapa.clientWidth || 340, H = etapa.clientHeight || 520;
+    var ancho = W * 0.8, paso = ancho / N, destinoY = H * 0.60 - H * 0.30;
+    vuelan.forEach(function (o, j) {
+      var t = clamp(b * 1.7 - j * 0.065), e = suave(t);
+      var x = (-ancho / 2 + paso * (j + 0.5)) * e;
+      var y = destinoY * e - Math.sin(Math.PI * e) * H * 0.12;
+      o.el.style.transform = 'translate(-50%, -100%) translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) rotate(' + (o.rot * (1 - e)).toFixed(1) + 'deg) scale(' + (0.25 + 0.75 * e).toFixed(3) + ')';
+      o.el.style.opacity = t > 0 ? Math.min(1, t * 5).toFixed(2) : '0';
+    });
+    letras.forEach(function (l) { l.style.transform = 'translateY(' + (-prog * (+l.getAttribute('data-v'))).toFixed(1) + 'px)'; });
+    if (rotulos[0]) rotulos[0].style.opacity = (1 - fase(prog, 0.14, 0.24)).toFixed(2);
+    if (rotulos[1]) rotulos[1].style.opacity = Math.min(fase(prog, 0.20, 0.28), 1 - fase(prog, 0.38, 0.46)).toFixed(2);
+    if (rotulos[2]) rotulos[2].style.opacity = Math.min(fase(prog, 0.46, 0.54), 1 - fase(prog, 0.72, 0.80)).toFixed(2);
+    if (pista) pista.style.opacity = (1 - fase(prog, 0, 0.08)).toFixed(2);
+    if (final) { final.style.pointerEvents = c > 0.6 ? 'auto' : 'none'; final.setAttribute('aria-hidden', c > 0.6 ? 'false' : 'true'); }
+  }
+  return { el: etapa, poner: poner };
+}
+
+// ===== Escena 3D (Three.js + GSAP ScrollTrigger): libro moderno que lanza sus páginas =====
+function webglDisponible() {
+  try {
+    if (typeof THREE === 'undefined') return false;
+    if (window.__fabricaRenderer) return true;
+    var c = document.createElement('canvas');
+    return !!(window.WebGLRenderingContext && (c.getContext('webgl') || c.getContext('experimental-webgl')));
+  } catch (e) { return false; }
+}
+
+function crearEscena3D(op) {
+  op = op || {};
+  if (!webglDisponible()) return null;
+  var T = THREE;
+  function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt) e.textContent = txt; return e; }
+  function clamp(v) { return v < 0 ? 0 : (v > 1 ? 1 : v); }
+  function fase(p, a, b) { return clamp((p - a) / (b - a)); }
+  function suave(t) { return t * t * (3 - 2 * t); }
+  function salida(t) { return 1 - Math.pow(1 - t, 3); }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  var etapa = el('div', 'escenario escenario-3d escenario-rosa escenario-moderno' + (op.compacta ? ' compacta' : ''));
+  etapa.appendChild(el('div', 'cielo'));
+  var lienzo = el('div', 'lienzo-3d');
+  etapa.appendChild(lienzo);
+  var rotulos = (op.rotulos || []).map(function (t) { var r = el('p', 'rotulo', t); etapa.appendChild(r); return r; });
+  var final = op.final || null;
+  if (final) { final.classList.add('final'); etapa.appendChild(final); }
+  var pista = null;
+  if (op.pista) {
+    pista = el('div', 'desliza');
+    var circulo = el('span', 'flecha');
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24'); svg.setAttribute('width', '26'); svg.setAttribute('height', '26'); svg.setAttribute('aria-hidden', 'true');
+    var ruta = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    ruta.setAttribute('d', 'M12 4v15M5.5 12.5L12 19l6.5-6.5'); ruta.setAttribute('fill', 'none'); ruta.setAttribute('stroke', 'currentColor'); ruta.setAttribute('stroke-width', '2.4'); ruta.setAttribute('stroke-linecap', 'round'); ruta.setAttribute('stroke-linejoin', 'round');
+    svg.appendChild(ruta); circulo.appendChild(svg);
+    pista.appendChild(circulo); pista.appendChild(el('span', 'pista-texto', op.pista));
+    etapa.appendChild(pista);
+  }
+
+  var renderer;
+  try { renderer = window.__fabricaRenderer ? window.__fabricaRenderer() : new T.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' }); }
+  catch (e) { return null; }
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  if (renderer.setClearColor) renderer.setClearColor(0x000000, 0);
+  if (T.sRGBEncoding !== undefined) renderer.outputEncoding = T.sRGBEncoding;
+  lienzo.appendChild(renderer.domElement);
+
+  var escena = new T.Scene();
+  var FOV = 38;
+  var camara = new T.PerspectiveCamera(FOV, 0.5, 0.1, 100);
+  var desechables = [];
+  function guarda(x) { desechables.push(x); return x; }
+
+  // ---------- Texturas ----------
+  function textura(w, h, dibuja) {
+    var c = document.createElement('canvas'); c.width = w; c.height = h;
+    var g = c.getContext('2d'); if (g) dibuja(g, w, h);
+    var t = guarda(new T.CanvasTexture(c));
+    if (T.sRGBEncoding !== undefined) t.encoding = T.sRGBEncoding;
+    t.anisotropy = 4;
+    return t;
+  }
+  function redondo(g, x, y, w, h, r) { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
+  var texTapa = textura(512, 712, function (g, w, h) {
+    var f = g.createLinearGradient(0, 0, w, h);
+    f.addColorStop(0, '#f9c7d4'); f.addColorStop(0.5, '#d9b8f3'); f.addColorStop(1, '#fbd2bd');
+    g.fillStyle = f; g.fillRect(0, 0, w, h);
+    var r = g.createRadialGradient(w * 0.72, h * 0.28, 0, w * 0.72, h * 0.28, w * 0.42);
+    r.addColorStop(0, 'rgba(255,255,255,0.75)'); r.addColorStop(1, 'rgba(255,255,255,0)');
+    g.fillStyle = r; g.fillRect(0, 0, w, h);
+    g.strokeStyle = 'rgba(255,255,255,0.7)'; g.lineWidth = 2.5; redondo(g, 34, 34, w - 68, h - 68, 22); g.stroke();
+    g.textAlign = 'left';
+    g.fillStyle = 'rgba(90,42,82,0.6)'; g.font = '700 22px Arial, Helvetica, sans-serif'; g.fillText('Q U É   L E E R   A H O R A', 66, h - 214);
+    g.fillStyle = 'rgba(90,42,82,0.5)'; g.fillRect(66, h - 196, 64, 3);
+    g.fillStyle = '#5a2a52'; g.font = 'italic 600 92px Georgia, "Times New Roman", serif'; g.fillText('para ti', 60, h - 104);
+  });
+  var texInterior = textura(256, 356, function (g, w, h) { var f = g.createLinearGradient(0, 0, w, h); f.addColorStop(0, '#f3e1f7'); f.addColorStop(1, '#fde3ea'); g.fillStyle = f; g.fillRect(0, 0, w, h); });
+  var texPagina = textura(512, 712, function (g, w, h) {
+    g.fillStyle = '#fffaf4'; g.fillRect(0, 0, w, h);
+    g.fillStyle = 'rgba(90,42,82,0.13)';
+    for (var y = 120; y < h - 70; y += 26) g.fillRect(54, y, w - 108 - ((y * 13) % 90), 6);
+    g.fillStyle = 'rgba(184,69,122,0.5)'; g.fillRect(54, 70, 120, 8);
+  });
+  var texCantoV = textura(128, 32, function (g, w, h) { g.fillStyle = '#fbf2e8'; g.fillRect(0, 0, w, h); g.fillStyle = 'rgba(160,120,120,0.22)'; for (var x = 0; x < w; x += 4) g.fillRect(x, 0, 1, h); });
+  var texCantoH = textura(32, 128, function (g, w, h) { g.fillStyle = '#fbf2e8'; g.fillRect(0, 0, w, h); g.fillStyle = 'rgba(160,120,120,0.22)'; for (var y = 0; y < h; y += 4) g.fillRect(0, y, w, 1); });
+  var texSombra = textura(128, 128, function (g, w) { var r = g.createRadialGradient(w / 2, w / 2, 0, w / 2, w / 2, w / 2); r.addColorStop(0, 'rgba(90,42,82,0.42)'); r.addColorStop(1, 'rgba(90,42,82,0)'); g.fillStyle = r; g.fillRect(0, 0, w, w); });
+  var texHalo = textura(256, 256, function (g, w) { var r = g.createRadialGradient(w / 2, w / 2, 0, w / 2, w / 2, w / 2); r.addColorStop(0, 'rgba(255,255,255,0.95)'); r.addColorStop(0.35, 'rgba(255,232,214,0.55)'); r.addColorStop(1, 'rgba(255,232,214,0)'); g.fillStyle = r; g.fillRect(0, 0, w, w); });
+  var texPunto = textura(64, 64, function (g, w) { var r = g.createRadialGradient(w / 2, w / 2, 0, w / 2, w / 2, w / 2); r.addColorStop(0, 'rgba(255,255,255,1)'); r.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = r; g.fillRect(0, 0, w, w); });
+
+  // Dibujos simples hechos con código: se ven igual en cualquier celular (los emojis cambian según la marca)
+  var ICONOS = {
+    corazon: function (g, x, y, r, c) {
+      g.fillStyle = c; g.beginPath(); g.moveTo(x, y + r * 0.95);
+      g.bezierCurveTo(x - r * 1.55, y + r * 0.05, x - r * 1.0, y - r * 1.2, x, y - r * 0.45);
+      g.bezierCurveTo(x + r * 1.0, y - r * 1.2, x + r * 1.55, y + r * 0.05, x, y + r * 0.95); g.fill();
+      g.fillStyle = 'rgba(255,255,255,0.55)'; g.beginPath(); g.ellipse(x - r * 0.5, y - r * 0.38, r * 0.2, r * 0.12, -0.7, 0, Math.PI * 2); g.fill();
+    },
+    cerebro: function (g, x, y, r, c) {
+      g.fillStyle = c;
+      [[-0.48, -0.36, 0.5], [-0.74, 0.12, 0.44], [-0.36, 0.42, 0.44], [-0.12, -0.52, 0.42], [0.48, -0.36, 0.5], [0.74, 0.12, 0.44], [0.36, 0.42, 0.44], [0.12, -0.52, 0.42], [0, 0.05, 0.55]]
+        .forEach(function (k) { g.beginPath(); g.arc(x + k[0] * r, y + k[1] * r, k[2] * r, 0, Math.PI * 2); g.fill(); });
+      g.strokeStyle = 'rgba(255,255,255,0.85)'; g.lineWidth = r * 0.09; g.lineCap = 'round';
+      g.beginPath(); g.moveTo(x, y - r * 0.82); g.bezierCurveTo(x - r * 0.12, y - r * 0.3, x + r * 0.12, y + r * 0.3, x, y + r * 0.8); g.stroke();
+      [[-1, 0], [1, 0]].forEach(function (lado) {
+        var sx = lado[0];
+        g.beginPath(); g.arc(x + sx * r * 0.5, y - r * 0.18, r * 0.24, sx > 0 ? 3.4 : -0.3, sx > 0 ? 5.6 : 2.0); g.stroke();
+        g.beginPath(); g.arc(x + sx * r * 0.44, y + r * 0.42, r * 0.2, sx > 0 ? 0.6 : 1.0, sx > 0 ? 2.6 : 3.0); g.stroke();
+      });
+    },
+    luna: function (g, x, y, r, c, fondo) {
+      g.fillStyle = c; g.beginPath(); g.arc(x, y, r * 0.95, 0, Math.PI * 2); g.fill();
+      g.fillStyle = fondo; g.beginPath(); g.arc(x + r * 0.45, y - r * 0.3, r * 0.82, 0, Math.PI * 2); g.fill();
+      g.fillStyle = c; [[0.62, 0.55, 0.11], [0.95, -0.05, 0.07]].forEach(function (k) { g.beginPath(); g.arc(x + k[0] * r, y + k[1] * r, k[2] * r, 0, Math.PI * 2); g.fill(); });
+    },
+    estrella: function (g, x, y, r, c) {
+      g.fillStyle = c; g.strokeStyle = c; g.lineJoin = 'round'; g.lineWidth = r * 0.16; g.beginPath();
+      for (var k = 0; k < 10; k++) { var a = -Math.PI / 2 + k * Math.PI / 5, rr = k % 2 ? r * 0.45 : r; g.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); }
+      g.closePath(); g.fill(); g.stroke();
+    },
+    chispa: function (g, x, y, r, c) {
+      function destello(cx, cy, rr) { g.beginPath(); g.moveTo(cx, cy - rr); g.quadraticCurveTo(cx, cy, cx + rr, cy); g.quadraticCurveTo(cx, cy, cx, cy + rr); g.quadraticCurveTo(cx, cy, cx - rr, cy); g.quadraticCurveTo(cx, cy, cx, cy - rr); g.fill(); }
+      g.fillStyle = c; destello(x - r * 0.1, y + r * 0.08, r * 0.95); destello(x + r * 0.72, y - r * 0.62, r * 0.38); destello(x - r * 0.78, y - r * 0.7, r * 0.24);
+    },
+    brote: function (g, x, y, r, c) {
+      g.strokeStyle = c; g.lineWidth = r * 0.14; g.lineCap = 'round';
+      g.beginPath(); g.moveTo(x, y + r * 0.95); g.quadraticCurveTo(x + r * 0.05, y + r * 0.2, x, y - r * 0.2); g.stroke();
+      g.fillStyle = c; g.beginPath(); g.ellipse(x - r * 0.45, y - r * 0.35, r * 0.5, r * 0.24, -0.55, 0, Math.PI * 2); g.fill();
+      g.fillStyle = '#9cc3a4'; g.beginPath(); g.ellipse(x + r * 0.45, y - r * 0.55, r * 0.55, r * 0.26, 0.6, 0, Math.PI * 2); g.fill();
+      g.fillStyle = 'rgba(111,158,124,0.35)'; g.beginPath(); g.ellipse(x, y + r * 0.98, r * 0.6, r * 0.12, 0, 0, Math.PI * 2); g.fill();
+    }
+  };
+  var NECESIDADES = [['Calma', 'luna', '#e9ecfb', '#7e8fd9'], ['Valor', 'estrella', '#fff0e3', '#e3a33a'], ['Amor', 'corazon', '#fde2ea', '#e0568f'],
+    ['Claridad', 'cerebro', '#f1e8fc', '#a07de6'], ['Ideas', 'chispa', '#fff6dc', '#e2ac2f'], ['Crecer', 'brote', '#e7f2ea', '#6f9e7c']];
+  var texCartas = NECESIDADES.map(function (nd) {
+    return textura(320, 420, function (g, w, h) {
+      redondo(g, 6, 6, w - 12, h - 12, 30); g.fillStyle = '#fffaf6'; g.fill();
+      redondo(g, 20, 20, w - 40, h - 40, 22); g.fillStyle = nd[2]; g.fill();
+      ICONOS[nd[1]](g, w / 2, 160, 66, nd[3], nd[2]);
+      g.fillStyle = '#4a2246'; g.font = '600 ' + (nd[0].length > 7 ? 46 : 52) + 'px Georgia, "Times New Roman", serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(nd[0], w / 2, 310);
+      g.fillStyle = nd[3]; g.globalAlpha = 0.55; g.fillRect(w / 2 - 30, 350, 60, 4); g.globalAlpha = 1;
+    });
+  });
+
+  // ---------- Luces (suaves, sin quemar los colores) ----------
+  escena.add(new T.HemisphereLight(0xfff4f6, 0xd9cdf2, 0.62));
+  var sol = new T.DirectionalLight(0xffffff, 0.62); sol.position.set(-3.5, 5, 6); escena.add(sol);
+  var relleno = new T.DirectionalLight(0xffe1ea, 0.28); relleno.position.set(4, 1, 3); escena.add(relleno);
+
+  // ---------- Libro: dos mitades que giran sobre el lomo ----------
+  var W = 1.8, H = 2.5, TP = 0.11, C = 0.05, BETA = 0.42;
+  var libro = new T.Group(); escena.add(libro);
+  function forma(ancho, alto, radio) {
+    var s = new T.Shape(), x0 = 0, y0 = -alto / 2, x1 = ancho, y1 = alto / 2, r = radio;
+    s.moveTo(x0, y0); s.lineTo(x1 - r, y0); s.quadraticCurveTo(x1, y0, x1, y0 + r); s.lineTo(x1, y1 - r); s.quadraticCurveTo(x1, y1, x1 - r, y1); s.lineTo(x0, y1); s.lineTo(x0, y0);
+    return s;
+  }
+  function tapaGeo() {
+    return guarda(new T.ExtrudeGeometry(forma(W, H, 0.13), { depth: C, bevelEnabled: true, bevelThickness: 0.012, bevelSize: 0.012, bevelSegments: 3, curveSegments: 10 }));
+  }
+  function matTapa(tex) {
+    var t = tex.clone(); guarda(t); t.needsUpdate = true; t.repeat.set(1 / W, 1 / H); t.offset.set(0, 0.5);
+    return guarda(new T.MeshStandardMaterial({ map: t, roughness: 0.38, metalness: 0.05 }));
+  }
+  var mLomo = guarda(new T.MeshStandardMaterial({ color: 0xb8457a, roughness: 0.45 }));
+  var mInterior = matTapa(texInterior);
+  var mTapaFrente = matTapa(texTapa);
+  var mPag = guarda(new T.MeshStandardMaterial({ map: texPagina, roughness: 0.92 }));
+  var mCantoV = guarda(new T.MeshStandardMaterial({ map: texCantoV, roughness: 0.95 }));
+  var mCantoH = guarda(new T.MeshStandardMaterial({ map: texCantoH, roughness: 0.95 }));
+  var mCrema = guarda(new T.MeshStandardMaterial({ color: 0xfbf2e8, roughness: 0.95 }));
+
+  var der = new T.Group(); libro.add(der);
+  var contra = new T.Mesh(tapaGeo(), [mInterior, mLomo]); contra.position.z = -C - 0.012; der.add(contra);
+  var pagDer = new T.Mesh(guarda(new T.BoxGeometry(W - 0.1, H - 0.12, TP)), [mCantoV, mCrema, mCantoH, mCantoH, mPag, mCrema]);
+  pagDer.position.set((W - 0.1) / 2 + 0.03, 0, TP / 2); der.add(pagDer);
+  var lomo = new T.Mesh(guarda(new T.CylinderGeometry(TP + C + 0.02, TP + C + 0.02, H + 0.024, 24, 1, false, Math.PI, Math.PI)), mLomo);
+  lomo.position.set(0.0, 0, TP); lomo.scale.set(0.35, 1, 1); der.add(lomo);
+
+  var izq = new T.Group(); izq.position.z = TP; libro.add(izq);
+  var pagIzq = new T.Mesh(guarda(new T.BoxGeometry(W - 0.1, H - 0.12, TP)), [mCantoV, mCrema, mCantoH, mCantoH, mCrema, mPag]);
+  pagIzq.position.set((W - 0.1) / 2 + 0.03, 0, TP / 2); izq.add(pagIzq);
+  var tapa = new T.Mesh(tapaGeo(), [mTapaFrente, mLomo]); tapa.position.z = TP + 0.012; izq.add(tapa);
+
+  // Sombra en el piso y halo detrás
+  var mSombra = guarda(new T.MeshBasicMaterial({ map: texSombra, transparent: true, depthWrite: false }));
+  var sombra = new T.Mesh(guarda(new T.PlaneGeometry(1, 1)), mSombra); sombra.rotation.x = -Math.PI / 2; escena.add(sombra);
+  var mHalo = guarda(new T.SpriteMaterial({ map: texHalo, transparent: true, opacity: 0, depthWrite: false }));
+  var halo = new T.Sprite(mHalo); halo.position.set(0, 0.6, -1.2); escena.add(halo);
+
+  // ---------- Cartas (páginas que salen volando) ----------
+  var cartas = [], CW = 0.9, CH = 1.18;
+  var gCarta = guarda(new T.PlaneGeometry(CW, CH));
+  texCartas.forEach(function (tx, i) {
+    var m = guarda(new T.MeshStandardMaterial({ map: tx, transparent: true, alphaTest: 0.4, side: T.DoubleSide, roughness: 0.7 }));
+    var mesh = new T.Mesh(gCarta, m); mesh.visible = false; escena.add(mesh);
+    cartas.push({ m: mesh, i: i });
+  });
+
+  // Motas flotantes (profundidad sutil)
+  var NM = 46, motas = new Float32Array(NM * 3), datosM = [];
+  for (var k = 0; k < NM; k++) datosM.push({ x: (Math.random() * 2 - 1) * 4.5, z: -5 + Math.random() * 5.5, v: 0.05 + Math.random() * 0.12, o: Math.random() * 10 });
+  var gMotas = guarda(new T.BufferGeometry()); gMotas.setAttribute('position', new T.BufferAttribute(motas, 3));
+  var mMotas = guarda(new T.PointsMaterial({ map: texPunto, color: 0xd98aae, size: 0.11, transparent: true, opacity: 0.55, depthWrite: false }));
+  escena.add(new T.Points(gMotas, mMotas));
+
+  // ---------- Encuadre adaptable al tamaño de pantalla ----------
+  var tanF = Math.tan(FOV * Math.PI / 360), aspecto = 0.5;
+  var Y_ARCO = 1.45, R_ARCO = 1.82;
+  function encuadre(yMin, yMax, mitadAncho, fTop, fBot) {
+    var Hv = (yMax - yMin) / (fBot - fTop);
+    var d = Math.max(Hv / (2 * tanF), mitadAncho / (tanF * aspecto));
+    var Hv2 = 2 * tanF * d;
+    var yc = (yMin + yMax) / 2 + ((fTop + fBot) / 2 - 0.5) * Hv2;
+    return { d: d, y: yc };
+  }
+  var camIni, camMed, camFin;
+  function ajustar() {
+    var w = etapa.clientWidth || 390, h = etapa.clientHeight || 820;
+    renderer.setSize(w, h, false); aspecto = w / h; camara.aspect = aspecto; camara.updateProjectionMatrix();
+    camIni = op.compacta ? encuadre(-1.5, 1.35, 1.25, 0.12, 0.9) : encuadre(-1.55, 1.35, 1.25, 0.24, 0.8);
+    camMed = op.compacta ? encuadre(-1.5, 1.45, 2.0, 0.1, 0.9) : encuadre(-1.55, 1.45, 2.0, 0.3, 0.84);
+    camFin = op.compacta ? encuadre(-1.5, Y_ARCO + R_ARCO + 0.58, 2.55, 0.06, 0.94) : encuadre(-1.55, Y_ARCO + R_ARCO + 0.58, 2.55, 0.42, 0.93);
+  }
+  ajustar();
+
+  var v = new T.Vector3(), origen = new T.Vector3();
+  function aplicar(p, t) {
+    var giro = suave(fase(p, 0.04, 0.24)), abrir = suave(fase(p, 0.1, 0.34)), cam1 = suave(fase(p, 0.06, 0.3)), cam = suave(fase(p, 0.36, 0.76)), fin = suave(fase(p, 0.84, 0.97));
+    libro.rotation.set(lerp(0.08, 0.16, abrir), lerp(-0.62 + Math.sin(t * 0.5) * 0.08, 0, giro), lerp(0.05, 0, giro));
+    libro.position.set(lerp(-W / 2 + 0.25, 0, giro), Math.sin(t * 1.1) * 0.06 * (1 - abrir), 0);
+    izq.rotation.y = -abrir * (Math.PI - BETA);
+    der.rotation.y = -abrir * BETA;
+    sombra.position.set(libro.position.x * 0.5, -H / 2 - 0.22, 0.2);
+    var sw = lerp(2.3, 3.8, abrir); sombra.scale.set(sw, 1.1, 1);
+    mSombra.opacity = 0.9 - Math.sin(t * 1.1) * 0.08 * (1 - abrir);
+    mHalo.opacity = abrir * 0.95; var hs = lerp(3, 6.5, abrir) + Math.sin(t * 1.4) * 0.15 * abrir; halo.scale.set(hs, hs, 1);
+    halo.position.y = lerp(0.2, Y_ARCO, cam);
+
+    libro.updateMatrixWorld(true);
+    v.set(W * 0.55, 0.1, TP + 0.05); origen.copy(v); der.localToWorld(origen);
+    cartas.forEach(function (c) {
+      var i = c.i, n = cartas.length;
+      var a0 = 0.36 + i * 0.045, q = salida(fase(p, a0, a0 + 0.26));
+      c.m.visible = q > 0.001;
+      var ang = Math.PI * (0.86 - 0.72 * i / (n - 1));
+      var fx = Math.cos(ang) * R_ARCO, fy = Y_ARCO + Math.sin(ang) * R_ARCO + Math.sin(t * 0.9 + i) * 0.035 * q;
+      var fz = 0.35 + Math.sin(ang) * 0.3;
+      c.m.position.set(lerp(origen.x, fx, q), lerp(origen.y, fy, q) + Math.sin(Math.PI * q) * 0.9, lerp(origen.z, fz, q));
+      c.m.rotation.set(lerp(-0.5, 0, q), (1 - q) * Math.PI * 2 * (i % 2 ? 1 : -1), lerp(0, (ang - Math.PI / 2) * 0.5, q));
+      var s = lerp(0.3, 1, q); c.m.scale.set(s, s, 1);
+    });
+
+    var pm = gMotas.attributes.position.array;
+    datosM.forEach(function (o, j) { pm[j * 3] = o.x + Math.sin(t * 0.3 + o.o) * 0.2; pm[j * 3 + 1] = -2 + ((t * o.v + o.o) % 8); pm[j * 3 + 2] = o.z; });
+    gMotas.attributes.position.needsUpdate = true;
+
+    var d = lerp(lerp(camIni.d, camMed.d, cam1), camFin.d, cam), yc = lerp(lerp(camIni.y, camMed.y, cam1), camFin.y, cam);
+    camara.position.set(Math.sin(t * 0.25) * 0.08, yc + d * 0.06, d);
+    camara.lookAt(0, yc, 0);
+
+    rotulos.forEach(function (r, j) {
+      var a = [0, 0.2, 0.46][j], b = [0.14, 0.38, 0.72][j];
+      var o = j === 0 ? 1 - fase(p, 0.14, 0.24) : Math.min(fase(p, a, a + 0.08), 1 - fase(p, b, b + 0.08));
+      r.style.opacity = o.toFixed(2);
+    });
+    if (pista) pista.style.opacity = (1 - fase(p, 0.02, 0.1)).toFixed(2);
+    if (final) { final.style.opacity = fin.toFixed(2); final.style.transform = 'translateY(' + ((1 - fin) * -12).toFixed(1) + 'px)'; final.style.pointerEvents = fin > 0.6 ? 'auto' : 'none'; }
+  }
+
+  // ---------- Avance: scroll con GSAP ScrollTrigger, o tiempo ----------
+  var objetivo = 0, actual = 0, activo = true, raf = null, disparador = null, alMover = null, t0 = null;
+  function conectarScroll(contenedor) {
+    if (window.gsap && window.ScrollTrigger) {
+      gsap.registerPlugin(ScrollTrigger);
+      disparador = ScrollTrigger.create({ trigger: contenedor, start: 'top top', end: 'bottom bottom', scrub: true, onUpdate: function (s) { objetivo = s.progress; } });
+      [150, 600].forEach(function (ms) { setTimeout(function () { if (activo && disparador) { ScrollTrigger.refresh(); objetivo = disparador.progress; } }, ms); });
+    } else {
+      alMover = function () { var r = contenedor.getBoundingClientRect(), total = contenedor.offsetHeight - etapa.offsetHeight; objetivo = total > 0 ? clamp(-r.top / total) : 0; };
+      window.addEventListener('scroll', alMover, { passive: true }); alMover();
+    }
+  }
+  function cuadro(ms) {
+    if (!activo) return;
+    raf = requestAnimationFrame(cuadro);
+    if (document.hidden) return;
+    try {
+      if (t0 === null) t0 = ms;
+      var reloj = (ms - t0) / 1000;
+      if (op.modo === 'tiempo') { var pt = clamp(reloj * 1000 / (op.duracion || 7000)); objetivo = lerp(op.desde || 0.06, op.hasta || 0.86, pt); }
+      actual += (objetivo - actual) * 0.09;
+      aplicar(actual, reloj);
+      renderer.render(escena, camara);
+    } catch (e) { destruir(); if (op.alFallar) op.alFallar(e); }
+  }
+  window.addEventListener('resize', ajustar);
+  function arrancar(contenedor) { ajustar(); if (op.modo !== 'tiempo' && contenedor) conectarScroll(contenedor); aplicar(actual, 0); raf = requestAnimationFrame(cuadro); }
+  function destruir() {
+    activo = false; if (raf) cancelAnimationFrame(raf);
+    window.removeEventListener('resize', ajustar);
+    if (alMover) window.removeEventListener('scroll', alMover);
+    if (disparador) disparador.kill();
+    desechables.forEach(function (x) { if (x && x.dispose) x.dispose(); });
+    if (renderer.dispose) renderer.dispose();
+    if (renderer.forceContextLoss) { try { renderer.forceContextLoss(); } catch (e) {} }
+  }
+  var api = { el: etapa, arrancar: arrancar, destruir: destruir,
+    fijar: function (p) { objetivo = p; actual = p; },
+    probar: function (p, t) { aplicar(p, t || 1.2); renderer.render(escena, camara); } };
+  window.__escena3d = api;
+  return api;
+}
+
+// ===== Interfaz v2 =====
+(function () {
+  var main = document.getElementById('main');
+  var barra = document.getElementById('barra');
+  var st = { ans: {}, step: 'welcome', hist: [], orden: {} };
+  var SVGNS = 'http://www.w3.org/2000/svg';
+  var reducido = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function h(tag, attrs) {
+    var e = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      var v = attrs[k];
+      if (v === null || v === undefined || v === false) return;
+      if (k === 'on') Object.keys(v).forEach(function (ev) { e.addEventListener(ev, v[ev]); });
+      else e.setAttribute(k, v === true ? '' : v);
+    });
+    for (var i = 2; i < arguments.length; i++) {
+      var c = arguments[i];
+      if (c === null || c === undefined || c === false) continue;
+      (Array.isArray(c) ? c : [c]).forEach(function (x) { if (x) e.appendChild(typeof x === 'string' ? document.createTextNode(x) : x); });
+    }
+    return e;
+  }
+  function s(tag, attrs) { var e = document.createElementNS(SVGNS, tag); Object.keys(attrs || {}).forEach(function (k) { e.setAttribute(k, attrs[k]); }); return e; }
+
+  // ---------- Estante de libros (ilustración) ----------
+  var LOMOS = ['#f2a7bd', '#b9a3ec', '#f8c3a1', '#b8457a', '#9cc3a4', '#d8b066', '#8f78d6', '#e48ea8', '#6f9e7c', '#7a3a6e'];
+  function estante(semilla, animar) {
+    var w = 360, base = 96, x = 6, i = 0;
+    var svg = s('svg', { viewBox: '0 0 ' + w + ' 110', class: 'estante', 'aria-hidden': 'true' });
+    var r = semilla * 9301 + 49297;
+    function rnd() { r = (r * 9301 + 49297) % 233280; return r / 233280; }
+    while (x < w - 20) {
+      var ancho = 12 + Math.floor(rnd() * 10), alto = 52 + Math.floor(rnd() * 36);
+      var g = s('g', animar ? { class: 'cae', style: 'animation-delay:' + (i * 0.09).toFixed(2) + 's' } : {});
+      g.appendChild(s('rect', { x: x, y: base - alto, width: ancho, height: alto, rx: 2, fill: LOMOS[Math.floor(rnd() * LOMOS.length)] }));
+      g.appendChild(s('rect', { x: x + 2, y: base - alto + 8, width: ancho - 4, height: 3, fill: 'rgba(255,255,255,0.45)' }));
+      svg.appendChild(g);
+      x += ancho + 2; i++;
+      if (rnd() < 0.12) x += 10;
+    }
+    svg.appendChild(s('rect', { x: 0, y: base, width: w, height: 6, rx: 2, fill: 'var(--ink-soft)', opacity: '0.5' }));
+    return svg;
+  }
+
+  // ---------- Secuencia ----------
+  function itemsDe(code) { return [1, 2, 3].map(function (i) { return code + i; }); }
+  function marcados() { return (st.ans.C0 || []).filter(function (c) { return c !== 'none'; }); }
+  function modulos() {
+    var m = marcados().slice();
+    if (st.ans.offer_CRI === true && m.indexOf('CRI') < 0) m.push('CRI');
+    if (st.ans.offer_ANS === true && m.indexOf('ANS') < 0) m.push('ANS');
+    return m;
+  }
+  function seq() {
+    var q = ['cap:lectura', 'A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'cap:animo', 'B1', 'B2', 'C0'];
+    BASE.forEach(function (c) { q = q.concat(['cap:' + c], itemsDe(c)); });
+    var baseHecha = BASE.every(function (c) { return itemsDe(c).every(function (id) { return st.ans[id] !== undefined; }); });
+    if (baseHecha) {
+      var m = marcados(), sen = areaScore(st.ans, 'SEN');
+      if (sen !== null && sen >= 6 && m.indexOf('CRI') < 0 && m.length < 2) q.push('offer:CRI');
+      var con = m.length + (st.ans.offer_CRI === true ? 1 : 0);
+      if (typeof st.ans.B2 === 'number' && st.ans.B2 >= 2 && m.indexOf('ANS') < 0 && con < 2) q.push('offer:ANS');
+    }
+    modulos().forEach(function (c) { q = q.concat(['cap:' + c], itemsDe(c)); });
+    return q.concat(['cap:cierre', 'F1', 'F2', 'transicion', 'result']);
+  }
+  function numCapitulo(step) {
+    var q = seq(), n = 0;
+    for (var i = 0; i < q.length; i++) { if (q[i].indexOf('cap:') === 0) n++; if (q[i] === step) break; }
+    return n;
+  }
+  function capituloActual() {
+    var q = seq(), i = q.indexOf(st.step), c = null;
+    for (var j = 0; j <= i; j++) if (q[j].indexOf('cap:') === 0) c = q[j];
+    return c;
+  }
+
+  function go(step, sinHistoria) { if (!sinHistoria) st.hist.push(st.step); st.step = step; render(); }
+  function next() {
+    if (st.step === 'B2' && seguridad(st.ans).especial && !st.ans.cuidadoVisto) { go('special'); return; }
+    var q = seq(), i = q.indexOf(st.step);
+    go(q[i + 1] || 'result');
+  }
+  function back() { if (!st.hist.length) return; st.step = st.hist.pop(); render(true); }
+  function reiniciar() { st = { ans: {}, step: 'welcome', hist: [], orden: {} }; render(); }
+
+  function progreso() {
+    var q = seq(), i = q.indexOf(st.step);
+    barra.style.width = (st.step === 'result' ? 100 : (i < 0 ? 0 : Math.round((i / (q.length - 1)) * 100))) + '%';
+  }
+
+  // ---------- Piezas ----------
+  function atras() { return st.hist.length ? h('button', { class: 'link atras', type: 'button', on: { click: back } }, 'Atrás') : null; }
+  function titulo(txt, cls) { return h('h2', { class: cls || 'pregunta', tabindex: '-1' }, txt); }
+  function barajar(id, n) {
+    if (!st.orden[id]) {
+      var o = []; for (var i = 0; i < n; i++) o.push(i);
+      for (var j = o.length - 1; j > 0; j--) { var k = Math.floor(Math.random() * (j + 1)); var t = o[j]; o[j] = o[k]; o[k] = t; }
+      st.orden[id] = o;
+    }
+    return st.orden[id];
+  }
+  function pagina(contenido, donde) {
+    return h('div', { class: 'pagina' }, h('span', { class: 'cinta', 'aria-hidden': 'true' }), donde ? h('p', { class: 'donde' }, donde) : null, contenido);
+  }
+  function linkNoResponder(id, texto) {
+    return h('div', { class: 'acciones' }, h('button', { class: 'link', type: 'button', on: { click: function () { st.ans[id] = 'na'; st.ans['_raw_' + id] = 'na'; next(); } } }, texto || 'Prefiero no responder'));
+  }
+
+  // Opción única (escena, lectura, ánimo)
+  function unica(id, pregunta, etiquetas, guardar, op) {
+    op = op || {};
+    var sel = st.ans['_raw_' + id];
+    var orden = op.barajar ? barajar(id, etiquetas.length) : etiquetas.map(function (_, i) { return i; });
+    var lista = h('div', { class: 'opciones', role: 'group', 'aria-label': pregunta });
+    orden.forEach(function (i) {
+      lista.appendChild(h('button', {
+        class: 'opcion', type: 'button', 'aria-pressed': sel === i ? 'true' : 'false',
+        on: { click: function () { st.ans['_raw_' + id] = i; guardar(i); render(true); setTimeout(next, 170); } }
+      }, h('span', { class: 'marcador', 'aria-hidden': 'true' }), h('span', null, etiquetas[i])));
+    });
+    return [atras(), pagina([op.intro ? h('p', { class: 'contexto' }, op.intro) : null, titulo(pregunta), op.hint ? h('p', { class: 'chico', style: 'margin-top:8px' }, op.hint) : null, lista,
+      op.noResponder ? linkNoResponder(id, op.noResponderTexto) : null], op.donde)];
+  }
+
+  function multiple(id, def, donde) {
+    var elegidos = (st.ans[id] || []).slice();
+    var lista = h('div', { class: 'opciones', role: 'group', 'aria-label': def.q });
+    var seguir = h('button', { class: 'btn', type: 'button', on: { click: function () { st.ans[id] = elegidos; next(); } } }, 'Continuar');
+    function pintar() {
+      lista.innerHTML = '';
+      def.opts.forEach(function (o) {
+        var activo = elegidos.indexOf(o[1]) >= 0;
+        var lleno = !activo && elegidos.length >= def.multi && elegidos.indexOf(def.exclusive) < 0 && o[1] !== def.exclusive;
+        lista.appendChild(h('button', {
+          class: 'opcion', type: 'button', 'data-multi': true, 'aria-pressed': activo ? 'true' : 'false', disabled: lleno,
+          on: { click: function () {
+            if (activo) elegidos = elegidos.filter(function (x) { return x !== o[1]; });
+            else if (o[1] === def.exclusive) elegidos = [o[1]];
+            else { elegidos = elegidos.filter(function (x) { return x !== def.exclusive; }); if (elegidos.length < def.multi) elegidos.push(o[1]); }
+            pintar();
+          } }
+        }, h('span', { class: 'marcador', 'aria-hidden': 'true' }), h('span', null, o[0])));
+      });
+      seguir.disabled = elegidos.length === 0;
+    }
+    pintar();
+    return [atras(), pagina([titulo(def.q), h('p', { class: 'chico', style: 'margin-top:8px' }, def.hint), lista, h('div', { class: 'acciones' }, seguir)], donde)];
+  }
+
+  // ---------- Formatos de las áreas ----------
+  function bin(carga) { return carga <= 2 ? 0 : (carga <= 5 ? 1 : (carga <= 7 ? 2 : 3)); }
+
+  function fTermo(id, d, donde) {
+    var v = typeof st.ans['_raw_' + id] === 'number' ? st.ans['_raw_' + id] : 5;
+    var tocado = typeof st.ans['_raw_' + id] === 'number';
+    var valor = h('div', { class: 'termo-valor', 'aria-hidden': 'true' }, String(v));
+    var seguir = h('button', { class: 'btn', type: 'button', disabled: !tocado, on: { click: function () {
+      st.ans['_raw_' + id] = v; st.ans[id] = bin(d.carga === 'izq' ? 10 - v : v); next();
+    } } }, 'Continuar');
+    var rango = h('input', { type: 'range', min: '0', max: '10', step: '1', value: String(v), 'aria-label': d.q + ' 0 es ' + d.izq + ', 10 es ' + d.der,
+      on: { input: function (e) { v = +e.target.value; valor.textContent = String(v); seguir.disabled = false; } } });
+    return [atras(), pagina([titulo(d.q), h('p', { class: 'chico', style: 'margin-top:8px' }, 'Mueve el punto del 0 al 10.'),
+      h('div', { class: 'termo' }, valor, rango, h('div', { class: 'termo-ext' }, h('span', null, '0: ' + d.izq), h('span', null, '10: ' + d.der))),
+      h('div', { class: 'acciones' }, seguir), linkNoResponder(id)], donde)];
+  }
+
+  function fBalanza(id, d, donde) {
+    var orden = barajar(id, 2); // 0 = a primero
+    var primera = orden[0] === 0 ? d.a : d.b, segunda = orden[0] === 0 ? d.b : d.a;
+    var sel = st.ans['_raw_' + id];
+    var etiquetas = ['Totalmente la primera', 'Más la primera', 'Más la segunda', 'Totalmente la segunda'];
+    var escala = h('div', { class: 'escala', role: 'group', 'aria-label': 'Elige qué tan cerca estás de cada frase' });
+    etiquetas.forEach(function (et, i) {
+      escala.appendChild(h('button', { type: 'button', 'aria-pressed': sel === i ? 'true' : 'false', on: { click: function () {
+        st.ans['_raw_' + id] = i;
+        // b es la frase de mayor carga
+        st.ans[id] = orden[0] === 0 ? i : 3 - i;
+        render(true); setTimeout(next, 170);
+      } } }, et));
+    });
+    return [atras(), pagina([titulo(d.q), h('div', { class: 'balanza' },
+      h('div', { class: 'frase-card' }, h('strong', null, '1. '), primera),
+      escala,
+      h('div', { class: 'frase-card' }, h('strong', null, '2. '), segunda)), linkNoResponder(id)], donde)];
+  }
+
+  function fLista(id, d, donde) {
+    var elegidos = (st.ans['_raw_' + id] || []).slice();
+    var lista = h('div', { class: 'opciones', role: 'group', 'aria-label': d.q });
+    var seguir = h('button', { class: 'btn', type: 'button', on: { click: function () {
+      st.ans['_raw_' + id] = elegidos;
+      var n = elegidos.filter(function (x) { return x !== 'ninguna'; }).length, r = n / d.opts.length;
+      st.ans[id] = r >= 0.75 ? 0 : (r >= 0.5 ? 1 : (r >= 0.25 ? 2 : 3));
+      next();
+    } } }, 'Continuar');
+    var opciones = d.opts.map(function (t, i) { return [t, i]; }).concat([['Ninguna de estas', 'ninguna']]);
+    function pintar() {
+      lista.innerHTML = '';
+      opciones.forEach(function (o) {
+        var activo = elegidos.indexOf(o[1]) >= 0;
+        lista.appendChild(h('button', { class: 'opcion', type: 'button', 'data-multi': true, 'aria-pressed': activo ? 'true' : 'false', on: { click: function () {
+          if (activo) elegidos = elegidos.filter(function (x) { return x !== o[1]; });
+          else if (o[1] === 'ninguna') elegidos = ['ninguna'];
+          else { elegidos = elegidos.filter(function (x) { return x !== 'ninguna'; }); elegidos.push(o[1]); }
+          pintar();
+        } } }, h('span', { class: 'marcador', 'aria-hidden': 'true' }), h('span', null, o[0])));
+      });
+      seguir.disabled = elegidos.length === 0;
+    }
+    pintar();
+    return [atras(), pagina([titulo(d.q), h('p', { class: 'chico', style: 'margin-top:8px' }, 'Marca todas las que apliquen.'), lista, h('div', { class: 'acciones' }, seguir)], donde)];
+  }
+
+  function pantallaArea(id) {
+    var code = id.slice(0, 3), d = Q_AREAS[code][+id.slice(3) - 1];
+    var donde = AREA[code].nombre;
+    if (d.f === 'termo') return fTermo(id, d, donde);
+    if (d.f === 'balanza') return fBalanza(id, d, donde);
+    if (d.f === 'lista') return fLista(id, d, donde);
+    return unica(id, d.q, d.opts.map(function (o) { return o[0]; }), function (i) { st.ans[id] = d.opts[i][1]; },
+      { barajar: true, intro: d.intro, donde: donde, noResponder: true, noResponderTexto: d.na || 'Prefiero no responder' });
+  }
+
+  // ---------- Pantallas ----------
+  function pantallaInicio() {
+    var empezar = h('button', { class: 'btn', type: 'button', on: { click: function () { go('cap:lectura'); } } }, 'Descubrir mi libro');
+    var final = h('div', null, h('p', { class: 'ceja' }, 'Qué leer ahora'),
+      h('h1', { tabindex: '-1' }, 'Hay un libro para lo que sientes hoy'),
+      h('p', null, 'Cuéntame cómo estás y te ayudo a encontrarlo, como una buena amiga.'),
+      empezar);
+    if (!reducido && !st.sin3d && webglDisponible()) {
+      var e3 = crearEscena3D({ final: final, pista: 'Desliza para bajar', rotulos: ['Hola, qué bueno que estás aquí.', 'Cada respuesta tuya abre una página.', 'Estás a punto de descubrir lo que tu mente y tu corazón necesitan leer.'],
+        alFallar: function () { st.sin3d = true; if (st.step === 'welcome') render(); } });
+      if (e3) {
+        var caja = h('div', { class: 'escena escena-larga' }, e3.el);
+        st.limpiar = function () { e3.destruir(); };
+        setTimeout(function () { if (st.step === 'welcome') e3.arrancar(caja); }, 0);
+        return [caja];
+      }
+    }
+    var escena = crearEscena({ final: final, pista: reducido ? null : 'Desliza para bajar', rotulos: reducido ? [] : ['Hola, qué bueno que estás aquí.', 'Cada respuesta tuya abre una página.', 'Estás a punto de descubrir lo que tu mente y tu corazón necesitan leer.'] });
+    var contenedor;
+    if (reducido) {
+      escena.el.classList.add('estatica');
+      contenedor = escena.el;
+      setTimeout(function () { escena.poner(1); }, 0);
+    } else {
+      contenedor = h('div', { class: 'escena' }, escena.el);
+      var pendiente = false;
+      var actualizar = function () {
+        pendiente = false;
+        var r = contenedor.getBoundingClientRect();
+        var total = contenedor.offsetHeight - escena.el.offsetHeight;
+        var avance = total > 0 ? -(r.top) / total : 0;
+        escena.poner(Math.max(0, Math.min(1, avance)));
+      };
+      var alMover = function () { if (!pendiente) { pendiente = true; requestAnimationFrame(actualizar); } };
+      window.addEventListener('scroll', alMover, { passive: true });
+      window.addEventListener('resize', alMover);
+      st.limpiar = function () { window.removeEventListener('scroll', alMover); window.removeEventListener('resize', alMover); };
+      setTimeout(actualizar, 0);
+    }
+    return [contenedor];
+  }
+
+  function pantallaCapitulo(id) {
+    var c = CAPITULOS[id];
+    var n = numCapitulo('cap:' + id);
+    return [atras(), h('section', { class: 'capitulo' },
+      estante(n * 13 + 3, !reducido),
+      h('p', { class: 'num-cap' }, 'Capítulo ' + n),
+      h('h1', { tabindex: '-1' }, c.t),
+      h('p', { class: 'frase' }, c.f),
+      h('div', { class: 'acciones' }, h('button', { class: 'btn', type: 'button', on: { click: next } }, n === 1 ? 'Empezar' : 'Seguir')))];
+  }
+
+  function pantallaEjemplos() {
+    var defs = [['a', 'Ansiedad alta y una ruptura reciente; casi no lee'], ['b', 'Crisis de propósito; buen hábito lector'], ['c', 'Bloqueo creativo mientras dirige un equipo']];
+    return [atras(), titulo('Tres ejemplos', ''),
+      h('p', { class: 'suave', style: 'margin-top:10px' }, 'Cargan respuestas de ejemplo y muestran el resultado que daría la app.'),
+      h('div', { class: 'opciones' }, defs.map(function (d) {
+        return h('button', { class: 'opcion', type: 'button', on: { click: function () { st.ans = PRESETS[d[0]](); delete st.ans.B3; go('result'); } } },
+          h('span', null, h('strong', null, 'Ejemplo (' + d[0] + ')'), h('br'), d[1]));
+      }))];
+  }
+
+  function pantallaA(id) {
+    var d = Q_A[id];
+    if (d.multi) return multiple(id, d, CAPITULOS.lectura.t);
+    return unica(id, d.q, d.opts.map(function (o) { return o[0]; }), function (i) { st.ans[id] = d.opts[i][1]; }, { barajar: d.shuffle, donde: CAPITULOS.lectura.t });
+  }
+  function pantallaB(id) {
+    return unica(id, Q_B[id], B_OPTS, function (i) { st.ans[id] = i; }, { donde: CAPITULOS.animo.t, noResponder: true });
+  }
+  function pantallaC0() { return multiple('C0', Q_C0, 'Lo que más te pesa'); }
+
+  function pantallaOferta(code) {
+    var t = {
+      CRI: ['Tus respuestas sobre el rumbo pesan bastante', '¿Quieres responder 3 preguntas más sobre lo que antes te daba sentido? Así afinamos tu lista.'],
+      ANS: ['Dijiste que la tensión aparece seguido', '¿Quieres responder 3 preguntas más sobre la preocupación y cómo te calmas? Así afinamos tu lista.']
+    }[code];
+    return [atras(), pagina([titulo(t[0], ''), h('p', { style: 'margin-top:14px' }, t[1]),
+      h('div', { class: 'acciones' },
+        h('button', { class: 'btn', type: 'button', on: { click: function () { st.ans['offer_' + code] = true; next(); } } }, 'Sí, responderlas'),
+        h('button', { class: 'btn-sec', type: 'button', on: { click: function () { st.ans['offer_' + code] = false; next(); } } }, 'No, seguir'))])];
+  }
+
+  function bloqueLineas() {
+    return h('div', null, LINEAS.map(function (l) {
+      return h('div', { class: 'linea' }, h('div', null, h('strong', null, l.nombre), h('p', { class: 'chico' }, l.detalle)), h('a', { class: 'tel', href: 'tel:' + l.tel }, l.numero));
+    }));
+  }
+  var MENSAJE = 'No estoy bien y me gustaría hablar con alguien. ¿Puedes llamarme o venir hoy?';
+  function bloqueMensaje() {
+    var estado = h('span', { class: 'chico', role: 'status' });
+    return h('div', null, h('div', { class: 'mensaje' }, MENSAJE),
+      h('button', { class: 'btn-sec', type: 'button', on: { click: function () {
+        try { navigator.clipboard.writeText(MENSAJE).then(function () { estado.textContent = ' Copiado.'; }, function () { estado.textContent = ' Selecciónalo y cópialo.'; }); }
+        catch (e) { estado.textContent = ' Selecciónalo y cópialo.'; }
+      } } }, 'Copiar mensaje'), estado);
+  }
+
+  function pantallaEspecial() {
+    return [h('section', null,
+      titulo('Parece que han sido semanas pesadas', ''),
+      h('p', { style: 'margin-top:14px' }, 'Gracias por contarlo. Antes de seguir, queremos dejarte a la mano con quién hablar, por si te sirve. Hablarlo con alguien suele ayudar más que cualquier libro.'),
+      h('div', { class: 'bloque' }, h('h3', null, 'Hablar con alguien ahora'), bloqueLineas()),
+      h('div', { class: 'bloque' }, h('h3', null, 'Escribirle a alguien de confianza'), h('p', { class: 'suave', style: 'margin-top:6px' }, 'Puedes enviar este mensaje tal cual:'), bloqueMensaje()),
+      h('div', { class: 'acciones' },
+        h('button', { class: 'btn', type: 'button', on: { click: function () { st.ans.cuidadoVisto = true; next(); } } }, 'Seguir con mis preguntas'),
+        h('button', { class: 'btn-sec', type: 'button', on: { click: function () { go('acomp'); } } }, 'Ver dos lecturas suaves')))];
+  }
+
+  function pantallaAcomp() {
+    var libros = ACOMPANAMIENTO.map(function (n) { return BOOKS.filter(function (b) { return b.n === n; })[0]; });
+    return [atras(), titulo('Dos lecturas suaves', ''),
+      h('p', { class: 'suave', style: 'margin-top:10px' }, 'Son cortas y tranquilas, para acompañarte estos días.'),
+      h('ol', { class: 'fichas' }, libros.map(function (b, i) {
+        return h('li', { class: 'ficha' }, h('span', { class: 'num', 'aria-hidden': 'true' }, String(i + 1)),
+          h('p', { class: 'titulo' }, b.t), h('p', { class: 'autor' }, b.a), h('p', null, 'Te puede ayudar a ' + b.ay + '. Ronda las ' + b.pp + ' páginas.'));
+      })),
+      h('div', { class: 'acciones' }, h('button', { class: 'btn-sec', type: 'button', on: { click: function () { st.ans.cuidadoVisto = true; st.step = 'B2'; next(); } } }, 'Seguir con mis preguntas'))];
+  }
+
+  function pantallaTransicion() {
+    var lineas = ['Leyendo tus respuestas…', 'Viendo cuánto tiempo tienes para leer…', 'Buscando entre ' + BOOKS.length + ' libros…', 'Descartando los que todavía no te tocan…', 'Eligiendo por dónde empezar…', 'Ordenando tu lista…'];
+    var texto = h('p', { class: 'linea-t', role: 'status' }, lineas[0]);
+    var barraT = h('span', { style: 'width:0%' });
+    var esc3 = (!reducido && !st.sin3d && webglDisponible()) ? crearEscena3D({ compacta: true, modo: 'tiempo', duracion: 7000, desde: 0.06, hasta: 0.86, alFallar: function () { st.sin3d = true; } }) : null;
+    var escena = esc3 || crearEscena({ compacta: true });
+    if (esc3) { st.limpiar = function () { esc3.destruir(); }; setTimeout(function () { if (st.step === 'transicion') esc3.arrancar(); }, 0); }
+    var DURA = 7000, inicio = null;
+    function paso(t) {
+      if (st.step !== 'transicion') return;
+      if (inicio === null) inicio = t;
+      var p = Math.min(1, (t - inicio) / DURA);
+      if (!esc3) escena.poner(0.08 + p * 0.74);
+      var k = Math.min(lineas.length - 1, Math.floor(p * lineas.length));
+      if (texto.textContent !== lineas[k]) texto.textContent = lineas[k];
+      barraT.style.width = Math.round(p * 100) + '%';
+      if (p < 1) requestAnimationFrame(paso); else { st.step = 'result'; render(); }
+    }
+    if (!reducido) requestAnimationFrame(paso); else setTimeout(function () { if (escena.poner) escena.poner(0.82); }, 0);
+    return [h('section', { class: 'transicion' },
+      escena.el,
+      h('h1', { tabindex: '-1', style: 'margin-top:20px' }, 'Estás a punto de empezar algo bueno para ti'),
+      texto,
+      reducido ? null : h('div', { class: 'progreso', style: 'max-width:280px;margin:14px auto 0;background:var(--line);border-radius:3px' }, barraT),
+      reducido ? h('div', { class: 'acciones', style: 'justify-content:center' }, h('button', { class: 'btn', type: 'button', on: { click: function () { st.step = 'result'; render(); } } }, 'Ver mi lista')) : null)];
+  }
+
+  // ---------- Resultado ----------
+  var NIVEL_TXT = ['introductorio', 'intermedio', 'avanzado'];
+  var PESO = ['poco', 'algo', 'bastante'];
+  var TIPO_TXT = { N: 'Narrativa', L: 'Poesía y ensayo', D: 'Para entender', P: 'Práctico', F: 'Filosofía' };
+  var FASE_TXT = { E: 'Para empezar con calma', C: 'Para entender', K: 'Para pasar a la acción', P: 'Para profundizar' };
+
+  function nombreTema(R, t) { var tm = R.temas.filter(function (x) { return x.id === t; })[0]; return AREA[tm ? tm.area : (t === 'SENT' ? 'SEN' : t)]; }
+  function temasDeLibro(R, b) {
+    var v = [];
+    b.ar.forEach(function (c) { var t = topicOf(c); if (R.idxOf[t] !== undefined && v.indexOf(t) < 0) v.push(t); });
+    v.sort(function (x, y) { return R.idxOf[y] - R.idxOf[x]; });
+    return v.slice(0, 2);
+  }
+  function unir(a) { return a.length > 1 ? a.slice(0, -1).join(', ') + ' y ' + a[a.length - 1] : a[0]; }
+  function porQueEste(R, b) {
+    var ts = temasDeLibro(R, b);
+    var marc = b.ar.filter(function (c) { return R.marked.indexOf(c) >= 0; })[0];
+    var marcTxt = marc ? ', y además marcaste ' + AREA[marc].en + ' como algo que te pesa' : '';
+    var lit = b.tipo === 'N' || b.tipo === 'L' || b.tipo === 'F';
+    if (!ts.length) return b.t + ' conecta con lo que dijiste que te gustaría en seis meses.' + (lit ? '' : ' Te ayuda a ' + b.ay + '.');
+    var nombres = ts.map(function (t) { return nombreTema(R, t).en; });
+    var nivel = Math.max.apply(null, ts.map(function (t) { var tm = R.temas.filter(function (x) { return x.id === t; })[0]; return levelOf(R.scores[tm.area]) || 0; }));
+    var peso = 'Según tus respuestas, ' + (ts.length > 1 ? 'esos temas hoy pesan ' : 'ese tema hoy pesa ') + PESO[nivel] + marcTxt + '.';
+    if (lit) return b.t + ' puede acompañarte en ' + unir(nombres) + '. ' + peso + ' Es ' + ({ N: 'una obra narrativa', L: 'un libro de poesía o de ensayo literario', F: 'un libro de filosofía' })[b.tipo] + ' de nivel ' + NIVEL_TXT[b.nv - 1] + ' y ronda las ' + b.pp + ' páginas.';
+    return b.t + ' trabaja ' + unir(nombres) + '. ' + peso + ' Te ayuda a ' + b.ay + '. Es de nivel ' + NIVEL_TXT[b.nv - 1] + ' y ronda las ' + b.pp + ' páginas, acorde al tiempo que dijiste tener.';
+  }
+  function porQueOrden(R, e, i) {
+    var ts = temasDeLibro(R, e.b), tema = ts.length ? nombreTema(R, ts[0]).en : 'lo que te pesa', t;
+    if (e.b.f === 'E') t = i === 0 ? 'Va primero porque conviene empezar con algo que te dé calma antes de entender o cambiar nada.' : 'Sigue al anterior porque refuerza esa calma antes de entender o cambiar nada.';
+    else if (e.b.f === 'C') t = (i === 0 ? 'Va primero' : 'Va aquí') + ' porque ayuda a entender ' + tema + ' antes de pasar a los pasos concretos.';
+    else if (e.b.f === 'K') t = (i === 0 ? 'Va primero' : 'Va aquí') + ' porque, con una idea más clara de ' + tema + ', este libro te da pasos concretos.';
+    else t = 'Va al final porque es más largo o denso, y rinde más cuando lo anterior ya está asentado.';
+    if (!e.ahora) t += ' No hace falta leerlo ya: guárdalo para cuando termines el anterior.';
+    return t;
+  }
+
+  function pantallaResultado() {
+    var R = recomendar(st.ans), S = R.seguridad, out = [];
+    out.push(h('div', { class: 'nota-rosa' }, h('p', null, 'Esto es una recomendación de lectura, como la de una buena amiga. No reemplaza a un médico ni a un psicólogo.')));
+    out.push(h('h1', { tabindex: '-1' }, 'Tu momento, en pocas líneas'));
+    var apertura = (R.dificil || S.nivel === 'ambar') ? 'Gracias por responder con tanta honestidad. Parece un momento que pide cuidado, así que vamos despacio y por partes.'
+      : (st.ans.A3 === 'cambio' ? 'Parece que estás en un punto en el que algo te pide movimiento. Esto es lo que vemos en tus respuestas.' : 'Esto es una foto de tu momento, no una etiqueta. Te la mostramos para que tengas por dónde empezar.');
+    var lect = h('section', { class: 'lectura' }, h('p', { class: 'lead', style: 'margin-top:14px' }, apertura));
+    var f2 = (st.ans.F2 || []).map(function (c) { var o = Q_F2.opts.filter(function (x) { return x[1] === c; })[0]; return o ? o[0] : null; }).filter(Boolean);
+    if (f2.length) lect.appendChild(h('p', null, 'Dijiste que en seis meses te gustaría: ' + unir(f2.map(function (x) { return '«' + x + '»'; })) + '.'));
+    var pesadas = [];
+    if (R.modo === 'sostenido') lect.appendChild(h('p', null, 'Tu momento parece sostenido: nada pesa demasiado hoy. Estas lecturas son para seguir creciendo a partir de lo que te gustaría.'));
+    else {
+      pesadas = R.temas.slice(0, 2);
+      if (R.temas[2] && levelOf(R.scores[R.temas[2].area]) === 2) pesadas.push(R.temas[2]);
+      lect.appendChild(h('h3', null, 'Lo que más pesa ahora'));
+      pesadas.forEach(function (t) { lect.appendChild(h('p', { class: 'area-item' }, h('strong', null, AREA[t.area].nombre + '. '), PLANTILLA[t.area][levelOf(R.scores[t.area])])); });
+    }
+    var usadas = pesadas.map(function (t) { return t.area; });
+    var bajas = Object.keys(R.scores).filter(function (c) { return R.scores[c] !== null && R.scores[c] <= 2 && usadas.indexOf(c) < 0; }).slice(0, 2);
+    if (bajas.length && R.modo !== 'sostenido') {
+      lect.appendChild(h('h3', null, 'Lo que parece sostenerte'));
+      bajas.forEach(function (c) { lect.appendChild(h('p', { class: 'area-item' }, h('strong', null, AREA[c].nombre + '. '), PLANTILLA[c][0])); });
+    }
+    if (S.banner || levelOf(R.scores.ANS) === 2 || levelOf(R.scores.HER) === 2) {
+      var conProf = (st.ans.F1 || []).indexOf('prof') >= 0;
+      lect.appendChild(h('div', { class: 'nota-rosa' }, h('p', null, conProf ? 'Puedes llevar estas lecturas a tu proceso con tu profesional.' : 'Si esto sigue igual en un par de semanas, platicarlo con alguien de confianza o con un profesional puede ayudarte. La Línea de la Vida atiende gratis, las 24 horas, en el 800 911 2000.')));
+    }
+    out.push(lect);
+
+    out.push(h('h2', { style: 'margin-top:30px' }, 'Tus lecturas, en orden'));
+    out.push(h('p', { class: 'suave', style: 'margin-top:6px' }, 'Un libro a la vez. Si ya leíste alguno, márcalo y te damos otro.'));
+    if (st.ans.A6 === 'no') out.push(h('p', { class: 'chico' }, 'Como prefieres evitar la autoayuda, tu lista solo incluye literatura, filosofía y ensayo.'));
+    if (R.lector.audio) out.push(h('p', { class: 'chico' }, 'Como dijiste que aprendes mejor escuchando, busca estos títulos en audiolibro; no todos existen en ese formato.'));
+    var aviso = h('p', { class: 'chico', role: 'status', style: 'margin:6px 0 0' }, st.mensaje || '');
+    st.mensaje = '';
+    out.push(aviso);
+    var lista = h('ol', { class: 'fichas' + (st.sinAnim ? '' : ' revela') });
+    st.sinAnim = false;
+    R.libros.forEach(function (e, i) {
+      var b = e.b, semanas = Math.max(1, Math.round(b.pp / R.lector.pace));
+      lista.appendChild(h('li', { class: 'ficha' },
+        h('span', { class: 'num', 'aria-hidden': 'true' }, String(i + 1)),
+        h('p', { class: 'titulo' }, b.t), h('p', { class: 'autor' }, b.a),
+        h('ul', { class: 'etiquetas', 'aria-label': 'Características' },
+          h('li', { class: e.ahora ? 'ahora' : 'despues' }, e.ahora ? 'Ahora' : 'Para después'),
+          h('li', null, FASE_TXT[b.f]), h('li', null, TIPO_TXT[b.tipo])),
+        h('p', { class: 'chico' }, 'Unas ' + b.pp + ' páginas: cerca de ' + semanas + (semanas === 1 ? ' semana' : ' semanas') + ' a tu ritmo.'),
+        h('p', { class: 'porque' }, h('strong', null, 'Por qué este. '), porQueEste(R, b)),
+        h('p', null, h('strong', null, 'Por qué en este orden. '), porQueOrden(R, e, i)),
+        h('p', { class: 'cuidado' }, 'Ten en cuenta: ' + b.cu),
+        h('button', { class: 'leido', type: 'button', on: { click: function () {
+          st.ans.leidos = (st.ans.leidos || []).concat([b.n]);
+          st.mensaje = 'Quitamos «' + b.t + '» y elegimos el siguiente mejor para ti.';
+          st.sinAnim = true; render(true);
+        } } }, 'Ya lo leí')));
+    });
+    out.push(lista);
+    if (!R.libros.length) out.push(h('p', null, 'No encontramos más libros que cumplan todo lo que respondiste. Puedes volver a empezar con otras respuestas.'));
+
+    var paginas = R.libros.filter(function (e) { return e.ahora; }).reduce(function (a, e) { return a + e.b.pp; }, 0);
+    var nAhora = R.libros.filter(function (e) { return e.ahora; }).length;
+    out.push(h('p', { class: 'meta-lectura' }, 'A tu ritmo, en unas 12 semanas puedes terminar ' + (nAhora === 1 ? 'el primer libro' : 'los primeros ' + nAhora + ' libros') + ': unas ' + paginas + ' páginas. Empieza hoy con 10 minutos.'));
+
+    var ben = h('section', { class: 'beneficios' }, h('h2', null, 'Lo que dicen los estudios sobre leer'));
+    BENEFICIOS.forEach(function (x) { ben.appendChild(h('div', { class: 'beneficio' }, h('h3', null, x.t), h('p', null, x.d), h('p', { class: 'fuente' }, 'Fuente: ' + x.s))); });
+    ben.appendChild(h('p', { class: 'chico' }, 'Ningún estudio promete un resultado para una persona en particular: describen lo que pasa en promedio.'));
+    out.push(ben);
+
+    out.push(h('div', { class: 'acciones' }, h('button', { class: 'btn-sec', type: 'button', on: { click: reiniciar } }, 'Volver a empezar')));
+    var filas = [
+      ['Perfil lector', R.lector.perfil + ' (puntaje ' + R.lector.score + ')'],
+      ['Presupuesto de 12 semanas', R.lector.budget + ' páginas (' + R.lector.pace + ' por semana)'],
+      ['Ánimo', S.nivel], ['Empezar con calma (modo estabilizar)', R.estab ? 'sí' : 'no'], ['Número de libros', String(R.N)],
+      ['Temas por prioridad', R.temas.map(function (t) { return AREA[t.area].nombre + ' ' + Math.floor(t.idx) + (t.f2 ? ' + desempate' : ''); }).join('; ')],
+      ['Libros marcados como leídos', String((st.ans.leidos || []).length)]
+    ];
+    out.push(h('details', { class: 'calculo' }, h('summary', null, 'Cómo se armó tu lista'),
+      h('div', { class: 'tabla-scroll' }, h('table', null, h('tbody', null, filas.map(function (f) { return h('tr', null, h('th', { scope: 'row' }, f[0]), h('td', null, f[1])); }))))));
+    return out;
+  }
+
+  // ---------- Ayuda ----------
+  function abrirAyuda() {
+    var cerrar;
+    var fondo = h('div', { class: 'hoja-fondo', on: { click: function (ev) { if (ev.target === fondo) cerrar(); } } });
+    var hoja = h('div', { class: 'hoja', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'ayuda-t' },
+      h('div', { class: 'hoja-top' }, h('h2', { id: 'ayuda-t', tabindex: '-1' }, '¿Quieres hablar con alguien?'), h('button', { class: 'link', type: 'button', on: { click: function () { cerrar(); } } }, 'Cerrar')),
+      h('p', null, 'Estas líneas atienden gratis. Si tú o alguien más está en peligro, llama al 911.'),
+      bloqueLineas(), h('div', { class: 'bloque' }, h('h3', null, 'Escribirle a alguien de confianza'), bloqueMensaje()));
+    fondo.appendChild(hoja);
+    var previo = document.activeElement;
+    function tecla(ev) { if (ev.key === 'Escape') cerrar(); }
+    cerrar = function () { document.removeEventListener('keydown', tecla); fondo.remove(); if (previo) previo.focus(); };
+    document.addEventListener('keydown', tecla);
+    document.body.appendChild(fondo);
+    hoja.querySelector('h2').focus();
+  }
+
+  // ---------- Render ----------
+  function render(quieto) {
+    if (st.limpiar) { st.limpiar(); st.limpiar = null; }
+    var p = st.step, nodos;
+    document.body.classList.toggle('portada', p === 'welcome');
+    if (p === 'welcome') nodos = pantallaInicio();
+    else if (p === 'examples') nodos = pantallaEjemplos();
+    else if (p.indexOf('cap:') === 0) nodos = pantallaCapitulo(p.slice(4));
+    else if (Q_A[p]) nodos = pantallaA(p);
+    else if (Q_B[p]) nodos = pantallaB(p);
+    else if (p === 'C0') nodos = pantallaC0();
+    else if (p === 'special') nodos = pantallaEspecial();
+    else if (p === 'acomp') nodos = pantallaAcomp();
+    else if (p === 'F1') nodos = multiple('F1', Q_F1, CAPITULOS.cierre.t);
+    else if (p === 'F2') nodos = multiple('F2', Q_F2, CAPITULOS.cierre.t);
+    else if (p.indexOf('offer:') === 0) nodos = pantallaOferta(p.slice(6));
+    else if (p === 'transicion') nodos = pantallaTransicion();
+    else if (p === 'result') nodos = pantallaResultado();
+    else nodos = pantallaArea(p);
+    main.innerHTML = '';
+    nodos.forEach(function (n) { if (n) main.appendChild(n); });
+    main.classList.remove('main-anim');
+    if (!quieto && !reducido && p !== 'welcome') { void main.offsetWidth; main.classList.add('main-anim'); }
+    progreso();
+    if (!quieto) {
+      try { window.scrollTo(0, 0); } catch (e) {}
+      var foco = main.querySelector('h1, h2');
+      if (foco) foco.focus({ preventScroll: true });
+    }
+  }
+  render();
+})();
+
+</script>
+</body>
+</html>
