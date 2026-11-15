@@ -2466,10 +2466,24 @@ function crearEscena3D(op) {
     st.imagen = registro;
     return registro.promesa;
   }
+  // Dentro de Claude, las descargas normales están bloqueadas: se usa la función de descargas de Claude, que en el iPhone abre el menú para guardar
+  var descargasClaude = null;
+  try { if (window.claude && typeof window.claude.use === 'function') window.claude.use('downloads').then(function (d) { descargasClaude = d; }, function () {}); } catch (e) {}
+  function guardarConClaude(img, estado) {
+    if (estado) estado.textContent = '';
+    descargasClaude.save({ filename: 'mi-lista-que-leer-ahora.png', data: img.blob }).then(function () {
+      if (estado) estado.textContent = 'Listo.';
+    }, function (err) {
+      if (err && (err.code === 'declined' || err.code === 'rate_limited')) return;
+      descargasClaude = null; verImagen(img);
+    });
+  }
   function verImagen(img) {
     var cerrar;
     var fondo = h('div', { class: 'hoja-fondo', on: { click: function (ev) { if (ev.target === fondo) cerrar(); } } });
-    var descarga = img.blob ? h('a', { class: 'btn-sec', href: URL.createObjectURL(img.blob), download: 'mi-lista-que-leer-ahora.png' }, 'Descargar imagen') : null;
+    var descarga = !img.blob ? null : (descargasClaude
+      ? h('button', { class: 'btn-sec', type: 'button', on: { click: function () { guardarConClaude(img, null); } } }, 'Descargar imagen')
+      : h('a', { class: 'btn-sec', href: URL.createObjectURL(img.blob), download: 'mi-lista-que-leer-ahora.png' }, 'Descargar imagen'));
     var hoja = h('div', { class: 'panel-guardar', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'imagen-t' },
       h('div', { class: 'hoja-top' }, h('h2', { id: 'imagen-t', tabindex: '-1' }, 'Tu lista, lista para guardar'), h('button', { class: 'link', type: 'button', on: { click: function () { cerrar(); } } }, 'Cerrar')),
       h('p', null, 'Mantén presionada la imagen y elige «Guardar en Fotos» o «Guardar imagen».'),
@@ -2485,6 +2499,7 @@ function crearEscena3D(op) {
   }
   function guardarLista(R, estado) {
     var img = st.imagen && st.imagen.listo;
+    if (img && img.blob && descargasClaude) { guardarConClaude(img, estado); return; }
     if (img && img.archivo && navigator.canShare && navigator.share) {
       var datos = { files: [img.archivo], title: 'Mi lista de lecturas' };
       var puede = false; try { puede = navigator.canShare(datos); } catch (e) {}
