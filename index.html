@@ -324,7 +324,7 @@ details.calculo td, details.calculo th { text-align: left; padding: 6px 4px; bor
 .balanza { display: grid; gap: 10px; margin-top: 20px; }
 .escala { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 .escala button { appearance: none; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 12px; min-height: 64px; padding: 8px 4px; font: 700 0.8rem/1.2 var(--sans); cursor: pointer; }
-.escala button[aria-pressed="true"] { border: 2px solid var(--cobalt); background: var(--cobalt-soft); color: var(--cobalt); }
+.escala button[aria-pressed="true"] { border: 2px solid var(--cobalt); background: var(--cobalt-soft); color: var(--etiqueta-rosa, var(--cobalt)); }
 .escala-pista { margin: 8px 0 0; }
 /* Guardar la lista */
 .guardar-lista { margin-top: 24px; padding: 20px 18px; border-radius: 18px; background: var(--surface); border: 1px solid var(--line); text-align: center; }
@@ -489,6 +489,11 @@ body::before { background: var(--barra-fondo); }
   :root:not([data-theme="light"]) .escenario-rosa .cielo, :root:not([data-theme="light"]) .escenario:not(.escenario-3d) .cielo { background: radial-gradient(120% 85% at 50% 8%, #6a3d63 0%, #4a2a4f 35%, #2b1b38 70%, #1d1424 100%); }
   :root:not([data-theme="light"]) .escenario-rosa .rotulo, :root:not([data-theme="light"]) .escenario-rosa .final h1, :root:not([data-theme="light"]) .escenario-rosa .final p, :root:not([data-theme="light"]) .escenario-rosa .desliza { color: #fbe9f2; text-shadow: 0 1px 10px rgba(29, 20, 36, 0.8); }
 }
+
+/* Ruta corta en la portada: enlace secundario, legible sobre la escena */
+.final .link-rapido { margin-top: 12px; padding: 10px 16px; border-radius: 999px; min-height: 44px; background: rgba(255, 250, 248, 0.78); color: #7a2f5c; text-decoration: underline; text-underline-offset: 3px; font-weight: 700; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .final .link-rapido { background: rgba(42, 29, 49, 0.8); color: #fbe9f2; } }
+:root[data-theme="dark"] .final .link-rapido { background: rgba(42, 29, 49, 0.8); color: #fbe9f2; }
 
 /* ===== Flecha para invitar a bajar ===== */
 .desliza { gap: 8px; }
@@ -946,7 +951,7 @@ var CAPITULOS, BENEFICIOS;
   };
 
   BENEFICIOS = [
-    { t: 'Los libros de ayuda bien elegidos sí ayudan', d: 'Varios metaanálisis encuentran que leer libros de autoayuda reduce el ánimo bajo leve o moderado, más que no hacer nada.', s: 'Cuijpers, 1997; den Boer y colegas, 2004; Anderson y colegas, 2005.' },
+    { t: 'Los libros de ayuda bien elegidos sí ayudan', d: 'Varios metaanálisis encuentran que leer libros de autoayuda reduce el ánimo bajo leve o moderado, más que no hacer nada.', s: 'Cuijpers, 1997; den Boer y colegas, 2004; Anderson y colegas, «Self-help books for depression», British Journal of General Practice, 2005.' },
     { t: 'Las novelas afinan un poco tu forma de entender a otros', d: 'Un metaanálisis de 14 estudios encontró que leer ficción mejora un poco la capacidad de entender lo que piensan y sienten los demás. El efecto es pequeño, pero real.', s: 'Dodell-Feder y Tamir, 2018.' },
     { t: 'Quienes leen libros viven, en promedio, más', d: 'Un estudio de Yale siguió durante 12 años a más de 3,600 adultos mayores de 50: quienes leían libros tuvieron un 20 % menos de riesgo de morir en ese periodo. Bastaba con unos 30 minutos al día. Es una asociación, no prueba que leer sea la causa.', s: 'Bavishi, Slade y Levy, 2016.' }
   ];
@@ -1259,6 +1264,88 @@ var CAPITULOS, BENEFICIOS;
   CAPITULOS.BLO = { t: 'Lo tuyo', f: 'Cuenta todo lo que quieres crear o sacar adelante, grande o pequeño.' };
 })();
 
+// ===== Versión 5: preguntas afinadas para que nadie se quede fuera =====
+(function () {
+  if (typeof module !== 'undefined') return;
+  function libro(n) { return BOOKS.filter(function (b) { return b.n === n; })[0]; }
+
+  // Cambio 2: la meta final admite «Todavía no lo sé»; Cambio 3: cuidar a alguien
+  Q_F2.opts.push(['Cuidar sin descuidarme a mí', 'CUI'], ['Todavía no lo sé', 'none']);
+  Q_F2.exclusive = 'none';
+
+  AREA.CUI = { nombre: 'Cuidar a alguien', en: 'el cuidado de alguien' };
+  if (MODULOS.indexOf('CUI') < 0) MODULOS.push('CUI');
+  CAPITULOS.CUI = { t: 'Cuidar a alguien', f: 'Sin juicios. Solo cómo lo estás viviendo.' };
+  Q_AREAS.CUI = [
+    { f: 'escena', q: 'En un día normal de cuidado, ¿cómo terminas?', opts: [
+      ['Con algo de energía y un rato para mí', 0],
+      ['Cansado o cansada, pero con algún rato mío', 1],
+      ['Agotado o agotada, casi sin tiempo para mí', 2],
+      ['No paro en todo el día y no tengo a quién pedirle relevo', 3]] },
+    { f: 'termo', q: '¿Qué tanto sientes que este cuidado depende solo de ti?', izq: 'Hay quien me releva', der: 'Solo de mí', carga: 'der' },
+    { f: 'balanza', q: '¿Cuál de estas dos frases se parece más a ti?', a: 'Puedo pedir ayuda y aceptarla cuando me la ofrecen.', b: 'Me cuesta pedir ayuda, aunque la necesite.' }
+  ];
+  PLANTILLA.CUI = [
+    'Cuidas a alguien y, aun así, parece que guardas un espacio para ti. Vale la pena protegerlo.',
+    'Cuidar a alguien te está pidiendo mucho, y tu descanso a veces queda al final de la lista.',
+    'Parece que cuidar a alguien ocupa casi todo tu día y que cargas buena parte del peso. Ese cansancio es real, y pedir relevo también es una forma de cuidar.'
+  ];
+  Q_C0.opts.splice(Q_C0.opts.length - 1, 0, ['Cuido a alguien (un familiar enfermo, una persona mayor, un niño) y eso ocupa gran parte de mis días', 'CUI']);
+  Q_C0.multi = 3; Q_C0.hint = 'Elige hasta tres.';
+
+  // Cambio 4: moverse no es solo hacer ejercicio
+  Q_AREAS.HAB[1].opts[1] = 'Moví el cuerpo de alguna forma al menos tres días: caminar, estirarme, bailar, el trabajo de la casa o del campo, ejercicio, lo que sea';
+
+  // Cambio 5: no suponer que hay alguien cercano
+  Q_AREAS.REL[1] = { f: 'balanza', q: '¿Cuál de estas dos frases se parece más a ti?',
+    a: 'Cuando algo de alguien importante para mí me molesta, se lo digo y lo hablamos.',
+    b: 'Cuando algo de alguien importante para mí me molesta, me lo guardo o exploto después.' };
+  Q_AREAS.REL[2] = { f: 'termo', q: '¿Qué tanto sientes que cuentas con alguien, cercano o no tanto, si lo necesitaras?', izq: 'Nada', der: 'Mucho', carga: 'izq' };
+
+  // Cambio 6 y 13: crecimiento para cualquier actividad
+  Q_AREAS.PRO[0].q = 'Piensa en lo que haces la mayor parte de tus días: tu trabajo, tu casa, cuidar a alguien, estudiar, buscar trabajo, tu jubilación, lo que hoy ocupe tu tiempo. ¿Cómo te sientes ahí?';
+  Q_AREAS.PRO[2].na = 'No tengo una actividad principal ahora';
+
+  // Cambio 7: biografías, historia y ciencia (DH cuenta como divulgación, igual que D)
+  Q_A.A5.opts = [['Historias: novelas y cuentos', 'N'], ['Poesía, cartas, memorias y biografías', 'L'], ['Filosofía: grandes preguntas sobre la vida', 'F'],
+    ['Psicología, explicada para entender', 'D'], ['Historia y ciencia, explicadas para entender', 'DH'], ['Guías prácticas, con ejercicios', 'P'], ['No sé todavía: sorpréndeme', 'igual']];
+
+  // Cambio 9: «Algunos sí, otros no» deja fuera la autoayuda motivacional más comercial (éxito rápido, poca base en evidencia)
+  [17, 20, 74, 80, 90, 91, 104, 105, 115].forEach(function (n) { var b = libro(n); if (b) b.comercial = true; });
+
+  // Cambio 10: el celular no es tiempo perdido
+  Q_AREAS.SEN[1].opts[2] = ['Se me iría en distracciones o en pendientes', 2];
+
+  // Cambio 11: comienzo y pérdida se califican por separado
+  Q_AREAS.CRI = [Q_AREAS.CRI[0], Q_AREAS.CRI[1],
+    { f: 'termo', q: '¿Qué tanto sientes que esta etapa es un comienzo para ti?', izq: 'Nada', der: 'Mucho', carga: 'izq' },
+    { f: 'termo', q: '¿Qué tanto sientes que en esta etapa perdiste algo importante?', izq: 'Nada', der: 'Mucho', carga: 'der' }];
+
+  // Cambio 12: dificultad para leer
+  Q_A.A2.opts.splice(Q_A.A2.opts.length - 1, 0, ['Leer me cuesta por la vista o por cómo proceso las letras', 'dificultad']);
+  A2_AJUSTE.dificultad = A2_AJUSTE.audio;
+
+  // Cambio 16: voces latinoamericanas que no estaban (ediciones verificadas; «Como agua para chocolate», «La tregua» y «Las batallas en el desierto» ya estaban)
+  BOOKS.push(
+    { n: 145, t: 'La hija única', a: 'Guadalupe Nettel', tipo: 'N', ar: ['CRI', 'REL', 'RUP'], f: 'C', nv: 1, pp: 240,
+      ay: 'pensar qué significa cuidar, ser madre o no serlo, y cómo una vida se reacomoda alrededor de alguien que necesita mucho', cu: 'Habla de una bebé con una enfermedad grave y de su cuidado; es conmovedora, sin ser morbosa.', hi: true, ed: 3, aa: false },
+    { n: 146, t: 'El olvido que seremos', a: 'Héctor Abad Faciolince', tipo: 'L', ar: ['RUP', 'HER', 'SEN'], f: 'C', nv: 2, pp: 328,
+      ay: 'recordar a alguien que quisiste mucho y quedarte con lo mejor que te dejó', cu: 'Es una memoria sobre el padre del autor, asesinado en Medellín; es triste, pero sobre todo es un homenaje.', hi: true, ed: 3, aa: false },
+    { n: 147, t: 'Mujeres del alma mía', a: 'Isabel Allende', tipo: 'L', ar: ['MIE', 'CRI', 'SEN'], f: 'C', nv: 1, pp: 192,
+      ay: 'mirar la vida larga con humor y con ganas, de la mano de las mujeres que te inspiran', cu: 'Es una memoria breve con opiniones feministas claras.', hi: false, ed: 3, aa: false },
+    { n: 148, t: 'Querido Diego, te abraza Quiela', a: 'Elena Poniatowska', tipo: 'L', ar: ['RUP', 'REL'], f: 'C', nv: 1, pp: 96,
+      ay: 'leer, en cartas, cómo se sostiene y se suelta un amor que ya no responde', cu: 'Son cartas a alguien que ya no corresponde; puede doler si vives algo parecido.', hi: false, ed: 3, aa: false },
+    { n: 149, t: 'El camino de las lágrimas', a: 'Jorge Bucay', tipo: 'D', ar: ['RUP', 'ANS'], f: 'E', nv: 1, pp: 266,
+      ay: 'atravesar el duelo paso a paso, sin apurar el dolor', cu: 'Es autoayuda con cuentos y reflexiones; si buscas algo literario, prueba «Una pena en observación».', hi: false, ed: 3, aa: true },
+    { n: 150, t: 'Arráncame la vida', a: 'Ángeles Mastretta', tipo: 'N', ar: ['MIE', 'REL'], f: 'C', nv: 1, pp: 240,
+      ay: 'seguir a una mujer que aprende a decidir por sí misma', cu: 'Tiene violencia política y una relación de pareja dura.', hi: true, ed: 3, aa: false },
+    { n: 151, t: 'La resistencia', a: 'Ernesto Sabato', tipo: 'L', ar: ['SEN', 'HAB', 'CRI'], f: 'C', nv: 1, pp: 136,
+      ay: 'recuperar lo pequeño y lo humano cuando la vida se vuelve prisa y pantalla', cu: 'Son cinco cartas de tono melancólico, escritas en el año 2000.', hi: false, ed: 3, aa: false }
+  );
+  // «La tregua» ya estaba: su protagonista está por jubilarse, así que también habla de cambio de etapa
+  (function () { var b = libro(109); if (b && b.ar.indexOf('CRI') < 0) b.ar.push('CRI'); })();
+})();
+
 function pts(code, arr, o) { arr.forEach(function (v, i) { o[code + (i + 1)] = v; }); }
 function perfilA() {
   var o = { A1: 0, A2: 'abandona', A3: 'dificil', A4: 0, A5: ['igual'], B1: 2, B2: 3, B3: 0, C0: ['RUP', 'ANS'], F1: ['nada'], F2: ['RUP'] };
@@ -1286,12 +1373,12 @@ if (typeof require !== 'undefined' && typeof BOOKS === 'undefined') {
 
 var FASE_ORDEN = { E: 0, C: 1, K: 2, P: 3 };
 
-function topicOf(code) { return (code === 'SEN' || code === 'CRI') ? 'SENT' : code; }
+function topicOf(code) { return (code === 'SEN' || code === 'CRI') ? 'SENT' : (code === 'CUI' ? 'HAB' : code); } // cuidar a alguien se apoya en los libros de energía y descanso
 
 function lector(ans) {
   var score = Math.max(0, (ans.A1 || 0) + (A2_AJUSTE[ans.A2] || 0));
   var perfil = score <= 1 ? 'nuevo' : (score <= 3 ? 'intermitente' : 'habitual');
-  var pace = [25, 75, 150, 250][ans.A4 || 0];
+  var pace = [25, 75, 150, 250][typeof ans.A4 === 'number' ? ans.A4 : (ans.modo === 'corto' ? 1 : 0)];
   return {
     score: score,
     perfil: perfil,
@@ -1299,7 +1386,8 @@ function lector(ans) {
     cap: { nuevo: 250, intermitente: 350, habitual: Infinity }[perfil],
     pace: pace,
     budget: pace * 12,
-    audio: ans.A2 === 'audio'
+    audio: ans.A2 === 'audio' || ans.A2 === 'dificultad',
+    dificultad: ans.A2 === 'dificultad'
   };
 }
 
@@ -1314,13 +1402,13 @@ function seguridad(ans) {
 }
 
 function areaScore(ans, code) {
-  var vals = [1, 2, 3].map(function (i) { return ans[code + i]; });
+  // Cada área va de 0 a 9; si tiene más de tres preguntas (como «Lo que cambió») o faltan respuestas, se escala con las que hay
+  var n = (typeof Q_AREAS !== 'undefined' && Q_AREAS[code]) ? Q_AREAS[code].length : 3;
+  var vals = []; for (var i = 1; i <= n; i++) vals.push(ans[code + i]);
   if (vals.every(function (v) { return v === undefined; })) return null;
   var ok = vals.filter(function (v) { return typeof v === 'number'; });
-  if (ok.length === 3) return ok[0] + ok[1] + ok[2];
-  if (ok.length === 2) return Math.round((ok[0] + ok[1]) * 3 / 2);
-  if (ok.length === 1) return ok[0] * 3; // con una sola respuesta se estima el área en vez de ignorarla
-  return null;
+  if (!ok.length) return null;
+  return Math.round(ok.reduce(function (a, v) { return a + v; }, 0) * 3 / ok.length);
 }
 
 function levelOf(s) { return s === null || s === undefined ? null : (s <= 2 ? 0 : (s <= 5 ? 1 : 2)); }
@@ -1329,8 +1417,8 @@ function recomendar(ans) {
   var L = lector(ans);
   var S = seguridad(ans);
   var marked = (ans.C0 || []).filter(function (c) { return c !== 'none'; });
-  var f2 = ans.F2 || [];
-  var tipos = (ans.A5 || []).filter(function (t) { return t !== 'igual'; });
+  var f2 = (ans.F2 || []).filter(function (c) { return c !== 'none'; }); // «Todavía no lo sé» no suma a ningún tema
+  var tipos = (ans.A5 || []).filter(function (t) { return t !== 'igual'; }).map(function (t) { return t === 'DH' ? 'D' : t; });
   var dificil = ans.A3 === 'dificil';
 
   var scores = {};
@@ -1340,6 +1428,7 @@ function recomendar(ans) {
   var topics = {};
   Object.keys(AREA).forEach(function (c) {
     if (scores[c] === null) return;
+    if (c === 'CUI') return; // cuidar a alguien no es un tema con libros propios: modula el tono (más abajo)
     var t = topicOf(c);
     if (t === 'SENT') {
       var base = Math.max(scores.SEN === null ? -1 : scores.SEN, scores.CRI === null ? -1 : scores.CRI);
@@ -1349,6 +1438,10 @@ function recomendar(ans) {
     }
   });
   var orden = ['SENT', 'REL', 'HAB', 'MIE', 'PRO', 'ANS', 'RUP', 'HER', 'LID', 'BLO', 'FIN', 'COM'];
+  // Cuidar a alguien: si pesa mucho, el cansancio sube el tema de energía y la lista se vuelve más corta y suave
+  var cuidado = (scores.CUI !== null && scores.CUI !== undefined && (scores.CUI >= 6 || (marked.indexOf('CUI') >= 0 && scores.CUI >= 4))) ||
+    (ans.modo === 'corto' && marked.indexOf('CUI') >= 0); // en la ruta corta no hay módulo: basta con marcarlo
+  if (cuidado && topics.HAB) topics.HAB.idx += 1;
   var f2topics = f2.map(topicOf);
   // F2 solo desempata: medio punto nunca supera una diferencia real de un punto
   Object.keys(topics).forEach(function (k) { if (f2topics.indexOf(k) >= 0) { topics[k].idx += 0.5; topics[k].f2 = true; } });
@@ -1373,7 +1466,7 @@ function recomendar(ans) {
 
   // R4: cuántos libros
   var N = L.budget <= 300 ? 3 : (L.budget <= 900 ? 4 : (L.budget <= 1800 ? 5 : 7));
-  if (estab || dificil) N = Math.min(N, 4);
+  if (estab || dificil || cuidado) N = Math.min(N, 4);
 
   var top = lista.slice(0, 3).map(function (t) { return t.id; });
   var modo = 'normal';
@@ -1395,18 +1488,21 @@ function recomendar(ans) {
   function elegible(b) {
     if (leidos.indexOf(b.n) >= 0) return false;
     if (ans.A6 === 'no' && b.aa) return false;
+    if (ans.A6 === 'algunos' && b.comercial) return false; // «algunos sí, otros no»: fuera la autoayuda motivacional más comercial
     if (b.nv > L.maxNivel) return false;
     if (b.pp > L.cap * 1.05) return false; // 5 % de tolerancia: un libro de 256 páginas no se descarta por un tope de 250
     if (b.f === 'E' && !estab) return false;
     if (b.f === 'P' && !(L.perfil === 'habitual' && !estab && !dificil)) return false;
-    if (estab && b.hi) return false;
+    if ((estab || cuidado) && b.hi) return false;
+    if (cuidado && b.pp > 280) return false; // quien cuida a alguien lee a ratos: libros cortos
+    if ((estab || dificil) && b.nv >= 3) return false; // en un momento difícil, nada de lecturas densas
     return true;
   }
   function cubre(b, t) { return b.ar.some(function (c) { return topicOf(c) === t; }); }
   // Momento sensible: si la persona lo vive como pérdida o viene de semanas pesadas, se prefiere un libro cálido a uno de tono severo
-  var sensible = dificil || S.nivel !== 'verde' || num(ans.B1) >= 2 || num(ans.CRI1) === 3 || num(ans.CRI3) >= 2 || num(ans.RUP2) >= 2;
+  var sensible = dificil || S.nivel !== 'verde' || num(ans.B1) >= 2 || num(ans.CRI1) === 3 || num(ans.CRI4) >= 2 || num(ans.RUP2) >= 2 || cuidado;
   // Páginas ideales por libro según el tiempo de la persona: así no siempre ganan los libros más cortos
-  var objetivo = L.budget / N;
+  var objetivo = (L.budget / N) * (cuidado ? 0.6 : 1); // a quien cuida, lecturas más cortas
   function ajustePaginas(b) { return -Math.round(Math.abs(b.pp - objetivo) / objetivo * 3); }
   // Desempate final que varía con las respuestas: libros igual de buenos se reparten entre personas distintas
   var firma = Object.keys(ans).filter(function (k) { return k !== 'leidos'; }).sort().map(function (k) { return k + '=' + JSON.stringify(ans[k]); }).join('&');
@@ -1440,7 +1536,11 @@ function recomendar(ans) {
       (b.ar.some(function (c) { return marked.indexOf(c) >= 0; }) ? 1 : 0) +
       Math.min(1, otros.filter(function (t) { return cubre(b, t); }).length) +
       (b.ed === 1 ? 1 : (b.ed === 2 ? 0.5 : 0)) +
-      Math.max(-2, ajustePaginas(b));
+      Math.max(-2, ajustePaginas(b)) +
+      // A quien cuida a alguien: menos manuales de productividad, más libros para bajar la tensión
+      (cuidado ? ((b.f === 'K' && b.ar.indexOf('PRO') >= 0) ? -2 : 0) +
+        (['FIN', 'LID', 'COM', 'BLO'].indexOf(b.ar[0]) >= 0 && topicOf(b.ar[0]) !== T ? -2 : 0) +
+        (b.ar.some(function (c) { return c === 'ANS' || c === 'RUP' || c === 'HER'; }) ? 1 : 0) : 0);
   }
   function compara(ka, kb) { for (var i = 0; i < ka.length; i++) { if (ka[i] !== kb[i]) return ka[i] - kb[i]; } return 0; }
   // Entre los libros que encajan casi igual de bien, se turnan según las respuestas: así ninguno queda fuera para siempre
@@ -1455,6 +1555,8 @@ function recomendar(ans) {
 
   var elegidos = [];
   var avanzados = 0;
+  // Libros avanzados: uno por lista, o dos para quien lee mucho y no está en un momento difícil
+  var maxAvanzados = (L.perfil === 'habitual' && !estab && !dificil && !cuidado && !sensible) ? 2 : 1;
   var restoTemas = lista.map(function (t) { return t.id; });
   // Cupos por tema según su peso: si un tema pesa mucho más que los demás (por ejemplo, el dinero), recibe más libros
   var plan = [];
@@ -1477,7 +1579,7 @@ function recomendar(ans) {
     for (var i = 0; i < intentos.length && !elegido; i++) {
       var t = intentos[i];
       var cands = BOOKS.filter(function (b) {
-        return elegible(b) && elegidos.every(function (e) { return e.b.n !== b.n; }) && cubre(b, t) && (b.nv < 3 || avanzados < 1);
+        return elegible(b) && elegidos.every(function (e) { return e.b.n !== b.n; }) && cubre(b, t) && (b.nv < 3 || avanzados < maxAvanzados);
       });
       if (cands.length) {
         elegido = elegirMejor(cands, t);
@@ -1527,7 +1629,7 @@ function recomendar(ans) {
 
   return {
     lector: L, seguridad: S, scores: scores, temas: lista, top: top, estab: estab, dificil: dificil,
-    N: N, modo: modo, marked: marked, libros: elegidos, idxOf: idxOf, sensible: sensible
+    N: N, modo: modo, marked: marked, libros: elegidos, idxOf: idxOf, sensible: sensible, cuidado: cuidado
   };
 }
 
@@ -1535,6 +1637,13 @@ if (typeof module !== 'undefined') {
   module.exports = { recomendar: recomendar, lector: lector, seguridad: seguridad, areaScore: areaScore, levelOf: levelOf, topicOf: topicOf };
 }
 
+// Botones de la portada: no se pueden enfocar con teclado mientras no se ven
+function enfocable(contenedor, visible) {
+  if (contenedor.__visible === visible) return;
+  contenedor.__visible = visible;
+  try { contenedor.inert = !visible; } catch (e) {}
+  [].forEach.call(contenedor.querySelectorAll('button, a'), function (b) { b.tabIndex = visible ? 0 : -1; });
+}
 // ===== Escena animada: un libro que se abre y llena un estante =====
 function crearEscena(op) {
   op = op || {};
@@ -1551,7 +1660,7 @@ function crearEscena(op) {
   etapa.appendChild(el('div', 'calido'));
   var letras = [];
   for (var i = 0; i < 26; i++) {
-    var l = el('span', 'letra', LETRAS.charAt(i % LETRAS.length));
+    var l = el('span', 'letra', LETRAS.charAt(i % LETRAS.length)); l.setAttribute('aria-hidden', 'true'); // decorativas
     l.style.left = ((i * 37) % 96 + 2) + '%';
     l.style.top = ((i * 53) % 70 + 4) + '%';
     l.style.fontSize = (12 + (i * 7) % 14) + 'px';
@@ -1616,7 +1725,7 @@ function crearEscena(op) {
     if (rotulos[1]) rotulos[1].style.opacity = Math.min(fase(prog, 0.20, 0.28), 1 - fase(prog, 0.38, 0.46)).toFixed(2);
     if (rotulos[2]) rotulos[2].style.opacity = Math.min(fase(prog, 0.46, 0.54), 1 - fase(prog, 0.72, 0.80)).toFixed(2);
     if (pista) pista.style.opacity = (1 - fase(prog, 0, 0.08)).toFixed(2);
-    if (final) { final.style.pointerEvents = c > 0.6 ? 'auto' : 'none'; final.setAttribute('aria-hidden', c > 0.6 ? 'false' : 'true'); }
+    if (final) { final.style.pointerEvents = c > 0.6 ? 'auto' : 'none'; final.setAttribute('aria-hidden', c > 0.6 ? 'false' : 'true'); enfocable(final, c > 0.6); }
   }
   return { el: etapa, poner: poner };
 }
@@ -1900,7 +2009,7 @@ function crearEscena3D(op) {
       r.style.opacity = o.toFixed(2);
     });
     if (pista) pista.style.opacity = (1 - fase(p, 0.02, 0.1)).toFixed(2);
-    if (final) { final.style.opacity = fin.toFixed(2); final.style.transform = 'translateY(' + ((1 - fin) * -12).toFixed(1) + 'px)'; final.style.pointerEvents = fin > 0.6 ? 'auto' : 'none'; }
+    if (final) { final.style.opacity = fin.toFixed(2); final.style.transform = 'translateY(' + ((1 - fin) * -12).toFixed(1) + 'px)'; final.style.pointerEvents = fin > 0.6 ? 'auto' : 'none'; enfocable(final, fin > 0.6); }
   }
 
   // ---------- Avance: scroll con GSAP ScrollTrigger, o tiempo ----------
@@ -1987,12 +2096,12 @@ function crearEscena3D(op) {
       x += ancho + 2; i++;
       if (rnd() < 0.12) x += 10;
     }
-    svg.appendChild(s('rect', { x: 0, y: base, width: w, height: 6, rx: 2, fill: 'var(--ink-soft)', opacity: '0.5' }));
+    svg.appendChild(s('rect', { x: 0, y: base, width: w, height: 6, rx: 2, fill: '#7a5672', opacity: '0.5' }));
     return svg;
   }
 
   // ---------- Secuencia ----------
-  function itemsDe(code) { return [1, 2, 3].map(function (i) { return code + i; }); }
+  function itemsDe(code) { var n = Q_AREAS[code] ? Q_AREAS[code].length : 3; var o = []; for (var i = 1; i <= n; i++) o.push(code + i); return o; }
   function marcados() { return (st.ans.C0 || []).filter(function (c) { return c !== 'none'; }); }
   function modulos() {
     // Las áreas que ya responde todo el mundo (como «Tu potencial») no se repiten como módulo
@@ -2002,6 +2111,8 @@ function crearEscena3D(op) {
     return m;
   }
   function seq() {
+    // Ruta corta: siete preguntas y el resultado; la pantalla de ayuda de B1/B2 funciona igual
+    if (st.ans.modo === 'corto') return ['A1', 'A5', 'A6', 'B1', 'B2', 'C0', 'F2', 'result'];
     var q = ['cap:lectura', 'A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'cap:animo', 'B1', 'B2', 'C0'];
     BASE.forEach(function (c) { q = q.concat(['cap:' + c], itemsDe(c)); });
     var baseHecha = BASE.every(function (c) { return itemsDe(c).every(function (id) { return st.ans[id] !== undefined; }); });
@@ -2123,7 +2234,7 @@ function crearEscena3D(op) {
       on: { input: function (e) { v = +e.target.value; valor.textContent = String(v); seguir.disabled = false; } } });
     return [atras(), pagina([titulo(d.q), h('p', { class: 'chico', style: 'margin-top:8px' }, 'Mueve el punto del 0 al 10.'),
       h('div', { class: 'termo' }, valor, rango, h('div', { class: 'termo-ext' }, h('span', null, '0: ' + d.izq), h('span', null, '10: ' + d.der))),
-      h('div', { class: 'acciones' }, seguir), linkNoResponder(id)], donde)];
+      h('div', { class: 'acciones' }, seguir), linkNoResponder(id, d.na)], donde)];
   }
 
   function fBalanza(id, d, donde) {
@@ -2172,7 +2283,7 @@ function crearEscena3D(op) {
       seguir.disabled = elegidos.length === 0;
     }
     pintar();
-    return [atras(), pagina([titulo(d.q), h('p', { class: 'chico', style: 'margin-top:8px' }, 'Marca todas las que apliquen.'), lista, h('div', { class: 'acciones' }, seguir)], donde)];
+    return [atras(), pagina([titulo(d.q), h('p', { class: 'chico', style: 'margin-top:8px' }, 'Marca todas las que apliquen.'), lista, h('div', { class: 'acciones' }, seguir), linkNoResponder(id)], donde)];
   }
 
   function pantallaArea(id) {
@@ -2187,11 +2298,12 @@ function crearEscena3D(op) {
 
   // ---------- Pantallas ----------
   function pantallaInicio() {
-    var empezar = h('button', { class: 'btn', type: 'button', on: { click: function () { go('cap:lectura'); } } }, 'Descubrir mi libro');
+    var empezar = h('button', { class: 'btn', type: 'button', on: { click: function () { delete st.ans.modo; go('cap:lectura'); } } }, 'Descubrir mi libro');
+    var rapido = h('button', { class: 'link link-rapido', type: 'button', on: { click: function () { st.ans.modo = 'corto'; go('A1'); } } }, 'Solo quiero una recomendación rápida');
     var final = h('div', null, h('p', { class: 'ceja' }, 'Qué leer ahora'),
       h('h1', { tabindex: '-1' }, 'Hay un libro para lo que sientes hoy'),
       h('p', null, 'Cuéntame cómo estás y te ayudo a encontrarlo, como una buena amiga.'),
-      empezar);
+      empezar, h('div', null, rapido));
     if (!reducido && !st.sin3d && webglDisponible()) {
       var e3 = crearEscena3D({ final: final, pista: 'Desliza para bajar', rotulos: ['Hola, qué bueno que estás aquí.', 'Cada respuesta tuya abre una página.', 'Estás a punto de descubrir lo que tu mente y tu corazón necesitan leer.'],
         alFallar: function () { st.sin3d = true; if (st.step === 'welcome') render(); } });
@@ -2482,8 +2594,10 @@ function crearEscena3D(op) {
       descargasClaude = null; verImagen(img);
     });
   }
-  function imagenParaGuardar(img) {
-    var el = h('img', { class: 'lista-imagen', alt: 'Tu lista de lecturas en orden', src: img.datos || (img.blob ? URL.createObjectURL(img.blob) : '') });
+  function imagenParaGuardar(img, urls) {
+    var url = (!img.datos && img.blob) ? URL.createObjectURL(img.blob) : '';
+    if (url) urls.push(url);
+    var el = h('img', { class: 'lista-imagen', alt: 'Tu lista de lecturas en orden', src: img.datos || url });
     // Para mantener presionada y guardar, algunos navegadores dentro de otras apps necesitan la imagen incrustada
     if (!img.datos && img.blob && window.FileReader) {
       var lector = new FileReader();
@@ -2493,20 +2607,22 @@ function crearEscena3D(op) {
     return el;
   }
   function verImagen(img) {
-    var cerrar;
+    var cerrar, urls = []; // direcciones temporales de la imagen: se liberan al cerrar el panel
     var fondo = h('div', { class: 'hoja-fondo', on: { click: function (ev) { if (ev.target === fondo) cerrar(); } } });
+    var urlDescarga = (img.blob && !descargasClaude) ? URL.createObjectURL(img.blob) : '';
+    if (urlDescarga) urls.push(urlDescarga);
     var descarga = !img.blob ? null : (descargasClaude
       ? h('button', { class: 'btn-sec', type: 'button', on: { click: function () { guardarConClaude(img, null); } } }, 'Descargar imagen')
-      : h('a', { class: 'btn-sec', href: URL.createObjectURL(img.blob), download: 'mi-lista-que-leer-ahora.png' }, 'Descargar imagen'));
+      : h('a', { class: 'btn-sec', href: urlDescarga, download: 'mi-lista-que-leer-ahora.png' }, 'Descargar imagen'));
     var hoja = h('div', { class: 'panel-guardar', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'imagen-t' },
       h('div', { class: 'hoja-top' }, h('h2', { id: 'imagen-t', tabindex: '-1' }, 'Tu lista, lista para guardar'), h('button', { class: 'link', type: 'button', on: { click: function () { cerrar(); } } }, 'Cerrar')),
       h('p', null, 'Mantén presionada la imagen y elige «Guardar en Fotos» o «Guardar imagen».'),
-      imagenParaGuardar(img),
+      imagenParaGuardar(img, urls),
       descarga ? h('div', { class: 'acciones' }, descarga) : null);
     fondo.appendChild(hoja);
     var previo = document.activeElement;
     function tecla(ev) { if (ev.key === 'Escape') cerrar(); }
-    cerrar = function () { document.removeEventListener('keydown', tecla); fondo.remove(); if (previo) previo.focus(); };
+    cerrar = function () { document.removeEventListener('keydown', tecla); fondo.remove(); urls.forEach(function (u) { try { URL.revokeObjectURL(u); } catch (e) {} }); if (previo) previo.focus(); };
     document.addEventListener('keydown', tecla);
     document.body.appendChild(fondo);
     hoja.querySelector('h2').focus();
@@ -2551,6 +2667,7 @@ function crearEscena3D(op) {
     if (f2.length) lect.appendChild(h('p', null, 'Dijiste que en seis meses te gustaría: ' + unir(f2.map(function (x) { return '«' + x + '»'; })) + '.'));
     var pesadas = [];
     if (R.modo === 'sostenido') lect.appendChild(h('p', null, 'Tu momento parece sostenido: nada pesa demasiado hoy. Estas lecturas son para seguir creciendo a partir de lo que te gustaría.'));
+    else if (st.ans.modo === 'corto') lect.appendChild(h('p', null, 'Esta es una recomendación rápida, con pocas preguntas. Si un día quieres afinarla, el cuestionario completo tarda unos minutos más.'));
     else if (R.modo === 'estimado') lect.appendChild(h('p', null, 'Como preferiste no responder varias preguntas, esta lista es una primera aproximación con lo que sí nos contaste. Si quieres afinarla, vuelve a empezar y responde las que puedas.'));
     else {
       pesadas = R.temas.slice(0, 2);
@@ -2558,6 +2675,14 @@ function crearEscena3D(op) {
       lect.appendChild(h('h3', null, 'Lo que más pesa ahora'));
       pesadas.forEach(function (t) { lect.appendChild(h('p', { class: 'area-item' }, h('strong', null, AREA[t.area].nombre + '. '), PLANTILLA[t.area][levelOf(R.scores[t.area])])); });
     }
+    // Cuidar a alguien no es un tema con libros propios, pero sí se nombra
+    var nivCui = levelOf(R.scores.CUI);
+    if ((nivCui !== null && nivCui >= 1) || (R.cuidado && nivCui === null)) {
+      if (!pesadas.length) lect.appendChild(h('h3', null, 'Lo que más pesa ahora'));
+      lect.appendChild(h('p', { class: 'area-item' }, h('strong', null, AREA.CUI.nombre + '. '), PLANTILLA.CUI[nivCui === null ? 1 : nivCui]));
+      pesadas = pesadas.concat([{ area: 'CUI' }]);
+    }
+    if (R.cuidado) lect.appendChild(h('p', null, 'Por eso elegimos lecturas más cortas y suaves, que se puedan leer a ratos y dejar sin culpa.'));
     var usadas = pesadas.map(function (t) { return t.area; });
     var bajas = Object.keys(R.scores).filter(function (c) { return R.scores[c] !== null && R.scores[c] <= 2 && usadas.indexOf(c) < 0; }).slice(0, 2);
     if (bajas.length && R.modo !== 'sostenido') {
@@ -2573,7 +2698,9 @@ function crearEscena3D(op) {
     out.push(h('p', { class: 'suave', style: 'margin-top:6px' }, 'Un libro a la vez. Si ya leíste alguno, márcalo y te damos otro.'));
     if (R.libros.length) out.push(botonGuardar(R, false));
     if (st.ans.A6 === 'no') out.push(h('p', { class: 'chico' }, 'Como prefieres evitar la autoayuda, tu lista solo incluye literatura, filosofía y ensayo.'));
-    if (R.lector.audio) out.push(h('p', { class: 'chico' }, 'Como dijiste que aprendes mejor escuchando, busca estos títulos en audiolibro; no todos existen en ese formato.'));
+    if (R.lector.audio) out.push(h('p', { class: 'chico' }, R.lector.dificultad
+      ? 'Como leer te cuesta, te sugerimos escuchar estos títulos en audiolibro, o usar la lectura en voz alta de tu teléfono; no todos existen en audio.'
+      : 'Como dijiste que aprendes mejor escuchando, busca estos títulos en audiolibro; no todos existen en ese formato.'));
     var aviso = h('p', { class: 'chico', role: 'status', style: 'margin:6px 0 0' }, st.mensaje || '');
     st.mensaje = '';
     out.push(aviso);
