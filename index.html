@@ -1035,7 +1035,11 @@ var CAPITULOS, BENEFICIOS;
   CAPITULOS.COM = { t: 'Tu voz', f: 'Hablar, escribir o contar una historia: todo cuenta.' };
 })();
 
-// ===== Versión 4: preguntas para cualquier persona y etapa, cambios de etapa y potencial =====
+// ===== Versión 4: cuestionario completo reescrito para cualquier persona =====
+// Criterios: 1) cualquiera puede responder, trabaje o no, tenga pareja o no, a cualquier edad;
+// 2) las preguntas hablan de lo que se vive, no de circunstancias concretas;
+// 3) cada respuesta contesta su pregunta y las opciones van de menos a más;
+// 4) cada pregunta mueve la recomendación hacia libros que sí están en la biblioteca.
 (function () {
   if (typeof module !== 'undefined') return;
   function libro(n) { return BOOKS.filter(function (b) { return b.n === n; })[0]; }
@@ -1044,117 +1048,199 @@ var CAPITULOS, BENEFICIOS;
   // ---- Biblioteca ----
   // «Design de vida» no tiene edición en español: su lugar lo toma una guía práctica que sí existe en México
   var b33 = libro(33);
-  b33.t = 'Encuentra tu elemento'; b33.a = 'Ken Robinson y Lou Aronica'; b33.tipo = 'P'; b33.ar = ['PRO', 'SEN', 'CAM'];
+  b33.t = 'Encuentra tu elemento'; b33.a = 'Ken Robinson y Lou Aronica'; b33.tipo = 'P'; b33.ar = ['PRO', 'SEN'];
   b33.f = 'K'; b33.nv = 1; b33.pp = 256; b33.ed = 1; b33.aa = true; b33.hi = false;
   b33.ay = 'descubrir tus talentos y lo que te apasiona con preguntas y ejercicios, en cualquier edad o etapa';
   b33.cu = 'Repite algunas ideas de El Elemento; si ya lo leíste, ve directo a los ejercicios.';
-  BOOKS.push({ n: 141, t: 'Indomable', a: 'Glennon Doyle', tipo: 'L', ar: ['PRO', 'SEN', 'MIE', 'CAM'], f: 'C', nv: 1, pp: 336,
+  BOOKS.push({ n: 141, t: 'Indomable', a: 'Glennon Doyle', tipo: 'L', ar: ['PRO', 'SEN', 'MIE'], f: 'C', nv: 1, pp: 336,
     ay: 'dejar de vivir según lo que esperan de ti y escuchar lo que tú quieres',
     cu: 'Son memorias muy personales: habla de su divorcio, de su nueva relación con una mujer y de su historia de recuperación.', hi: false, ed: 2, aa: true });
-  // Potencial: los libros generales van antes que los de carrera
+  // Crecimiento: los libros generales van antes que los de carrera
   libro(15).ar = ['PRO', 'SEN']; libro(15).ed = 1;
   libro(87).ar = ['PRO', 'SEN', 'BLO']; libro(87).ed = 1;
-  etiqueta(16, 'PRO');
-  // Cambios de etapa
-  libro(20).ar = ['CAM', 'PRO', 'MIE'];
-  [3, 34, 52, 68, 112, 113, 140].forEach(function (n) { etiqueta(n, 'CAM'); });
+  etiqueta(16, 'PRO'); libro(16).ed = 2;
+  // Cambio de etapa y sentido: libros para cuando lo que ordenaba la vida cambió
+  // (Sentido y Cambio de etapa cuentan como un solo tema, así que la etiqueta no infla la cobertura de los libros de rumbo)
+  libro(20).ar = ['CRI', 'MIE'];
+  [3, 16, 52, 68, 112, 113, 140].forEach(function (n) { etiqueta(n, 'CRI'); });
+  // Tono severo: buenos para quien lee seguido y vive el cambio con ánimo; para quien lee poco o está en un momento sensible se prefiere una opción cálida
+  [65, 68, 34].forEach(function (n) { libro(n).severo = true; });
+  // Opciones cálidas para el mismo tema
+  [57, 115].forEach(function (n) { etiqueta(n, 'CRI'); });
 
-  AREA.CAM = { nombre: 'Una etapa de cambios', en: 'los cambios de esta etapa' };
-  if (MODULOS.indexOf('CAM') < 0) MODULOS.push('CAM');
-  AREA.PRO = { nombre: 'Tu potencial y tu crecimiento', en: 'tu potencial y tu crecimiento' };
+  // ---- Nombres de las áreas y textos del resultado ----
+  AREA.PRO = { nombre: 'Tu crecimiento', en: 'tu crecimiento' };
+  AREA.CRI = { nombre: 'Cambio de etapa y sentido', en: 'los cambios de etapa y el sentido' };
+  AREA.RUP = { nombre: 'Pérdidas', en: 'las pérdidas' };
+  AREA.BLO = { nombre: 'Proyectos propios y creatividad', en: 'tus proyectos y tu creatividad' };
+  AREA.LID = { nombre: 'Guiar a otros', en: 'guiar a otros' };
   PLANTILLA.PRO = [
-    'Sientes que creces y que usas buena parte de lo que tienes para dar. Es una base que vale la pena cuidar.',
+    'Sientes que creces y que usas buena parte de lo que sabes hacer. Es una base que vale la pena cuidar.',
     'Hay una parte de ti que todavía no encuentra dónde desarrollarse. No es urgente, pero vale la pena escucharla.',
     'Tus respuestas sugieren que sientes que tienes mucho más para dar y no sabes por dónde empezar. Es muy común, sobre todo en etapas de cambio, y suele aclararse probando cosas pequeñas, no esperando la respuesta perfecta.'
   ];
-  PLANTILLA.CAM = [
-    'Estás viviendo cambios y los vas acomodando a tu ritmo. Es una buena señal.',
-    'Los cambios de esta etapa te mueven: hay días en que encajas y días en que no. Es parte de cualquier transición.',
-    'Parece una etapa en la que muchas cosas se movieron a la vez y cuesta encontrar tu lugar. No hace falta tenerlo todo claro ya: las transiciones tienen su propio tiempo.'
+  PLANTILLA.CRI = [
+    'Lo que le da sentido a tus días sigue en pie.',
+    'Algo de lo que te daba sentido cambió o perdió fuerza. Puede ser la señal de una etapa nueva.',
+    'Parece que lo que antes ordenaba tu vida cambió y todavía no encuentras tu lugar. Es desorientador, y las transiciones tienen su propio tiempo: preguntarte con calma suele ayudar más que buscar respuestas rápidas.'
+  ];
+  PLANTILLA.RUP = [
+    'Parece que ya recorriste un buen tramo del camino con esa pérdida.',
+    'Hay días en que duele y días en que puedes seguir; ese vaivén es normal en un duelo.',
+    'Parece una pérdida muy presente en tus días. Los tiempos del duelo no se pueden apurar, y cuidarte ahora es parte del camino.'
   ];
 
-  // ---- Preguntas: que sirvan con o sin trabajo, con o sin pareja, en cualquier etapa ----
-  Q_C0.q = 'De estas situaciones, ¿cuáles se parecen más a lo que vives ahora?';
+  // ---- Capítulo 1: tu forma de leer ----
+  Q_A.A2.q = '¿Cuál de estas frases se parece más a tu relación con la lectura?';
+  Q_A.A3 = { q: '¿Qué te trajo aquí hoy?', opts: [
+    ['Estoy pasando por un momento difícil y busco apoyo', 'dificil'],
+    ['Siento que algo en mi vida necesita cambiar', 'cambio'],
+    ['Quiero conocerme mejor, sin prisa', 'conocerme'],
+    ['Me lo recomendaron', 'recomendacion'],
+    ['Curiosidad: quería ver de qué se trata', 'curiosidad']] };
+
+  // ---- Lo que vives ahora: experiencias, no circunstancias ----
+  Q_C0.q = 'De estas frases, ¿cuáles se parecen más a lo que vives ahora?';
   Q_C0.opts = [
-    ['Una etapa de muchos cambios: una mudanza, un retiro, los hijos que crecen, empezar de nuevo', 'CAM'],
-    ['Siento que tengo mucho potencial, pero no sé hacia dónde llevarlo', 'PRO'],
-    ['Una ruptura o una pérdida reciente', 'RUP'],
-    ['Una preocupación o tensión que no logro apagar', 'ANS'],
-    ['Siento que perdí el sentido de lo que hago', 'CRI'],
-    ['Cosas del pasado que siguen presentes en cómo reacciono hoy', 'HER'],
-    ['El dinero: deudas, poco ahorro o no saber en qué se me va', 'FIN'],
-    ['Expresarme: hablar en público, contar mis ideas o decir lo que pienso', 'COM'],
-    ['Quiero crear o emprender algo y no logro empezarlo o terminarlo', 'BLO'],
-    ['Coordinar a un equipo o grupo (en el trabajo, un negocio o mi comunidad)', 'LID'],
-    ['Nada de esto en particular', 'none']
+    ['Perdí a alguien o algo importante y todavía me duele', 'RUP'],
+    ['Lo que antes le daba sentido a mi vida cambió o ya no me llena', 'CRI'],
+    ['Tengo una preocupación que no logro apagar', 'ANS'],
+    ['Cosas de mi pasado todavía pesan en cómo reacciono hoy', 'HER'],
+    ['Quiero sacar adelante algo mío y no lo logro', 'BLO'],
+    ['El dinero no me alcanza o no sé en qué se me va', 'FIN'],
+    ['Me cuesta decir lo que pienso o expresarme frente a otros', 'COM'],
+    ['Coordino a un equipo o grupo y me está costando', 'LID'],
+    ['Ninguna en particular', 'none']
   ];
 
-  Q_AREAS.SEN[2] = { f: 'lista', q: '¿Cuáles de estas frases son verdad para ti hoy?', opts: [
-    'Tengo algo concreto que quiero lograr este año',
-    'Hay algo que aprendo o practico solo por gusto',
-    'Sé lo que ya no quiero en mi vida',
-    'Cada semana tengo al menos un rato que siento muy mío'] };
-
-  Q_AREAS.REL[0] = { f: 'escena', q: 'Te llega una buena noticia. ¿Qué haces primero?', opts: [
-    ['Se la cuento a alguien cercano que sé que se alegrará', 0],
-    ['Se la cuento a alguien, aunque no sé si se alegrará de verdad', 1],
-    ['La publico en redes, sin contársela a nadie en especial', 2],
-    ['Me la guardo: no tengo con quién compartirla', 3]] };
-
-  Q_AREAS.HAB[1].opts[3] = 'Tuve mis cosas (casa, papeles, pendientes) más o menos en orden';
-  Q_AREAS.HAB[2] = { f: 'escena', q: 'Tienes algo importante que hacer, pero no es urgente: un trámite, una cita médica, un pendiente de la casa. ¿Qué suele pasar?', opts: [
-    ['Lo hago a tiempo, con calma', 0], ['Lo hago, pero a última hora', 1], ['Lo pospongo hasta que se vuelve urgente', 2], ['Se me olvida o lo dejo', 3]] };
-
-  Q_AREAS.MIE[1].b = 'Prefiero no intentar algo si no tengo la seguridad de que saldrá bien.';
-
+  // ---- Áreas que responde todo el mundo ----
+  Q_AREAS.SEN = [
+    { f: 'termo', q: '¿Qué tan claro tienes lo que quieres para tu vida en los próximos años?', izq: 'Nada claro', der: 'Muy claro', carga: 'izq' },
+    { f: 'escena', q: 'Imagina que mañana tienes una tarde libre, sin compromisos. ¿Qué pasaría más probablemente?', opts: [
+      ['La usaría en algo que de verdad me importa', 0],
+      ['Haría algo agradable, sin pensarlo mucho', 1],
+      ['Se me iría en el celular o en pendientes', 2],
+      ['No sabría qué hacer con ella', 3]] },
+    { f: 'lista', q: '¿Cuáles de estas frases son verdad para ti hoy?', opts: [
+      'Tengo algo concreto que quiero lograr este año',
+      'Hay algo que aprendo o practico solo por gusto',
+      'Sé lo que ya no quiero en mi vida',
+      'Cada semana tengo al menos un rato que siento muy mío'] }
+  ];
+  Q_AREAS.REL = [
+    { f: 'escena', q: 'Tuviste un día difícil. ¿Qué pasa cuando llega la noche?', opts: [
+      ['Se lo cuento a alguien cercano y me siento mejor', 0],
+      ['Se lo cuento a alguien, pero siento que no me entiende del todo', 1],
+      ['Prefiero no contarlo para no preocupar ni molestar a nadie', 2],
+      ['No tengo a quién contárselo', 3]] },
+    { f: 'balanza', q: '¿Cuál de estas dos frases se parece más a ti?', a: 'Cuando algo de alguien cercano me molesta, se lo digo y lo hablamos.', b: 'Cuando algo de alguien cercano me molesta, me lo guardo o exploto después.' },
+    { f: 'termo', q: '¿Qué tan en paz te sientes hoy con las personas más cercanas a ti?', izq: 'Nada en paz', der: 'Muy en paz', carga: 'izq' }
+  ];
+  Q_AREAS.HAB = [
+    { f: 'termo', q: '¿Con cuánta energía terminas un día normal?', izq: 'Sin nada de energía', der: 'Con energía de sobra', carga: 'izq' },
+    { f: 'lista', q: '¿Cuáles de estas hiciste la semana pasada?', opts: [
+      'Dormí lo suficiente casi todas las noches',
+      'Me moví o hice ejercicio al menos tres días',
+      'Terminé lo más importante que tenía pendiente',
+      'Tuve mis cosas y mis pendientes más o menos en orden'] },
+    { f: 'escena', q: 'Tienes algo importante que hacer, pero no es urgente. ¿Qué suele pasar?', opts: [
+      ['Lo hago a tiempo y con calma', 0], ['Lo hago, pero a última hora', 1], ['Lo pospongo hasta que se vuelve urgente', 2], ['Se me olvida o lo dejo', 3]] }
+  ];
+  Q_AREAS.MIE = [
+    { f: 'escena', q: 'Piensa en algo que quieres hacer desde hace tiempo y todavía no haces. ¿Qué te frena más?', opts: [
+      ['Nada: ya estoy en eso o lo haré pronto', 0],
+      ['Me faltan tiempo o recursos, no ganas ni valor', 1],
+      ['Las dudas: ¿y si sale mal?', 2],
+      ['El miedo a fallar, a lo que digan o a perder lo que tengo', 3]] },
+    { f: 'balanza', q: '¿Cuál de estas dos frases se parece más a ti?', a: 'Prefiero equivocarme intentándolo que quedarme con la duda.', b: 'Prefiero no intentar algo si no tengo la seguridad de que saldrá bien.' },
+    { f: 'termo', q: '¿Qué tanto pesa en tus decisiones lo que piensen los demás?', izq: 'Nada', der: 'Muchísimo', carga: 'der' }
+  ];
   Q_AREAS.PRO = [
-    { f: 'escena', q: 'Piensa en lo que ocupa la mayor parte de tus días: un trabajo, tus estudios, tu casa, cuidar a alguien o buscar algo nuevo. ¿Cómo te sientes ahí?', opts: [
+    { f: 'escena', q: 'Piensa en lo que haces la mayor parte de tus días. ¿Cómo te sientes ahí?', opts: [
       ['Siento que crezco y aprendo', 0],
       ['Estoy bien, aunque sin grandes cambios', 1],
-      ['Siento que me estanqué, o que me pide más de lo que puedo dar', 2],
-      ['Estoy en una etapa de cambio y no sé cuál es mi siguiente paso', 3]] },
+      ['Siento que me estanqué', 2],
+      ['Siento que tengo mucho más para dar y no sé dónde ponerlo', 3]] },
     { f: 'lista', q: '¿Cuáles de estas hiciste en los últimos tres meses?', opts: [
-      'Aprendí algo nuevo: un curso, una habilidad o algo que leí',
+      'Aprendí algo nuevo que me entusiasmó',
       'Platiqué mis ideas o planes con alguien que me puede orientar',
       'Di un paso, aunque fuera pequeño, hacia algo que quiero para mí',
       'Hice algo que se me da bien y lo disfruté'] },
-    { f: 'termo', q: '¿Qué tanto sientes que tienes más para dar de lo que hoy estás usando?', izq: 'Nada: uso todo lo que tengo', der: 'Muchísimo', carga: 'der' }
+    { f: 'termo', q: '¿Qué tanto usas en tu día a día lo que sabes hacer bien?', izq: 'Casi nada', der: 'Todo el tiempo', carga: 'izq' }
   ];
 
-  Q_AREAS.ANS[2].b = 'Cuando me altero, no sé cómo calmarme.';
-
-  Q_AREAS.CRI[0].q = '¿Qué describe mejor lo que sientes hoy por aquello que antes le daba sentido a tu vida (un trabajo, tu papel en la familia, una relación, un proyecto o una creencia)?';
-
-  Q_AREAS.LID[0].q = 'Tuviste que darle una mala noticia o un comentario difícil a alguien del equipo o grupo que coordinas. ¿Qué hiciste?';
-
-  Q_AREAS.FIN[0] = { f: 'lista', q: '¿Cuáles de estas frases son verdad para ti hoy?', opts: [
-    'Sé más o menos cuánto se gasta al mes', 'Tengo un ahorro para emergencias, aunque sea pequeño', 'No tengo deudas ni pagos atrasados', 'Aparto algo de dinero cada mes'] };
-  Q_AREAS.FIN[1] = { f: 'escena', q: 'Llega un gasto inesperado grande, como lo que se gasta en tu casa en un mes. ¿Qué pasa?', opts: [
-    ['Se cubre con ahorros', 0], ['Se cubre, pero nos deja sin colchón', 1], ['Hay que pedir prestado o usar la tarjeta', 2], ['No sabría cómo cubrirlo', 3]] };
-
-  Q_AREAS.CAM = [
-    { f: 'escena', q: 'Piensa en los cambios que estás viviendo. ¿Cómo te sientes con ellos?', opts: [
-      ['Los voy acomodando con calma', 0],
-      ['Hay días buenos y días en que me cuestan', 1],
-      ['Me siento fuera de lugar, como si no supiera cuál es mi lugar ahora', 2],
-      ['Siento que todo se movió a la vez y no encuentro de dónde agarrarme', 3]] },
-    { f: 'termo', q: '¿Qué tanto te está costando adaptarte a esta nueva etapa?', izq: 'Nada', der: 'Muchísimo', carga: 'der' },
-    { f: 'balanza', q: '¿Cuál de estas dos frases se parece más a ti?', a: 'Veo esta etapa como un comienzo, aunque me dé miedo.', b: 'Siento que con esta etapa perdí algo que no sé cómo recuperar.' }
+  // ---- Módulos: solo si la persona marcó esa situación ----
+  Q_AREAS.ANS = [
+    { f: 'escena', q: 'Es de noche y algo te preocupa. ¿Qué suele pasar?', opts: [
+      ['Lo pienso un rato y me duermo', 0], ['Le doy vueltas, pero al final me duermo', 1], ['Me cuesta dormir porque no puedo soltarlo', 2], ['Me pasa casi todas las noches y lo noto en el cuerpo', 3]] },
+    { f: 'termo', q: 'En las últimas semanas, ¿cuánta tensión has sentido en el cuerpo (cuello, estómago, respiración)?', izq: 'Ninguna', der: 'Muchísima', carga: 'der' },
+    { f: 'balanza', q: '¿Cuál de estas dos frases se parece más a ti?', a: 'Cuando me altero, sé qué hacer para calmarme.', b: 'Cuando me altero, no sé cómo calmarme.' }
+  ];
+  Q_AREAS.RUP = [
+    { f: 'escena', q: 'Pensando en esa pérdida, ¿en qué momento estás?', opts: [
+      ['La siento asimilada y la recuerdo con calma', 0],
+      ['Hay días de tristeza, pero mi vida sigue su curso', 1],
+      ['Pasó tiempo y sigue ocupando buena parte de mis pensamientos', 2],
+      ['Es muy reciente o muy intensa y me cuesta seguir con mi vida', 3]] },
+    { f: 'balanza', q: '¿Cuál de estas dos frases se parece más a ti hoy?', a: 'Puedo recordar lo que pasó sin que me desborde.', b: 'Cuando lo recuerdo, me desborda.' },
+    { f: 'termo', q: '¿Qué tanto ocupa esa pérdida tus pensamientos en un día normal?', izq: 'Casi nada', der: 'Casi todo el día', carga: 'der' }
+  ];
+  Q_AREAS.HER = [
+    { f: 'escena', intro: 'Aquí no te preguntamos qué te pasó, solo cómo se nota hoy.', q: 'Cuando alguien te critica o te deja de lado, ¿qué pasa dentro de ti la mayoría de las veces?', opts: [
+      ['Me duele un momento y lo proceso', 0], ['Me afecta varios días, pero logro ubicarlo', 1], ['Reacciono con mucha intensidad y luego no entiendo por qué', 2], ['Se me mueve algo muy antiguo y me cuesta separarlo de lo de hoy', 3]] },
+    { f: 'balanza', q: '¿Cuál de estas dos frases se parece más a ti?', a: 'Cuando me equivoco, me hablo con paciencia.', b: 'Cuando me equivoco, me trato con mucha dureza.' },
+    { f: 'escena', q: '¿Notas que algo se repite en tus relaciones?', opts: [
+      ['No, cada relación ha sido distinta', 0], ['A veces veo algún patrón, pero lo manejo', 1], ['Sí, suelo terminar en situaciones parecidas', 2], ['Sí, y siento que no puedo salir de él', 3]] }
+  ];
+  Q_AREAS.CRI = [
+    { f: 'escena', q: 'Piensa en lo que antes le daba orden o sentido a tus días. ¿Qué pasa con eso hoy?', opts: [
+      ['Sigue ahí y me sigue llenando', 0],
+      ['Sigue ahí, pero ya no me llena como antes', 1],
+      ['Cambió o se terminó, y todavía no encuentro qué ocupe su lugar', 2],
+      ['Siento un vacío: ya no sé cuál es mi lugar', 3]] },
+    { f: 'termo', q: '¿Qué tan seguido te preguntas «¿y ahora qué sigue para mí?» sin encontrar respuesta?', izq: 'Nunca', der: 'Todo el tiempo', carga: 'der' },
+    { f: 'balanza', q: '¿Cuál de estas dos frases se parece más a ti hoy?', a: 'Veo esta etapa como un comienzo, aunque me dé miedo.', b: 'Siento que en esta etapa perdí algo que no sé cómo recuperar.' }
+  ];
+  Q_AREAS.LID = [
+    { f: 'escena', q: 'Tuviste que decirle algo difícil a alguien del grupo que coordinas. ¿Qué hiciste?', opts: [
+      ['Lo dije con claridad y a tiempo', 0], ['Lo dije, pero tan suavizado que casi no se entendió', 1], ['Lo pospuse hasta que fue un problema mayor', 2], ['Lo resolví yo para no tener esa conversación', 3]], na: 'No me ha tocado' },
+    { f: 'lista', q: '¿Cuáles de estas pasan en el grupo que coordinas?', opts: ['La gente me trae los problemas sin miedo', 'Cada quien sabe qué le toca', 'Puedo delegar sin revisar todo', 'Hablamos los desacuerdos de frente'] },
+    { f: 'termo', q: '¿Cuánto de lo que le toca al grupo terminas cargando tú?', izq: 'Lo justo', der: 'Casi todo', carga: 'der' }
+  ];
+  Q_AREAS.BLO = [
+    { f: 'escena', q: 'Piensa en algo que quieres crear o sacar adelante por tu cuenta. ¿Qué pasa con más frecuencia?', opts: [
+      ['Avanzo a buen ritmo y lo termino', 0], ['Avanzo, pero tardo más de lo que planeé', 1], ['Empiezo muchas cosas y me cuesta terminar alguna', 2], ['Casi no logro empezar', 3]] },
+    { f: 'termo', q: '¿Qué tan seguido haces algo creativo solo por gusto?', izq: 'Nunca', der: 'Todo el tiempo', carga: 'izq' },
+    { f: 'balanza', q: '¿Cuál de estas dos frases se parece más a ti?', a: 'Muestro lo que hago aunque no esté perfecto.', b: 'Si no está perfecto, no lo muestro.' }
+  ];
+  Q_AREAS.FIN = [
+    { f: 'lista', q: '¿Cuáles de estas frases son verdad para ti hoy?', opts: [
+      'Sé más o menos cuánto se gasta al mes', 'Tengo un ahorro para emergencias, aunque sea pequeño', 'No tengo deudas ni pagos atrasados', 'Aparto algo de dinero cada mes'] },
+    { f: 'escena', q: 'Llega un gasto grande que no esperabas. ¿Qué pasa?', opts: [
+      ['Se cubre con ahorros', 0], ['Se cubre, pero nos deja sin colchón', 1], ['Hay que pedir prestado o usar la tarjeta', 2], ['No sabría cómo cubrirlo', 3]] },
+    { f: 'escena', q: '¿Cómo llegas a fin de mes, normalmente?', opts: [
+      ['Me sobra y lo ahorro', 0], ['Llego justo, pero llego', 1], ['A veces no llego y tengo que pedir prestado', 2], ['Casi nunca llego', 3]] }
+  ];
+  Q_AREAS.COM = [
+    { f: 'escena', q: 'Tienes que explicar una idea frente a varias personas. ¿Qué pasa?', opts: [
+      ['Lo hago con gusto y me entienden', 0], ['Lo hago, aunque con nervios', 1], ['Lo evito o le pido a alguien más que lo haga', 2], ['Me bloqueo o no digo lo que quería', 3]] },
+    { f: 'balanza', q: '¿Cuál de estas dos frases se parece más a ti?', a: 'Cuando cuento algo, la gente me sigue con interés.', b: 'Cuando cuento algo, siento que me enredo o pierdo a la gente.' },
+    { f: 'lista', q: '¿Cuáles de estas te salen con naturalidad?', opts: ['Explicar una idea en pocas palabras', 'Contar una anécdota que enganche', 'Decir que no sin dar mil explicaciones', 'Hablar frente a un grupo'] }
   ];
 
-  // Todas las comparaciones con el mismo título, más claro
-  Object.keys(Q_AREAS).forEach(function (c) { Q_AREAS[c].forEach(function (d) { if (d.f === 'balanza' && /^¿Cuál se parece más a ti/.test(d.q)) d.q = d.q.indexOf('hoy') > 0 ? '¿Cuál de estas dos frases se parece más a ti hoy?' : '¿Cuál de estas dos frases se parece más a ti?'; }); });
+  // ---- Para cerrar ----
+  Q_F2.opts = [
+    ['Más calma y menos preocupación', 'ANS'], ['Tener claro hacia dónde voy', 'SEN'], ['Sentirme más cerca de mi gente', 'REL'],
+    ['Tener más energía y orden', 'HAB'], ['Decidir sin tanto miedo', 'MIE'], ['Crecer y usar más lo que sé hacer', 'PRO'],
+    ['Sentirme en paz con lo que perdí', 'RUP'], ['Sentirme mejor conmigo y con mi historia', 'HER'], ['Guiar mejor a quienes coordino', 'LID'],
+    ['Sacar adelante algo mío', 'BLO'], ['Tener mis finanzas en orden', 'FIN'], ['Expresarme con más seguridad', 'COM']
+  ];
 
-  Q_F2.opts = Q_F2.opts.map(function (o) {
-    if (o[1] === 'PRO') return ['Desarrollar lo que tengo para dar', 'PRO'];
-    if (o[1] === 'LID') return ['Coordinar a mi equipo o grupo con más seguridad', 'LID'];
-    return o;
-  });
-  Q_F2.opts.splice(1, 0, ['Sentirme en paz con los cambios de esta etapa', 'CAM']);
-
-  CAPITULOS.PRO = { t: 'Tu potencial', f: 'Sirve para cualquier etapa: con trabajo o sin él, estudiando, en casa o empezando algo nuevo.' };
-  CAPITULOS.CAM = { t: 'Tus cambios', f: 'Piensa en lo que se movió en tu vida: tu casa, tu familia, tu rutina o tu lugar en todo eso.' };
-  CAPITULOS.LID.f = 'Piensa en el equipo o grupo que coordinas: en el trabajo, un negocio o tu comunidad.';
+  CAPITULOS.PRO = { t: 'Tu crecimiento', f: 'Piensa en lo que haces con tus días, sea lo que sea.' };
+  CAPITULOS.RUP = { t: 'Lo que perdiste', f: 'Ve a tu ritmo. Puedes saltar cualquier pregunta.' };
+  CAPITULOS.CRI = { t: 'Lo que cambió', f: 'Piensa en lo que antes ordenaba tus días y en lo que los ordena hoy.' };
+  CAPITULOS.LID = { t: 'Guiar a otros', f: 'Piensa en el grupo que coordinas, sea cual sea.' };
+  CAPITULOS.BLO = { t: 'Lo tuyo', f: 'Cuenta todo lo que quieres crear o sacar adelante, grande o pequeño.' };
 })();
 
 function pts(code, arr, o) { arr.forEach(function (v, i) { o[code + (i + 1)] = v; }); }
@@ -1245,7 +1331,7 @@ function recomendar(ans) {
       topics[t] = { id: t, idx: scores[c] + (marked.indexOf(c) >= 0 ? 2 : 0), area: c };
     }
   });
-  var orden = ['SENT', 'REL', 'HAB', 'MIE', 'PRO', 'CAM', 'ANS', 'RUP', 'HER', 'LID', 'BLO', 'FIN', 'COM'];
+  var orden = ['SENT', 'REL', 'HAB', 'MIE', 'PRO', 'ANS', 'RUP', 'HER', 'LID', 'BLO', 'FIN', 'COM'];
   var f2topics = f2.map(topicOf);
   // F2 solo desempata: medio punto nunca supera una diferencia real de un punto
   Object.keys(topics).forEach(function (k) { if (f2topics.indexOf(k) >= 0) { topics[k].idx += 0.5; topics[k].f2 = true; } });
@@ -1293,9 +1379,12 @@ function recomendar(ans) {
     return true;
   }
   function cubre(b, t) { return b.ar.some(function (c) { return topicOf(c) === t; }); }
+  // Momento sensible: si la persona lo vive como pérdida o viene de semanas pesadas, se prefiere un libro cálido a uno de tono severo
+  var sensible = dificil || S.nivel !== 'verde' || num(ans.B1) >= 2 || num(ans.CRI1) === 3 || num(ans.CRI3) >= 2 || num(ans.RUP2) >= 2;
   function claves(b, T) {
     var otros = top.filter(function (t) { return t !== T; });
     return [
+      b.severo && (L.perfil === 'nuevo' || sensible) ? 0 : 1,
       estab ? (b.f === 'E' ? 1 : 0) : 0,
       b.ar.some(function (c) { return marked.indexOf(c) >= 0; }) ? 1 : 0,
       L.perfil === 'nuevo' ? (b.nv === 1 ? 1 : 0) : (L.perfil === 'habitual' ? (b.nv >= 2 ? 1 : 0) : 0),
@@ -1373,7 +1462,7 @@ function recomendar(ans) {
 
   return {
     lector: L, seguridad: S, scores: scores, temas: lista, top: top, estab: estab, dificil: dificil,
-    N: N, modo: modo, marked: marked, libros: elegidos, idxOf: idxOf
+    N: N, modo: modo, marked: marked, libros: elegidos, idxOf: idxOf, sensible: sensible
   };
 }
 
@@ -2094,7 +2183,7 @@ function crearEscena3D(op) {
 
   function pantallaOferta(code) {
     var t = {
-      CRI: ['Tus respuestas sobre el rumbo pesan bastante', '¿Quieres responder 3 preguntas más sobre lo que antes te daba sentido? Así afinamos tu lista.'],
+      CRI: ['Tus respuestas sobre el rumbo pesan bastante', '¿Quieres responder 3 preguntas más sobre lo que ha cambiado en tu vida y lo que hoy le da sentido? Así afinamos tu lista.'],
       ANS: ['Dijiste que la tensión aparece seguido', '¿Quieres responder 3 preguntas más sobre la preocupación y cómo te calmas? Así afinamos tu lista.']
     }[code];
     return [atras(), pagina([titulo(t[0], ''), h('p', { style: 'margin-top:14px' }, t[1]),
@@ -2422,6 +2511,7 @@ function crearEscena3D(op) {
       ['Presupuesto de 12 semanas', R.lector.budget + ' páginas (' + R.lector.pace + ' por semana)'],
       ['Ánimo', S.nivel], ['Empezar con calma (modo estabilizar)', R.estab ? 'sí' : 'no'], ['Número de libros', String(R.N)],
       ['Temas por prioridad', R.temas.map(function (t) { return AREA[t.area].nombre + ' ' + Math.floor(t.idx) + (t.f2 ? ' + desempate' : ''); }).join('; ')],
+      ['Momento sensible (se prefieren libros cálidos a los de tono severo)', R.sensible ? 'sí' : 'no'],
       ['Libros marcados como leídos', String((st.ans.leidos || []).length)]
     ];
     out.push(h('details', { class: 'calculo' }, h('summary', null, 'Cómo se armó tu lista'),
