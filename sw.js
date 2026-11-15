@@ -1,6 +1,6 @@
 // Qué leer ahora: permite abrir la app sin conexión después de la primera visita
-var VERSION = 'qla-v1';
-var PROPIOS = ['./', './index.html', './manifest.webmanifest', './apple-touch-icon.png', './icon-192.png', './icon-512.png'];
+var VERSION = 'qla-v2';
+var PROPIOS = ['./', './manifest.webmanifest', './apple-touch-icon.png', './icon-192.png'];
 
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(VERSION).then(function (c) { return c.addAll(PROPIOS); }).then(function () { return self.skipWaiting(); }));

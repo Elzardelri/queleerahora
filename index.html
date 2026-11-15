@@ -12,7 +12,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Literata:opsz,wght@7..72,400;7..72,600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Literata:opsz,wght@7..72,400;7..72,600&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Literata:opsz,wght@7..72,400;7..72,600&display=swap"></noscript>
 <style>
 :root {
   --paper: #f2f5f1;
@@ -1664,7 +1665,8 @@ function crearEscena3D(op) {
   var renderer;
   try { renderer = window.__fabricaRenderer ? window.__fabricaRenderer() : new T.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' }); }
   catch (e) { return null; }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  // En celular, 1.5 de resolución basta y le quita casi la mitad de trabajo al teléfono
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.innerWidth < 600 ? 1.5 : 2));
   if (renderer.setClearColor) renderer.setClearColor(0x000000, 0);
   if (T.sRGBEncoding !== undefined) renderer.outputEncoding = T.sRGBEncoding;
   lienzo.appendChild(renderer.domElement);
@@ -1921,7 +1923,7 @@ function crearEscena3D(op) {
       if (t0 === null) t0 = ms;
       var reloj = (ms - t0) / 1000;
       if (op.modo === 'tiempo') { var pt = clamp(reloj * 1000 / (op.duracion || 7000)); objetivo = lerp(op.desde || 0.06, op.hasta || 0.86, pt); }
-      actual += (objetivo - actual) * 0.09;
+      actual += (objetivo - actual) * 0.14; // sigue al dedo con menos retraso
       aplicar(actual, reloj);
       renderer.render(escena, camara);
     } catch (e) { destruir(); if (op.alFallar) op.alFallar(e); }
@@ -2453,14 +2455,16 @@ function crearEscena3D(op) {
     var registro = { clave: clave, listo: null };
     registro.promesa = fuentesListas().then(function () {
       return new Promise(function (ok) {
-        var c = dibujarLista(R), datos = c.toDataURL('image/png');
-        var terminar = function (blob) {
+        var c = dibujarLista(R);
+        var terminar = function (blob, datos) {
           var archivo = null;
           try { if (blob && typeof File === 'function') archivo = new File([blob], 'mi-lista-que-leer-ahora.png', { type: 'image/png' }); } catch (e) {}
-          registro.listo = { datos: datos, blob: blob, archivo: archivo };
+          registro.listo = { datos: datos || null, blob: blob, archivo: archivo };
           ok(registro.listo);
         };
-        if (c.toBlob) c.toBlob(terminar, 'image/png'); else terminar(null);
+        // Solo el archivo PNG; la versión para mostrar en pantalla se hace hasta que se necesita
+        if (c.toBlob) c.toBlob(function (blob) { if (blob) terminar(blob); else terminar(null, c.toDataURL('image/png')); }, 'image/png');
+        else terminar(null, c.toDataURL('image/png'));
       });
     });
     st.imagen = registro;
@@ -2478,6 +2482,16 @@ function crearEscena3D(op) {
       descargasClaude = null; verImagen(img);
     });
   }
+  function imagenParaGuardar(img) {
+    var el = h('img', { class: 'lista-imagen', alt: 'Tu lista de lecturas en orden', src: img.datos || (img.blob ? URL.createObjectURL(img.blob) : '') });
+    // Para mantener presionada y guardar, algunos navegadores dentro de otras apps necesitan la imagen incrustada
+    if (!img.datos && img.blob && window.FileReader) {
+      var lector = new FileReader();
+      lector.onload = function () { img.datos = lector.result; el.src = lector.result; };
+      lector.readAsDataURL(img.blob);
+    }
+    return el;
+  }
   function verImagen(img) {
     var cerrar;
     var fondo = h('div', { class: 'hoja-fondo', on: { click: function (ev) { if (ev.target === fondo) cerrar(); } } });
@@ -2487,7 +2501,7 @@ function crearEscena3D(op) {
     var hoja = h('div', { class: 'panel-guardar', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'imagen-t' },
       h('div', { class: 'hoja-top' }, h('h2', { id: 'imagen-t', tabindex: '-1' }, 'Tu lista, lista para guardar'), h('button', { class: 'link', type: 'button', on: { click: function () { cerrar(); } } }, 'Cerrar')),
       h('p', null, 'Mantén presionada la imagen y elige «Guardar en Fotos» o «Guardar imagen».'),
-      h('img', { class: 'lista-imagen', src: img.datos, alt: 'Tu lista de lecturas en orden' }),
+      imagenParaGuardar(img),
       descarga ? h('div', { class: 'acciones' }, descarga) : null);
     fondo.appendChild(hoja);
     var previo = document.activeElement;
@@ -2526,7 +2540,8 @@ function crearEscena3D(op) {
 
   function pantallaResultado() {
     var R = recomendar(st.ans), S = R.seguridad, out = [];
-    if (R.libros.length) prepararImagen(R);
+    // La imagen para guardar se prepara después de mostrar el resultado, para que la pantalla aparezca de inmediato
+    if (R.libros.length) setTimeout(function () { if (st.step === 'result') prepararImagen(R); }, 900);
     out.push(h('div', { class: 'nota-rosa' }, h('p', null, 'Esto es una recomendación de lectura, como la de una buena amiga. No reemplaza a un médico ni a un psicólogo.')));
     out.push(h('h1', { tabindex: '-1' }, 'Tu momento, en pocas líneas'));
     var apertura = (R.dificil || S.nivel === 'ambar') ? 'Gracias por responder con tanta honestidad. Parece un momento que pide cuidado, así que vamos despacio y por partes.'
