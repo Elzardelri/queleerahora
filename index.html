@@ -495,9 +495,6 @@ body::before { background: var(--barra-fondo); }
 }
 
 /* Ruta corta en la portada: enlace secundario, legible sobre la escena */
-.final .link-rapido { margin-top: 12px; padding: 10px 16px; border-radius: 999px; min-height: 44px; background: rgba(255, 250, 248, 0.78); color: #7a2f5c; text-decoration: underline; text-underline-offset: 3px; font-weight: 700; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .final .link-rapido { background: rgba(42, 29, 49, 0.8); color: #fbe9f2; } }
-:root[data-theme="dark"] .final .link-rapido { background: rgba(42, 29, 49, 0.8); color: #fbe9f2; }
 
 /* ===== Flecha para invitar a bajar ===== */
 .desliza { gap: 8px; }
@@ -514,8 +511,12 @@ body::before { background: var(--barra-fondo); }
 .portada main { padding: 0; max-width: none; }
 .portada .escenario { top: 0; height: 100vh; height: 100svh; border-radius: 0; }
 .escenario-moderno .rotulo { top: 9%; font-size: 1.32rem; }
-/* Flecha para bajar, bien visible */
+/* Pista para avanzar: se desliza hacia arriba, como en el iPhone, o se toca y la portada avanza sola */
 .escenario .desliza { bottom: calc(5% + env(safe-area-inset-bottom, 0px)); gap: 12px; z-index: 3; }
+button.desliza { left: 50%; right: auto; transform: translateX(-50%); background: none; border: 0; padding: 6px; margin: 0; font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+button.desliza:focus-visible { outline: 3px solid #b8457a; outline-offset: 4px; border-radius: 24px; }
+.desliza .flecha svg { animation: none; }
+button.desliza .pista-texto { white-space: nowrap; }
 .desliza .flecha { position: relative; width: 64px; height: 64px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
   background: #b8457a; color: #fff; box-shadow: 0 12px 28px rgba(184, 69, 122, 0.45); }
 .desliza .flecha::after { content: ""; position: absolute; inset: -7px; border-radius: 50%; border: 2px solid rgba(184, 69, 122, 0.6); opacity: 0; }
@@ -525,7 +526,7 @@ body::before { background: var(--barra-fondo); }
   .desliza .flecha { animation: invita 1.6s ease-in-out infinite; }
   .desliza .flecha::after { animation: onda 1.6s ease-out infinite; }
 }
-@keyframes invita { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
+@keyframes invita { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 @keyframes onda { from { transform: scale(0.85); opacity: 0.9; } to { transform: scale(1.5); opacity: 0; } }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .desliza .flecha { background: #e2649c; color: #fff; }
@@ -1655,6 +1656,46 @@ if (typeof module !== 'undefined') {
   module.exports = { recomendar: recomendar, lector: lector, seguridad: seguridad, areaScore: areaScore, levelOf: levelOf, topicOf: topicOf };
 }
 
+// Pista de la portada: flecha hacia arriba (el gesto del dedo) y, si la tocas, la portada avanza sola
+function crearPista(texto) {
+  var b = document.createElement('button');
+  b.type = 'button'; b.className = 'desliza';
+  b.setAttribute('aria-label', texto + ', o toca para continuar');
+  var circulo = document.createElement('span'); circulo.className = 'flecha';
+  var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24'); svg.setAttribute('width', '26'); svg.setAttribute('height', '26'); svg.setAttribute('aria-hidden', 'true');
+  var ruta = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  ruta.setAttribute('d', 'M12 20V5M5.5 11.5L12 5l6.5 6.5'); ruta.setAttribute('fill', 'none'); ruta.setAttribute('stroke', 'currentColor'); ruta.setAttribute('stroke-width', '2.4'); ruta.setAttribute('stroke-linecap', 'round'); ruta.setAttribute('stroke-linejoin', 'round');
+  svg.appendChild(ruta); circulo.appendChild(svg);
+  var t = document.createElement('span'); t.className = 'pista-texto'; t.textContent = texto;
+  b.appendChild(circulo); b.appendChild(t);
+  b.addEventListener('click', function () { avanzarPortada(b); });
+  return b;
+}
+// Recorre la portada hasta el final en unos segundos; si la persona toca o desliza, se detiene y manda ella
+function avanzarPortada(boton) {
+  var caja = boton.closest('.escena');
+  if (!caja) return;
+  var inicio = window.scrollY || window.pageYOffset || 0;
+  var destino = caja.getBoundingClientRect().top + inicio + caja.offsetHeight - window.innerHeight;
+  if (destino <= inicio + 4) return;
+  var dura = Math.min(3200, Math.max(1800, (destino - inicio) * 0.8)), t0 = null, cancelado = false, eventos = ['touchstart', 'wheel', 'keydown'];
+  var teclado = document.activeElement === boton;
+  function soltar() { eventos.forEach(function (ev) { window.removeEventListener(ev, cancelar); }); }
+  function cancelar() { cancelado = true; soltar(); }
+  eventos.forEach(function (ev) { window.addEventListener(ev, cancelar, { passive: true }); });
+  function paso(t) {
+    if (cancelado) return;
+    if (t0 === null) t0 = t;
+    var x = Math.min(1, (t - t0) / dura), e = x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
+    window.scrollTo(0, inicio + (destino - inicio) * e);
+    if (x < 1) { requestAnimationFrame(paso); return; }
+    soltar();
+    if (teclado) setTimeout(function () { var bt = caja.querySelector('.final .btn'); if (bt) bt.focus({ preventScroll: true }); }, 300);
+  }
+  requestAnimationFrame(paso);
+}
+
 // Botones de la portada: no se pueden enfocar con teclado mientras no se ven
 function enfocable(contenedor, visible) {
   if (contenedor.__visible === visible) return;
@@ -1712,16 +1753,7 @@ function crearEscena(op) {
   var final = null;
   if (op.final) { final = op.final; final.classList.add('final'); etapa.appendChild(final); }
   var pista = null;
-  if (op.pista) {
-    pista = el('div', 'desliza');
-    pista.appendChild(el('span', null, op.pista));
-    var flecha = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    flecha.setAttribute('viewBox', '0 0 24 24'); flecha.setAttribute('width', '22'); flecha.setAttribute('height', '22');
-    var p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    p.setAttribute('d', 'M6 9l6 6 6-6'); p.setAttribute('fill', 'none'); p.setAttribute('stroke', 'currentColor'); p.setAttribute('stroke-width', '2'); p.setAttribute('stroke-linecap', 'round');
-    flecha.appendChild(p); pista.appendChild(flecha);
-    etapa.appendChild(pista);
-  }
+  if (op.pista) { pista = crearPista(op.pista); etapa.appendChild(pista); }
 
   function poner(prog) {
     var a = suave(fase(prog, 0.10, 0.40)), b = fase(prog, 0.40, 0.80), c = suave(fase(prog, 0.80, 0.95));
@@ -1742,7 +1774,7 @@ function crearEscena(op) {
     if (rotulos[0]) rotulos[0].style.opacity = (1 - fase(prog, 0.14, 0.24)).toFixed(2);
     if (rotulos[1]) rotulos[1].style.opacity = Math.min(fase(prog, 0.20, 0.28), 1 - fase(prog, 0.38, 0.46)).toFixed(2);
     if (rotulos[2]) rotulos[2].style.opacity = Math.min(fase(prog, 0.46, 0.54), 1 - fase(prog, 0.72, 0.80)).toFixed(2);
-    if (pista) pista.style.opacity = (1 - fase(prog, 0, 0.08)).toFixed(2);
+    if (pista) { var vp = 1 - fase(prog, 0, 0.08); pista.style.opacity = vp.toFixed(2); pista.style.pointerEvents = vp > 0.2 ? 'auto' : 'none'; }
     if (final) { final.style.pointerEvents = c > 0.6 ? 'auto' : 'none'; final.setAttribute('aria-hidden', c > 0.6 ? 'false' : 'true'); enfocable(final, c > 0.6); }
   }
   return { el: etapa, poner: poner };
@@ -1813,17 +1845,7 @@ function crearEscena3D(op) {
   var final = op.final || null;
   if (final) { final.classList.add('final'); etapa.appendChild(final); }
   var pista = null;
-  if (op.pista) {
-    pista = el('div', 'desliza');
-    var circulo = el('span', 'flecha');
-    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('viewBox', '0 0 24 24'); svg.setAttribute('width', '26'); svg.setAttribute('height', '26'); svg.setAttribute('aria-hidden', 'true');
-    var ruta = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    ruta.setAttribute('d', 'M12 4v15M5.5 12.5L12 19l6.5-6.5'); ruta.setAttribute('fill', 'none'); ruta.setAttribute('stroke', 'currentColor'); ruta.setAttribute('stroke-width', '2.4'); ruta.setAttribute('stroke-linecap', 'round'); ruta.setAttribute('stroke-linejoin', 'round');
-    svg.appendChild(ruta); circulo.appendChild(svg);
-    pista.appendChild(circulo); pista.appendChild(el('span', 'pista-texto', op.pista));
-    etapa.appendChild(pista);
-  }
+  if (op.pista) { pista = crearPista(op.pista); etapa.appendChild(pista); }
 
   var renderer;
   try { renderer = window.__fabricaRenderer ? window.__fabricaRenderer() : new T.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' }); }
@@ -2062,7 +2084,7 @@ function crearEscena3D(op) {
       var o = j === 0 ? 1 - fase(p, 0.14, 0.24) : Math.min(fase(p, a, a + 0.08), 1 - fase(p, b, b + 0.08));
       r.style.opacity = o.toFixed(2);
     });
-    if (pista) pista.style.opacity = (1 - fase(p, 0.02, 0.1)).toFixed(2);
+    if (pista) { var vp = 1 - fase(p, 0.02, 0.1); pista.style.opacity = vp.toFixed(2); pista.style.pointerEvents = vp > 0.2 ? 'auto' : 'none'; }
     if (final) { final.style.opacity = fin.toFixed(2); final.style.transform = 'translateY(' + ((1 - fin) * -12).toFixed(1) + 'px)'; final.style.pointerEvents = fin > 0.6 ? 'auto' : 'none'; enfocable(final, fin > 0.6); }
   }
 
@@ -2353,13 +2375,12 @@ function crearEscena3D(op) {
   // ---------- Pantallas ----------
   function pantallaInicio() {
     var empezar = h('button', { class: 'btn', type: 'button', on: { click: function () { delete st.ans.modo; go('cap:lectura'); } } }, 'Descubrir mi libro');
-    var rapido = h('button', { class: 'link link-rapido', type: 'button', on: { click: function () { st.ans.modo = 'corto'; go('A1'); } } }, 'Solo quiero una recomendación rápida');
     var final = h('div', null, h('p', { class: 'ceja' }, 'Qué leer ahora'),
       h('h1', { tabindex: '-1' }, 'Hay un libro para lo que sientes hoy'),
       h('p', null, 'Cuéntame cómo estás y te ayudo a encontrarlo, como una buena amiga.'),
-      empezar, h('div', null, rapido));
+      empezar);
     if (!reducido && !st.sin3d && webglDisponible()) {
-      var e3 = crearEscena3D({ final: final, pista: 'Desliza para bajar', rotulos: ['Hola, qué bueno que estás aquí.', 'Cada respuesta tuya abre una página.', 'Estás a punto de descubrir lo que tu mente y tu corazón necesitan leer.'],
+      var e3 = crearEscena3D({ final: final, pista: 'Desliza hacia arriba', rotulos: ['Hola, qué bueno que estás aquí.', 'Cada respuesta tuya abre una página.', 'Estás a punto de descubrir lo que tu mente y tu corazón necesitan leer.'],
         alFallar: function () { st.sin3d = true; if (st.step === 'welcome') render(); } });
       if (e3) {
         var caja = h('div', { class: 'escena escena-larga' }, e3.el);
@@ -2368,7 +2389,7 @@ function crearEscena3D(op) {
         return [caja];
       }
     }
-    var escena = crearEscena({ final: final, pista: reducido ? null : 'Desliza para bajar', rotulos: reducido ? [] : ['Hola, qué bueno que estás aquí.', 'Cada respuesta tuya abre una página.', 'Estás a punto de descubrir lo que tu mente y tu corazón necesitan leer.'] });
+    var escena = crearEscena({ final: final, pista: reducido ? null : 'Desliza hacia arriba', rotulos: reducido ? [] : ['Hola, qué bueno que estás aquí.', 'Cada respuesta tuya abre una página.', 'Estás a punto de descubrir lo que tu mente y tu corazón necesitan leer.'] });
     var contenedor;
     if (reducido) {
       escena.el.classList.add('estatica');
