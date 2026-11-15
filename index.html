@@ -256,8 +256,8 @@ p { margin: 0 0 14px; }
 .ficha .titulo { font-family: var(--serif); font-size: 1.16rem; font-weight: 600; line-height: 1.3; margin: 0; }
 .ficha .autor { margin: 2px 0 10px; color: var(--ink-soft); }
 .etiquetas { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 10px; padding: 0; list-style: none; }
-.etiquetas li { font-size: 0.8rem; border-radius: 999px; padding: 3px 10px; background: var(--sage-soft); color: var(--sage); font-weight: 700; }
-.etiquetas li.ahora { background: var(--cobalt-soft); color: var(--cobalt); }
+.etiquetas li { font-size: 0.8rem; border-radius: 999px; padding: 3px 10px; background: var(--sage-soft); color: var(--etiqueta-lila, var(--sage)); font-weight: 700; }
+.etiquetas li.ahora { background: var(--cobalt-soft); color: var(--etiqueta-rosa, var(--cobalt)); }
 .etiquetas li.despues { background: transparent; color: var(--ink-soft); border: 1px solid var(--line); }
 .ficha p { font-size: 0.97rem; margin: 0 0 8px; }
 .ficha .porque { margin-top: 6px; }
@@ -438,6 +438,7 @@ a.btn-sec { display: inline-flex; align-items: center; justify-content: center; 
   --ink: #3d1f3a; --ink-soft: #7a5672;
   --cobalt: #b8457a; --cobalt-soft: #fbe3ec;
   --sage: #7a62c9; --sage-soft: #efe8fb;
+  --etiqueta-lila: #5f46b0; --etiqueta-rosa: #9a3466; /* texto de etiquetas con contraste suficiente */
   --line: #ecd8e1;
   --help-bg: #4a2246; --help-ink: #ffffff;
   --note-bg: #fff0e3; --note-ink: #6b3f22;
@@ -450,7 +451,7 @@ a.btn-sec { display: inline-flex; align-items: center; justify-content: center; 
     --paper: #1d1424; --surface: #2a1d31; --papel: #2a1d31;
     --ink: #f7e9f1; --ink-soft: #cdb0c7;
     --cobalt: #f290ba; --cobalt-soft: #3d2338;
-    --sage: #c5b4f6; --sage-soft: #2e2442;
+    --sage: #c5b4f6; --sage-soft: #2e2442; --etiqueta-lila: #c5b4f6; --etiqueta-rosa: #f290ba;
     --line: #3e2b43;
     --help-bg: #f7e9f1; --help-ink: #1d1424;
     --note-bg: #3a2a1f; --note-ink: #f6d9bf;
@@ -463,7 +464,7 @@ a.btn-sec { display: inline-flex; align-items: center; justify-content: center; 
   --paper: #1d1424; --surface: #2a1d31; --papel: #2a1d31;
   --ink: #f7e9f1; --ink-soft: #cdb0c7;
   --cobalt: #f290ba; --cobalt-soft: #3d2338;
-  --sage: #c5b4f6; --sage-soft: #2e2442;
+  --sage: #c5b4f6; --sage-soft: #2e2442; --etiqueta-lila: #c5b4f6; --etiqueta-rosa: #f290ba;
   --line: #3e2b43;
   --help-bg: #f7e9f1; --help-ink: #1d1424;
   --note-bg: #3a2a1f; --note-ink: #f6d9bf;
@@ -471,7 +472,9 @@ a.btn-sec { display: inline-flex; align-items: center; justify-content: center; 
   --fondo: radial-gradient(120% 70% at 50% 0%, #4a2a4f 0%, #2b1b38 50%, #1d1424 100%);
   --barra-fondo: rgba(29, 20, 36, 0.86);
 }
-body { background: var(--fondo); background-color: var(--paper); background-attachment: fixed; min-height: 100vh; }
+body { background-color: var(--paper); min-height: 100vh; }
+/* Fondo fijo con una capa propia: «background-attachment: fixed» no funciona bien en Safari del iPhone */
+body::after { content: ""; position: fixed; inset: 0; z-index: -1; background: var(--fondo); pointer-events: none; }
 .top { background: var(--barra-fondo); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-bottom-color: var(--line); }
 body::before { background: var(--barra-fondo); }
 .btn { color: #fff; }
@@ -530,7 +533,7 @@ body::before { background: var(--barra-fondo); }
   <div class="top-row">
     <div class="marca">Qué leer ahora</div>
   </div>
-  <div class="progreso" aria-hidden="true"><span id="barra"></span></div>
+  <div class="progreso" id="progreso" role="progressbar" aria-label="Avance del cuestionario" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="barra"></span></div>
 </header>
 <main id="main" aria-live="polite"></main>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -938,7 +941,7 @@ var CAPITULOS, BENEFICIOS;
     LID: { t: 'Guiar a otros', f: '' },
     BLO: { t: 'Tu lado creativo', f: '' },
     FIN: { t: 'Tu dinero', f: '' },
-    cierre: { t: 'Para cerrar', f: 'Dos preguntas más y armamos tu lista.' }
+    cierre: { t: 'Para cerrar', f: 'Una pregunta más y armamos tu lista.' }
   };
 
   BENEFICIOS = [
@@ -1063,10 +1066,22 @@ var CAPITULOS, BENEFICIOS;
   // (Sentido y Cambio de etapa cuentan como un solo tema, así que la etiqueta no infla la cobertura de los libros de rumbo)
   libro(20).ar = ['CRI', 'MIE'];
   [3, 16, 52, 68, 112, 113, 140].forEach(function (n) { etiqueta(n, 'CRI'); });
-  // Tono severo: buenos para quien lee seguido y vive el cambio con ánimo; para quien lee poco o está en un momento sensible se prefiere una opción cálida
-  [65, 68, 34].forEach(function (n) { libro(n).severo = true; });
+  // Tono severo o provocador: buenos para quien lee seguido y vive el cambio con ánimo; para quien lee poco o está en un momento sensible se prefiere una opción cálida
+  [65, 68, 34, 80].forEach(function (n) { libro(n).severo = true; }); // 80: provocador y con groserías
   // Opciones cálidas para el mismo tema
   [57, 115].forEach(function (n) { etiqueta(n, 'CRI'); });
+  // Dinero: el tema más corto de la biblioteca; tres libros más, con edición en español
+  BOOKS.push(
+    { n: 142, t: 'Kakebo: el arte japonés de ahorrar dinero', a: 'Fumiko Chiba', tipo: 'P', ar: ['FIN'], f: 'K', nv: 1, pp: 224,
+      ay: 'llevar las cuentas de tu casa con un método sencillo y ver en qué se va el dinero',
+      cu: 'Es un método de anotar a mano cada semana: funciona si le dedicas unos minutos fijos.', hi: false, ed: 3, aa: true },
+    { n: 143, t: 'La transformación total de su dinero', a: 'Dave Ramsey', tipo: 'P', ar: ['FIN', 'MIE'], f: 'K', nv: 1, pp: 272,
+      ay: 'salir de deudas y ordenar tu dinero con un plan de pasos concretos',
+      cu: 'Está pensado para Estados Unidos y tiene algunas referencias religiosas; los pasos para salir de deudas sirven igual.', hi: false, ed: 3, aa: true },
+    { n: 144, t: 'La bolsa o la vida', a: 'Vicki Robin y Joe Dominguez', tipo: 'P', ar: ['FIN'], f: 'C', nv: 2, pp: 400,
+      ay: 'cambiar tu relación con el dinero midiendo cuánto de tu vida te cuesta lo que compras',
+      cu: 'Es largo y varios ejemplos son de Estados Unidos; sus nueve pasos se pueden seguir a tu ritmo.', hi: false, ed: 3, aa: true }
+  );
 
   // ---- Nombres de las áreas y textos del resultado ----
   AREA.PRO = { nombre: 'Tu crecimiento', en: 'tu crecimiento' };
@@ -1303,6 +1318,7 @@ function areaScore(ans, code) {
   var ok = vals.filter(function (v) { return typeof v === 'number'; });
   if (ok.length === 3) return ok[0] + ok[1] + ok[2];
   if (ok.length === 2) return Math.round((ok[0] + ok[1]) * 3 / 2);
+  if (ok.length === 1) return ok[0] * 3; // con una sola respuesta se estima el área en vez de ignorarla
   return null;
 }
 
@@ -1360,6 +1376,13 @@ function recomendar(ans) {
 
   var top = lista.slice(0, 3).map(function (t) { return t.id; });
   var modo = 'normal';
+  // Si se saltaron casi todas las preguntas, se estima con lo que sí hay en vez de devolver una lista vacía
+  if (!top.length) {
+    modo = 'estimado';
+    var pistas = f2topics.concat(marked.map(topicOf), { dificil: ['ANS'], cambio: ['SENT'], conocerme: ['SENT'] }[ans.A3] || []);
+    top = pistas.filter(function (t, i, a) { return a.indexOf(t) === i; }).slice(0, 3);
+    ['SENT', 'HAB', 'REL'].forEach(function (t) { if (top.length < 3 && top.indexOf(t) < 0) top.push(t); });
+  }
   if (todoBajo) {
     modo = 'sostenido';
     top = f2topics.length ? f2topics.filter(function (t, i, a) { return a.indexOf(t) === i; }) : ['SENT'];
@@ -1372,7 +1395,7 @@ function recomendar(ans) {
     if (leidos.indexOf(b.n) >= 0) return false;
     if (ans.A6 === 'no' && b.aa) return false;
     if (b.nv > L.maxNivel) return false;
-    if (b.pp > L.cap) return false;
+    if (b.pp > L.cap * 1.05) return false; // 5 % de tolerancia: un libro de 256 páginas no se descarta por un tope de 250
     if (b.f === 'E' && !estab) return false;
     if (b.f === 'P' && !(L.perfil === 'habitual' && !estab && !dificil)) return false;
     if (estab && b.hi) return false;
@@ -1381,33 +1404,74 @@ function recomendar(ans) {
   function cubre(b, t) { return b.ar.some(function (c) { return topicOf(c) === t; }); }
   // Momento sensible: si la persona lo vive como pérdida o viene de semanas pesadas, se prefiere un libro cálido a uno de tono severo
   var sensible = dificil || S.nivel !== 'verde' || num(ans.B1) >= 2 || num(ans.CRI1) === 3 || num(ans.CRI3) >= 2 || num(ans.RUP2) >= 2;
+  // Páginas ideales por libro según el tiempo de la persona: así no siempre ganan los libros más cortos
+  var objetivo = L.budget / N;
+  function ajustePaginas(b) { return -Math.round(Math.abs(b.pp - objetivo) / objetivo * 3); }
+  // Desempate final que varía con las respuestas: libros igual de buenos se reparten entre personas distintas
+  var firma = Object.keys(ans).filter(function (k) { return k !== 'leidos'; }).sort().map(function (k) { return k + '=' + JSON.stringify(ans[k]); }).join('&');
+  function giro(b) {
+    var x = 2166136261, t = firma + '|' + b.n;
+    for (var i = 0; i < t.length; i++) { x ^= t.charCodeAt(i); x = Math.imul(x, 16777619); }
+    x ^= x >>> 16; x = Math.imul(x, 0x85ebca6b); x ^= x >>> 13; x = Math.imul(x, 0xc2b2ae35); x ^= x >>> 16; // mezcla todos los bits
+    return (x >>> 0) % 1000;
+  }
+  function nivelAdecuado(b) {
+    if (L.perfil === 'nuevo') return b.nv === 1 ? 1 : 0;
+    if (L.perfil === 'habitual') {
+      if (L.score >= 5 && b.nv === 3) return 2;          // quien lee casi diario puede con un libro avanzado
+      return (b.nv >= 2 || b.pp >= 300) ? 1 : 0;          // a quien lee mucho no le damos libros demasiado básicos
+    }
+    return 0;
+  }
+  // Primero lo indispensable: tono, fase, nivel y tipo de lectura
   function claves(b, T) {
-    var otros = top.filter(function (t) { return t !== T; });
     return [
       b.severo && (L.perfil === 'nuevo' || sensible) ? 0 : 1,
       estab ? (b.f === 'E' ? 1 : 0) : 0,
-      b.ar.some(function (c) { return marked.indexOf(c) >= 0; }) ? 1 : 0,
-      L.perfil === 'nuevo' ? (b.nv === 1 ? 1 : 0) : (L.perfil === 'habitual' ? (b.nv >= 2 ? 1 : 0) : 0),
-      tipos.length ? (tipos.indexOf(b.tipo) >= 0 ? 1 : 0) : 0,
-      otros.filter(function (t) { return cubre(b, t); }).length,
-      topicOf(b.ar[0]) === T ? 1 : 0,
-      -b.ed,
-      -b.pp,
-      -b.n
+      nivelAdecuado(b),
+      tipos.length ? (tipos.indexOf(b.tipo) >= 0 ? 1 : 0) : 0
     ];
   }
-  function mejor(a, b, T) {
-    var ka = claves(a, T), kb = claves(b, T);
-    for (var i = 0; i < ka.length; i++) { if (ka[i] !== kb[i]) return ka[i] > kb[i] ? a : b; }
-    return a;
+  // Después, qué tan bien encaja: tema principal, lo que marcó, otros temas, prioridad editorial y largo adecuado
+  function suave(b, T) {
+    var otros = top.filter(function (t) { return t !== T; });
+    return (topicOf(b.ar[0]) === T ? 1 : 0) +
+      (b.ar.some(function (c) { return marked.indexOf(c) >= 0; }) ? 1 : 0) +
+      Math.min(1, otros.filter(function (t) { return cubre(b, t); }).length) +
+      (b.ed === 1 ? 1 : (b.ed === 2 ? 0.5 : 0)) +
+      Math.max(-2, ajustePaginas(b));
+  }
+  function compara(ka, kb) { for (var i = 0; i < ka.length; i++) { if (ka[i] !== kb[i]) return ka[i] - kb[i]; } return 0; }
+  // Entre los libros que encajan casi igual de bien, se turnan según las respuestas: así ninguno queda fuera para siempre
+  function elegirMejor(cands, T) {
+    var datos = cands.map(function (b) { return { b: b, k: claves(b, T), s: suave(b, T) }; });
+    var mejorK = datos.reduce(function (a, x) { return compara(x.k, a.k) > 0 ? x : a; }).k;
+    var finalistas = datos.filter(function (x) { return compara(x.k, mejorK) === 0; });
+    var maxS = Math.max.apply(null, finalistas.map(function (x) { return x.s; }));
+    var banda = finalistas.filter(function (x) { return x.s >= maxS - 1; });
+    return banda.reduce(function (a, x) { return giro(x.b) > giro(a.b) ? x : a; }).b;
   }
 
   var elegidos = [];
   var avanzados = 0;
   var restoTemas = lista.map(function (t) { return t.id; });
-  for (var s = 0; s < N && top.length; s++) {
-    var T = top[s % top.length];
-    var intentos = [T].concat(top.filter(function (t) { return t !== T; }), restoTemas.filter(function (t) { return top.indexOf(t) < 0; }));
+  // Cupos por tema según su peso: si un tema pesa mucho más que los demás (por ejemplo, el dinero), recibe más libros
+  var plan = [];
+  if (top.length) {
+    var peso = {}, asignados = {};
+    top.forEach(function (t) { peso[t] = Math.max(0.5, idxOf[t] === undefined ? 1 : idxOf[t]); asignados[t] = 0; });
+    plan.push(top[0]); asignados[top[0]] = 1;
+    while (plan.length < N) {
+      var sig = top.reduce(function (a, t) { return peso[t] / (asignados[t] + 1) > peso[a] / (asignados[a] + 1) ? t : a; }, top[0]);
+      plan.push(sig); asignados[sig]++;
+    }
+    // El segundo tema siempre tiene al menos un libro
+    if (top[1] && N >= 3 && !asignados[top[1]]) plan[plan.length - 1] = top[1];
+  }
+  for (var s = 0; s < N && plan.length; s++) {
+    var T = plan[s];
+    var intentos = [T].concat(top.filter(function (t) { return t !== T; }), restoTemas.filter(function (t) { return top.indexOf(t) < 0; }),
+      orden.filter(function (t) { return top.indexOf(t) < 0 && restoTemas.indexOf(t) < 0; }));
     var elegido = null, temaCupo = null;
     for (var i = 0; i < intentos.length && !elegido; i++) {
       var t = intentos[i];
@@ -1415,7 +1479,7 @@ function recomendar(ans) {
         return elegible(b) && elegidos.every(function (e) { return e.b.n !== b.n; }) && cubre(b, t) && (b.nv < 3 || avanzados < 1);
       });
       if (cands.length) {
-        elegido = cands.reduce(function (acc, b) { return mejor(acc, b, t); });
+        elegido = elegirMejor(cands, t);
         temaCupo = t;
       }
     }
@@ -1432,7 +1496,7 @@ function recomendar(ans) {
         elegidos.every(function (e) { return e.b.n !== b.n; });
     });
     if (cand.length) {
-      var reemplazo = cand.reduce(function (acc, b) { return mejor(acc, b, top[0]); });
+      var reemplazo = elegirMejor(cand, top[0]);
       elegidos[elegidos.length - 1] = { b: reemplazo, cupo: top.filter(function (t) { return cubre(reemplazo, t); })[0], mezcla: true };
     }
   }
@@ -1946,7 +2010,7 @@ function crearEscena3D(op) {
       if (typeof st.ans.B2 === 'number' && st.ans.B2 >= 2 && m.indexOf('ANS') < 0 && con < 2) q.push('offer:ANS');
     }
     modulos().forEach(function (c) { q = q.concat(['cap:' + c], itemsDe(c)); });
-    return q.concat(['cap:cierre', 'F1', 'F2', 'transicion', 'result']);
+    return q.concat(['cap:cierre', 'F2', 'transicion', 'result']);
   }
   function numCapitulo(step) {
     var q = seq(), n = 0;
@@ -1961,6 +2025,8 @@ function crearEscena3D(op) {
 
   function go(step, sinHistoria) { if (!sinHistoria) st.hist.push(st.step); st.step = step; render(); }
   function next() {
+    // Desde la pantalla de ayuda (o sus dos lecturas suaves) se sigue justo después del ánimo, no desde el inicio
+    if (st.step === 'special' || st.step === 'acomp') st.step = 'B2';
     if (st.step === 'B2' && seguridad(st.ans).especial && !st.ans.cuidadoVisto) { go('special'); return; }
     var q = seq(), i = q.indexOf(st.step);
     go(q[i + 1] || 'result');
@@ -1970,7 +2036,16 @@ function crearEscena3D(op) {
 
   function progreso() {
     var q = seq(), i = q.indexOf(st.step);
-    barra.style.width = (st.step === 'result' ? 100 : (i < 0 ? 0 : Math.round((i / (q.length - 1)) * 100))) + '%';
+    var pct = st.step === 'result' ? 100 : (i < 0 ? 0 : Math.round((i / (q.length - 1)) * 100));
+    barra.style.width = pct + '%';
+    // Para lectores de pantalla: «Pregunta 5 de 28»
+    var preguntas = q.filter(function (x) { return x.indexOf('cap:') !== 0 && x.indexOf('offer:') !== 0 && x !== 'transicion' && x !== 'result'; });
+    var k = preguntas.indexOf(st.step);
+    var caja = document.getElementById('progreso');
+    if (caja) {
+      caja.setAttribute('aria-valuenow', String(pct));
+      caja.setAttribute('aria-valuetext', st.step === 'result' ? 'Cuestionario terminado' : (k >= 0 ? 'Pregunta ' + (k + 1) + ' de ' + preguntas.length : pct + ' %'));
+    }
   }
 
   // ---------- Piezas ----------
@@ -2214,7 +2289,7 @@ function crearEscena3D(op) {
       h('div', { class: 'bloque' }, h('h3', null, 'Hablar con alguien ahora'), bloqueLineas()),
       h('div', { class: 'bloque' }, h('h3', null, 'Escribirle a alguien de confianza'), h('p', { class: 'suave', style: 'margin-top:6px' }, 'Puedes enviar este mensaje tal cual:'), bloqueMensaje()),
       h('div', { class: 'acciones' },
-        h('button', { class: 'btn', type: 'button', on: { click: function () { st.ans.cuidadoVisto = true; next(); } } }, 'Seguir con mis preguntas'),
+        h('button', { class: 'btn', type: 'button', on: { click: function () { st.ans.cuidadoVisto = true; st.step = 'B2'; next(); } } }, 'Seguir con mis preguntas'),
         h('button', { class: 'btn-sec', type: 'button', on: { click: function () { go('acomp'); } } }, 'Ver dos lecturas suaves')))];
   }
 
@@ -2446,6 +2521,7 @@ function crearEscena3D(op) {
     if (f2.length) lect.appendChild(h('p', null, 'Dijiste que en seis meses te gustaría: ' + unir(f2.map(function (x) { return '«' + x + '»'; })) + '.'));
     var pesadas = [];
     if (R.modo === 'sostenido') lect.appendChild(h('p', null, 'Tu momento parece sostenido: nada pesa demasiado hoy. Estas lecturas son para seguir creciendo a partir de lo que te gustaría.'));
+    else if (R.modo === 'estimado') lect.appendChild(h('p', null, 'Como preferiste no responder varias preguntas, esta lista es una primera aproximación con lo que sí nos contaste. Si quieres afinarla, vuelve a empezar y responde las que puedas.'));
     else {
       pesadas = R.temas.slice(0, 2);
       if (R.temas[2] && levelOf(R.scores[R.temas[2].area]) === 2) pesadas.push(R.temas[2]);
@@ -2459,8 +2535,7 @@ function crearEscena3D(op) {
       bajas.forEach(function (c) { lect.appendChild(h('p', { class: 'area-item' }, h('strong', null, AREA[c].nombre + '. '), PLANTILLA[c][0])); });
     }
     if (S.banner || levelOf(R.scores.ANS) === 2 || levelOf(R.scores.HER) === 2) {
-      var conProf = (st.ans.F1 || []).indexOf('prof') >= 0;
-      lect.appendChild(h('div', { class: 'nota-rosa' }, h('p', null, conProf ? 'Puedes llevar estas lecturas a tu proceso con tu profesional.' : 'Si esto sigue igual en un par de semanas, platicarlo con alguien de confianza o con un profesional puede ayudarte. La Línea de la Vida atiende gratis, las 24 horas, en el 800 911 2000.')));
+      lect.appendChild(h('div', { class: 'nota-rosa' }, h('p', null, 'Si esto sigue igual en un par de semanas, platicarlo con alguien de confianza o con un profesional puede ayudarte; si ya vas con uno, puedes llevar estas lecturas a tu proceso. La Línea de la Vida atiende gratis, las 24 horas, en el 800 911 2000.')));
     }
     out.push(lect);
 
@@ -2569,6 +2644,10 @@ function crearEscena3D(op) {
   render();
 })();
 
+// Funciona sin conexión cuando se instala desde tu sitio (no aplica dentro de Claude)
+if ('serviceWorker' in navigator && location.protocol === 'https:' && !/claude/.test(location.hostname)) {
+  window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+}
 </script>
 </body>
 </html>
