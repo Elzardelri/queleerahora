@@ -324,6 +324,16 @@ details.calculo td, details.calculo th { text-align: left; padding: 6px 4px; bor
 .escala { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 .escala button { appearance: none; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 12px; min-height: 64px; padding: 8px 4px; font: 700 0.8rem/1.2 var(--sans); cursor: pointer; }
 .escala button[aria-pressed="true"] { border: 2px solid var(--cobalt); background: var(--cobalt-soft); color: var(--cobalt); }
+.escala-pista { margin: 8px 0 0; }
+/* Guardar la lista */
+.guardar-lista { margin-top: 24px; padding: 20px 18px; border-radius: 18px; background: var(--surface); border: 1px solid var(--line); text-align: center; }
+.guardar-lista h3 { margin: 0; }
+.guardar-lista .suave { margin: 6px 0 14px; }
+.guardar-lista .btn { width: 100%; max-width: 22rem; }
+.guardar-mini { margin-top: 12px; padding: 0; background: none; border: 0; text-align: left; }
+.panel-guardar { background: var(--paper); width: 100%; max-width: 36rem; max-height: 90vh; overflow-y: auto; border-radius: 18px 18px 0 0; padding: 22px 18px calc(22px + env(safe-area-inset-bottom, 0px)); }
+.lista-imagen { display: block; width: 100%; height: auto; border-radius: 12px; margin-top: 12px; border: 1px solid var(--line); -webkit-touch-callout: default; }
+a.btn-sec { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
 .escala-guia { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--ink-soft); }
 
 /* transición */
@@ -1025,6 +1035,128 @@ var CAPITULOS, BENEFICIOS;
   CAPITULOS.COM = { t: 'Tu voz', f: 'Hablar, escribir o contar una historia: todo cuenta.' };
 })();
 
+// ===== Versión 4: preguntas para cualquier persona y etapa, cambios de etapa y potencial =====
+(function () {
+  if (typeof module !== 'undefined') return;
+  function libro(n) { return BOOKS.filter(function (b) { return b.n === n; })[0]; }
+  function etiqueta(n, codigo) { var b = libro(n); if (b && b.ar.indexOf(codigo) < 0) b.ar.push(codigo); }
+
+  // ---- Biblioteca ----
+  // «Design de vida» no tiene edición en español: su lugar lo toma una guía práctica que sí existe en México
+  var b33 = libro(33);
+  b33.t = 'Encuentra tu elemento'; b33.a = 'Ken Robinson y Lou Aronica'; b33.tipo = 'P'; b33.ar = ['PRO', 'SEN', 'CAM'];
+  b33.f = 'K'; b33.nv = 1; b33.pp = 256; b33.ed = 1; b33.aa = true; b33.hi = false;
+  b33.ay = 'descubrir tus talentos y lo que te apasiona con preguntas y ejercicios, en cualquier edad o etapa';
+  b33.cu = 'Repite algunas ideas de El Elemento; si ya lo leíste, ve directo a los ejercicios.';
+  BOOKS.push({ n: 141, t: 'Indomable', a: 'Glennon Doyle', tipo: 'L', ar: ['PRO', 'SEN', 'MIE', 'CAM'], f: 'C', nv: 1, pp: 336,
+    ay: 'dejar de vivir según lo que esperan de ti y escuchar lo que tú quieres',
+    cu: 'Son memorias muy personales: habla de su divorcio, de su nueva relación con una mujer y de su historia de recuperación.', hi: false, ed: 2, aa: true });
+  // Potencial: los libros generales van antes que los de carrera
+  libro(15).ar = ['PRO', 'SEN']; libro(15).ed = 1;
+  libro(87).ar = ['PRO', 'SEN', 'BLO']; libro(87).ed = 1;
+  etiqueta(16, 'PRO');
+  // Cambios de etapa
+  libro(20).ar = ['CAM', 'PRO', 'MIE'];
+  [3, 34, 52, 68, 112, 113, 140].forEach(function (n) { etiqueta(n, 'CAM'); });
+
+  AREA.CAM = { nombre: 'Una etapa de cambios', en: 'los cambios de esta etapa' };
+  if (MODULOS.indexOf('CAM') < 0) MODULOS.push('CAM');
+  AREA.PRO = { nombre: 'Tu potencial y tu crecimiento', en: 'tu potencial y tu crecimiento' };
+  PLANTILLA.PRO = [
+    'Sientes que creces y que usas buena parte de lo que tienes para dar. Es una base que vale la pena cuidar.',
+    'Hay una parte de ti que todavía no encuentra dónde desarrollarse. No es urgente, pero vale la pena escucharla.',
+    'Tus respuestas sugieren que sientes que tienes mucho más para dar y no sabes por dónde empezar. Es muy común, sobre todo en etapas de cambio, y suele aclararse probando cosas pequeñas, no esperando la respuesta perfecta.'
+  ];
+  PLANTILLA.CAM = [
+    'Estás viviendo cambios y los vas acomodando a tu ritmo. Es una buena señal.',
+    'Los cambios de esta etapa te mueven: hay días en que encajas y días en que no. Es parte de cualquier transición.',
+    'Parece una etapa en la que muchas cosas se movieron a la vez y cuesta encontrar tu lugar. No hace falta tenerlo todo claro ya: las transiciones tienen su propio tiempo.'
+  ];
+
+  // ---- Preguntas: que sirvan con o sin trabajo, con o sin pareja, en cualquier etapa ----
+  Q_C0.q = 'De estas situaciones, ¿cuáles se parecen más a lo que vives ahora?';
+  Q_C0.opts = [
+    ['Una etapa de muchos cambios: una mudanza, un retiro, los hijos que crecen, empezar de nuevo', 'CAM'],
+    ['Siento que tengo mucho potencial, pero no sé hacia dónde llevarlo', 'PRO'],
+    ['Una ruptura o una pérdida reciente', 'RUP'],
+    ['Una preocupación o tensión que no logro apagar', 'ANS'],
+    ['Siento que perdí el sentido de lo que hago', 'CRI'],
+    ['Cosas del pasado que siguen presentes en cómo reacciono hoy', 'HER'],
+    ['El dinero: deudas, poco ahorro o no saber en qué se me va', 'FIN'],
+    ['Expresarme: hablar en público, contar mis ideas o decir lo que pienso', 'COM'],
+    ['Quiero crear o emprender algo y no logro empezarlo o terminarlo', 'BLO'],
+    ['Coordinar a un equipo o grupo (en el trabajo, un negocio o mi comunidad)', 'LID'],
+    ['Nada de esto en particular', 'none']
+  ];
+
+  Q_AREAS.SEN[2] = { f: 'lista', q: '¿Cuáles de estas frases son verdad para ti hoy?', opts: [
+    'Tengo algo concreto que quiero lograr este año',
+    'Hay algo que aprendo o practico solo por gusto',
+    'Sé lo que ya no quiero en mi vida',
+    'Cada semana tengo al menos un rato que siento muy mío'] };
+
+  Q_AREAS.REL[0] = { f: 'escena', q: 'Te llega una buena noticia. ¿Qué haces primero?', opts: [
+    ['Se la cuento a alguien cercano que sé que se alegrará', 0],
+    ['Se la cuento a alguien, aunque no sé si se alegrará de verdad', 1],
+    ['La publico en redes, sin contársela a nadie en especial', 2],
+    ['Me la guardo: no tengo con quién compartirla', 3]] };
+
+  Q_AREAS.HAB[1].opts[3] = 'Tuve mis cosas (casa, papeles, pendientes) más o menos en orden';
+  Q_AREAS.HAB[2] = { f: 'escena', q: 'Tienes algo importante que hacer, pero no es urgente: un trámite, una cita médica, un pendiente de la casa. ¿Qué suele pasar?', opts: [
+    ['Lo hago a tiempo, con calma', 0], ['Lo hago, pero a última hora', 1], ['Lo pospongo hasta que se vuelve urgente', 2], ['Se me olvida o lo dejo', 3]] };
+
+  Q_AREAS.MIE[1].b = 'Prefiero no intentar algo si no tengo la seguridad de que saldrá bien.';
+
+  Q_AREAS.PRO = [
+    { f: 'escena', q: 'Piensa en lo que ocupa la mayor parte de tus días: un trabajo, tus estudios, tu casa, cuidar a alguien o buscar algo nuevo. ¿Cómo te sientes ahí?', opts: [
+      ['Siento que crezco y aprendo', 0],
+      ['Estoy bien, aunque sin grandes cambios', 1],
+      ['Siento que me estanqué, o que me pide más de lo que puedo dar', 2],
+      ['Estoy en una etapa de cambio y no sé cuál es mi siguiente paso', 3]] },
+    { f: 'lista', q: '¿Cuáles de estas hiciste en los últimos tres meses?', opts: [
+      'Aprendí algo nuevo: un curso, una habilidad o algo que leí',
+      'Platiqué mis ideas o planes con alguien que me puede orientar',
+      'Di un paso, aunque fuera pequeño, hacia algo que quiero para mí',
+      'Hice algo que se me da bien y lo disfruté'] },
+    { f: 'termo', q: '¿Qué tanto sientes que tienes más para dar de lo que hoy estás usando?', izq: 'Nada: uso todo lo que tengo', der: 'Muchísimo', carga: 'der' }
+  ];
+
+  Q_AREAS.ANS[2].b = 'Cuando me altero, no sé cómo calmarme.';
+
+  Q_AREAS.CRI[0].q = '¿Qué describe mejor lo que sientes hoy por aquello que antes le daba sentido a tu vida (un trabajo, tu papel en la familia, una relación, un proyecto o una creencia)?';
+
+  Q_AREAS.LID[0].q = 'Tuviste que darle una mala noticia o un comentario difícil a alguien del equipo o grupo que coordinas. ¿Qué hiciste?';
+
+  Q_AREAS.FIN[0] = { f: 'lista', q: '¿Cuáles de estas frases son verdad para ti hoy?', opts: [
+    'Sé más o menos cuánto se gasta al mes', 'Tengo un ahorro para emergencias, aunque sea pequeño', 'No tengo deudas ni pagos atrasados', 'Aparto algo de dinero cada mes'] };
+  Q_AREAS.FIN[1] = { f: 'escena', q: 'Llega un gasto inesperado grande, como lo que se gasta en tu casa en un mes. ¿Qué pasa?', opts: [
+    ['Se cubre con ahorros', 0], ['Se cubre, pero nos deja sin colchón', 1], ['Hay que pedir prestado o usar la tarjeta', 2], ['No sabría cómo cubrirlo', 3]] };
+
+  Q_AREAS.CAM = [
+    { f: 'escena', q: 'Piensa en los cambios que estás viviendo. ¿Cómo te sientes con ellos?', opts: [
+      ['Los voy acomodando con calma', 0],
+      ['Hay días buenos y días en que me cuestan', 1],
+      ['Me siento fuera de lugar, como si no supiera cuál es mi lugar ahora', 2],
+      ['Siento que todo se movió a la vez y no encuentro de dónde agarrarme', 3]] },
+    { f: 'termo', q: '¿Qué tanto te está costando adaptarte a esta nueva etapa?', izq: 'Nada', der: 'Muchísimo', carga: 'der' },
+    { f: 'balanza', q: '¿Cuál de estas dos frases se parece más a ti?', a: 'Veo esta etapa como un comienzo, aunque me dé miedo.', b: 'Siento que con esta etapa perdí algo que no sé cómo recuperar.' }
+  ];
+
+  // Todas las comparaciones con el mismo título, más claro
+  Object.keys(Q_AREAS).forEach(function (c) { Q_AREAS[c].forEach(function (d) { if (d.f === 'balanza' && /^¿Cuál se parece más a ti/.test(d.q)) d.q = d.q.indexOf('hoy') > 0 ? '¿Cuál de estas dos frases se parece más a ti hoy?' : '¿Cuál de estas dos frases se parece más a ti?'; }); });
+
+  Q_F2.opts = Q_F2.opts.map(function (o) {
+    if (o[1] === 'PRO') return ['Desarrollar lo que tengo para dar', 'PRO'];
+    if (o[1] === 'LID') return ['Coordinar a mi equipo o grupo con más seguridad', 'LID'];
+    return o;
+  });
+  Q_F2.opts.splice(1, 0, ['Sentirme en paz con los cambios de esta etapa', 'CAM']);
+
+  CAPITULOS.PRO = { t: 'Tu potencial', f: 'Sirve para cualquier etapa: con trabajo o sin él, estudiando, en casa o empezando algo nuevo.' };
+  CAPITULOS.CAM = { t: 'Tus cambios', f: 'Piensa en lo que se movió en tu vida: tu casa, tu familia, tu rutina o tu lugar en todo eso.' };
+  CAPITULOS.LID.f = 'Piensa en el equipo o grupo que coordinas: en el trabajo, un negocio o tu comunidad.';
+})();
+
 function pts(code, arr, o) { arr.forEach(function (v, i) { o[code + (i + 1)] = v; }); }
 function perfilA() {
   var o = { A1: 0, A2: 'abandona', A3: 'dificil', A4: 0, A5: ['igual'], B1: 2, B2: 3, B3: 0, C0: ['RUP', 'ANS'], F1: ['nada'], F2: ['RUP'] };
@@ -1113,7 +1245,7 @@ function recomendar(ans) {
       topics[t] = { id: t, idx: scores[c] + (marked.indexOf(c) >= 0 ? 2 : 0), area: c };
     }
   });
-  var orden = ['SENT', 'REL', 'HAB', 'MIE', 'PRO', 'ANS', 'RUP', 'HER', 'LID', 'BLO', 'FIN', 'COM'];
+  var orden = ['SENT', 'REL', 'HAB', 'MIE', 'PRO', 'CAM', 'ANS', 'RUP', 'HER', 'LID', 'BLO', 'FIN', 'COM'];
   var f2topics = f2.map(topicOf);
   // F2 solo desempata: medio punto nunca supera una diferencia real de un punto
   Object.keys(topics).forEach(function (k) { if (f2topics.indexOf(k) >= 0) { topics[k].idx += 0.5; topics[k].f2 = true; } });
@@ -1708,7 +1840,8 @@ function crearEscena3D(op) {
   function itemsDe(code) { return [1, 2, 3].map(function (i) { return code + i; }); }
   function marcados() { return (st.ans.C0 || []).filter(function (c) { return c !== 'none'; }); }
   function modulos() {
-    var m = marcados().slice();
+    // Las áreas que ya responde todo el mundo (como «Tu potencial») no se repiten como módulo
+    var m = marcados().filter(function (c) { return MODULOS.indexOf(c) >= 0; });
     if (st.ans.offer_CRI === true && m.indexOf('CRI') < 0) m.push('CRI');
     if (st.ans.offer_ANS === true && m.indexOf('ANS') < 0) m.push('ANS');
     return m;
@@ -1841,10 +1974,12 @@ function crearEscena3D(op) {
         render(true); setTimeout(next, 170);
       } } }, et));
     });
+    // Primero las dos frases y después, abajo, las respuestas
     return [atras(), pagina([titulo(d.q), h('div', { class: 'balanza' },
       h('div', { class: 'frase-card' }, h('strong', null, '1. '), primera),
-      escala,
-      h('div', { class: 'frase-card' }, h('strong', null, '2. '), segunda)), linkNoResponder(id)], donde)];
+      h('div', { class: 'frase-card' }, h('strong', null, '2. '), segunda),
+      h('p', { class: 'chico escala-pista' }, 'Elige qué tan cerca estás de cada frase:'),
+      escala), linkNoResponder(id)], donde)];
   }
 
   function fLista(id, d, donde) {
@@ -1955,7 +2090,7 @@ function crearEscena3D(op) {
   function pantallaB(id) {
     return unica(id, Q_B[id], B_OPTS, function (i) { st.ans[id] = i; }, { donde: CAPITULOS.animo.t, noResponder: true });
   }
-  function pantallaC0() { return multiple('C0', Q_C0, 'Lo que más te pesa'); }
+  function pantallaC0() { return multiple('C0', Q_C0, 'Lo que vives ahora'); }
 
   function pantallaOferta(code) {
     var t = {
@@ -2035,7 +2170,7 @@ function crearEscena3D(op) {
   // ---------- Resultado ----------
   var NIVEL_TXT = ['introductorio', 'intermedio', 'avanzado'];
   var PESO = ['poco', 'algo', 'bastante'];
-  var TIPO_TXT = { N: 'Narrativa', L: 'Poesía y ensayo', D: 'Para entender', P: 'Práctico', F: 'Filosofía' };
+  var TIPO_TXT = { N: 'Narrativa', L: 'Poesía, memorias y ensayo', D: 'Psicología y ciencia', P: 'Práctico', F: 'Filosofía' };
   var FASE_TXT = { E: 'Para empezar con calma', C: 'Para entender', K: 'Para pasar a la acción', P: 'Para profundizar' };
 
   function nombreTema(R, t) { var tm = R.temas.filter(function (x) { return x.id === t; })[0]; return AREA[tm ? tm.area : (t === 'SENT' ? 'SEN' : t)]; }
@@ -2049,13 +2184,13 @@ function crearEscena3D(op) {
   function porQueEste(R, b) {
     var ts = temasDeLibro(R, b);
     var marc = b.ar.filter(function (c) { return R.marked.indexOf(c) >= 0; })[0];
-    var marcTxt = marc ? ', y además marcaste ' + AREA[marc].en + ' como algo que te pesa' : '';
+    var marcTxt = marc ? ', y además marcaste ' + AREA[marc].en + ' como parte de lo que vives ahora' : '';
     var lit = b.tipo === 'N' || b.tipo === 'L' || b.tipo === 'F';
     if (!ts.length) return b.t + ' conecta con lo que dijiste que te gustaría en seis meses.' + (lit ? '' : ' Te ayuda a ' + b.ay + '.');
     var nombres = ts.map(function (t) { return nombreTema(R, t).en; });
     var nivel = Math.max.apply(null, ts.map(function (t) { var tm = R.temas.filter(function (x) { return x.id === t; })[0]; return levelOf(R.scores[tm.area]) || 0; }));
     var peso = 'Según tus respuestas, ' + (ts.length > 1 ? 'esos temas hoy pesan ' : 'ese tema hoy pesa ') + PESO[nivel] + marcTxt + '.';
-    if (lit) return b.t + ' puede acompañarte en ' + unir(nombres) + '. ' + peso + ' Es ' + ({ N: 'una obra narrativa', L: 'un libro de poesía o de ensayo literario', F: 'un libro de filosofía' })[b.tipo] + ' de nivel ' + NIVEL_TXT[b.nv - 1] + ' y ronda las ' + b.pp + ' páginas.';
+    if (lit) return b.t + ' puede acompañarte en ' + unir(nombres) + '. ' + peso + ' Es ' + ({ N: 'una obra narrativa', L: 'un libro de poesía, memorias o ensayo', F: 'un libro de filosofía' })[b.tipo] + ' de nivel ' + NIVEL_TXT[b.nv - 1] + ' y ronda las ' + b.pp + ' páginas.';
     return b.t + ' trabaja ' + unir(nombres) + '. ' + peso + ' Te ayuda a ' + b.ay + '. Es de nivel ' + NIVEL_TXT[b.nv - 1] + ' y ronda las ' + b.pp + ' páginas, acorde al tiempo que dijiste tener.';
   }
   function porQueOrden(R, e, i) {
@@ -2068,8 +2203,151 @@ function crearEscena3D(op) {
     return t;
   }
 
+  // ---------- Guardar la lista como imagen (para el celular) ----------
+  var promesaFuentes = null;
+  function fuentesListas() {
+    if (!promesaFuentes) {
+      promesaFuentes = (document.fonts && document.fonts.load) ? Promise.all([
+        document.fonts.load('600 60px Literata'), document.fonts.load('400 30px Literata'),
+        document.fonts.load('700 28px "Atkinson Hyperlegible"'), document.fonts.load('400 30px "Atkinson Hyperlegible"')
+      ]).catch(function () {}) : Promise.resolve();
+    }
+    return promesaFuentes;
+  }
+  function renglones(g, texto, ancho) {
+    var out = [], linea = '';
+    String(texto).split(' ').forEach(function (p) {
+      var prueba = linea ? linea + ' ' + p : p;
+      if (linea && g.measureText(prueba).width > ancho) { out.push(linea); linea = p; } else linea = prueba;
+    });
+    if (linea) out.push(linea);
+    return out;
+  }
+  function enlaceApp() {
+    try { if (/^https?:$/.test(location.protocol) && !/claude/.test(location.hostname)) return (location.hostname + location.pathname).replace(/index\.html$/, '').replace(/\/$/, ''); } catch (e) {}
+    return '';
+  }
+  function dibujarLista(R) {
+    var W = 1080, M = 64, CX = M, CW = W - M * 2, PAD = 40, TX = CX + PAD + 74, TW = CW - PAD * 2 - 74;
+    var SERIF = 'Literata, Georgia, serif', SANS = '"Atkinson Hyperlegible", -apple-system, "Helvetica Neue", Arial, sans-serif';
+    var TINTA = '#3a2340', SUAVE = '#7a6280', ROSA = '#b8457a';
+    var c = document.createElement('canvas'), g = c.getContext('2d');
+    // Primera pasada: medir cada ficha
+    var fichas = R.libros.map(function (e) {
+      var b = e.b, semanas = Math.max(1, Math.round(b.pp / R.lector.pace));
+      g.font = '600 44px ' + SERIF; var tit = renglones(g, b.t, TW);
+      g.font = '400 30px ' + SANS; var ayu = renglones(g, 'Te ayuda a ' + b.ay + '.', TW);
+      var alto = PAD + tit.length * 54 + 8 + 38 + 16 + 36 + 18 + ayu.length * 42 + 14 + 34 + PAD;
+      return { e: e, tit: tit, ayu: ayu, semanas: semanas, alto: alto };
+    });
+    var enlace = enlaceApp();
+    var H = 330 + fichas.reduce(function (a, f) { return a + f.alto + 28; }, 0) + 150;
+    c.width = W; c.height = H;
+    var fondo = g.createLinearGradient(0, 0, 0, H);
+    fondo.addColorStop(0, '#fff6f1'); fondo.addColorStop(0.5, '#fbe9f0'); fondo.addColorStop(1, '#efe4f8');
+    g.fillStyle = fondo; g.fillRect(0, 0, W, H);
+    g.textBaseline = 'alphabetic';
+    g.fillStyle = ROSA; g.font = '700 26px ' + SANS; g.fillText('Q U É   L E E R   A H O R A', M, 104);
+    g.fillStyle = TINTA; g.font = '600 64px ' + SERIF; g.fillText('Mi lista de lecturas', M, 186);
+    var fecha = ''; try { fecha = new Date().toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }); } catch (e) {}
+    g.fillStyle = SUAVE; g.font = '400 30px ' + SANS; g.fillText('Léelos en este orden, un libro a la vez.' + (fecha ? '  ·  ' + fecha : ''), M, 244);
+    var y = 300;
+    fichas.forEach(function (f, i) {
+      var e = f.e, b = e.b;
+      g.save(); g.shadowColor = 'rgba(122,58,110,0.12)'; g.shadowBlur = 24; g.shadowOffsetY = 8;
+      g.beginPath(); if (g.roundRect) g.roundRect(CX, y, CW, f.alto, 28); else g.rect(CX, y, CW, f.alto);
+      g.fillStyle = '#ffffff'; g.fill(); g.restore();
+      g.strokeStyle = '#f1d9e5'; g.lineWidth = 2; g.stroke();
+      // número
+      g.beginPath(); g.arc(CX + PAD + 30, y + PAD + 30, 30, 0, Math.PI * 2); g.fillStyle = ROSA; g.fill();
+      g.fillStyle = '#ffffff'; g.font = '700 30px ' + SANS; g.textAlign = 'center'; g.fillText(String(i + 1), CX + PAD + 30, y + PAD + 41); g.textAlign = 'left';
+      var yy = y + PAD + 40;
+      g.fillStyle = TINTA; g.font = '600 44px ' + SERIF;
+      f.tit.forEach(function (l, k) { g.fillText(l, TX, yy + k * 54); });
+      yy += (f.tit.length - 1) * 54 + 8 + 38;
+      g.fillStyle = SUAVE; g.font = '400 30px ' + SANS; g.fillText(b.a, TX, yy);
+      yy += 16 + 36;
+      g.fillStyle = ROSA; g.font = '700 26px ' + SANS;
+      g.fillText((e.ahora ? 'AHORA' : 'PARA DESPUÉS') + '  ·  ' + FASE_TXT[b.f] + '  ·  ' + TIPO_TXT[b.tipo], TX, yy);
+      yy += 18 + 42;
+      g.fillStyle = TINTA; g.font = '400 30px ' + SANS;
+      f.ayu.forEach(function (l, k) { g.fillText(l, TX, yy + k * 42); });
+      yy += (f.ayu.length - 1) * 42 + 14 + 38;
+      g.fillStyle = SUAVE; g.font = '400 26px ' + SANS;
+      g.fillText('Unas ' + b.pp + ' páginas: cerca de ' + f.semanas + (f.semanas === 1 ? ' semana' : ' semanas') + ' a tu ritmo.', TX, yy);
+      y += f.alto + 28;
+    });
+    g.fillStyle = SUAVE; g.font = '400 26px ' + SANS; g.textAlign = 'center';
+    g.fillText('Una recomendación de lectura, como la de una buena amiga.', W / 2, y + 50);
+    if (enlace) { g.fillStyle = ROSA; g.font = '700 28px ' + SANS; g.fillText(enlace, W / 2, y + 96); }
+    g.textAlign = 'left';
+    return c;
+  }
+  function prepararImagen(R) {
+    var clave = R.libros.map(function (e) { return e.b.n + (e.ahora ? 'a' : 'd'); }).join('-');
+    if (st.imagen && st.imagen.clave === clave) return st.imagen.promesa;
+    var registro = { clave: clave, listo: null };
+    registro.promesa = fuentesListas().then(function () {
+      return new Promise(function (ok) {
+        var c = dibujarLista(R), datos = c.toDataURL('image/png');
+        var terminar = function (blob) {
+          var archivo = null;
+          try { if (blob && typeof File === 'function') archivo = new File([blob], 'mi-lista-que-leer-ahora.png', { type: 'image/png' }); } catch (e) {}
+          registro.listo = { datos: datos, blob: blob, archivo: archivo };
+          ok(registro.listo);
+        };
+        if (c.toBlob) c.toBlob(terminar, 'image/png'); else terminar(null);
+      });
+    });
+    st.imagen = registro;
+    return registro.promesa;
+  }
+  function verImagen(img) {
+    var cerrar;
+    var fondo = h('div', { class: 'hoja-fondo', on: { click: function (ev) { if (ev.target === fondo) cerrar(); } } });
+    var descarga = img.blob ? h('a', { class: 'btn-sec', href: URL.createObjectURL(img.blob), download: 'mi-lista-que-leer-ahora.png' }, 'Descargar imagen') : null;
+    var hoja = h('div', { class: 'panel-guardar', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'imagen-t' },
+      h('div', { class: 'hoja-top' }, h('h2', { id: 'imagen-t', tabindex: '-1' }, 'Tu lista, lista para guardar'), h('button', { class: 'link', type: 'button', on: { click: function () { cerrar(); } } }, 'Cerrar')),
+      h('p', null, 'Mantén presionada la imagen y elige «Guardar en Fotos» o «Guardar imagen».'),
+      h('img', { class: 'lista-imagen', src: img.datos, alt: 'Tu lista de lecturas en orden' }),
+      descarga ? h('div', { class: 'acciones' }, descarga) : null);
+    fondo.appendChild(hoja);
+    var previo = document.activeElement;
+    function tecla(ev) { if (ev.key === 'Escape') cerrar(); }
+    cerrar = function () { document.removeEventListener('keydown', tecla); fondo.remove(); if (previo) previo.focus(); };
+    document.addEventListener('keydown', tecla);
+    document.body.appendChild(fondo);
+    hoja.querySelector('h2').focus();
+  }
+  function guardarLista(R, estado) {
+    var img = st.imagen && st.imagen.listo;
+    if (img && img.archivo && navigator.canShare && navigator.share) {
+      var datos = { files: [img.archivo], title: 'Mi lista de lecturas' };
+      var puede = false; try { puede = navigator.canShare(datos); } catch (e) {}
+      if (puede) {
+        navigator.share(datos).then(function () { estado.textContent = ''; }, function (err) {
+          if (err && err.name === 'AbortError') return;
+          verImagen(img);
+        });
+        return;
+      }
+    }
+    if (img) { verImagen(img); return; }
+    estado.textContent = 'Preparando tu imagen…';
+    prepararImagen(R).then(function (listo) { estado.textContent = ''; verImagen(listo); });
+  }
+  function botonGuardar(R, principal) {
+    var estado = h('span', { class: 'chico', role: 'status' });
+    return h('div', { class: principal ? 'guardar-lista' : 'guardar-lista guardar-mini' },
+      principal ? h('h3', null, 'Guarda tu lista') : null,
+      principal ? h('p', { class: 'suave' }, 'Se guarda como imagen en tu celular, para que la tengas a la mano cuando vayas por tu libro.') : null,
+      h('button', { class: principal ? 'btn' : 'btn-sec', type: 'button', on: { click: function () { guardarLista(R, estado); } } }, principal ? 'Guardar mi lista' : 'Guardar mi lista en el celular'),
+      estado);
+  }
+
   function pantallaResultado() {
     var R = recomendar(st.ans), S = R.seguridad, out = [];
+    if (R.libros.length) prepararImagen(R);
     out.push(h('div', { class: 'nota-rosa' }, h('p', null, 'Esto es una recomendación de lectura, como la de una buena amiga. No reemplaza a un médico ni a un psicólogo.')));
     out.push(h('h1', { tabindex: '-1' }, 'Tu momento, en pocas líneas'));
     var apertura = (R.dificil || S.nivel === 'ambar') ? 'Gracias por responder con tanta honestidad. Parece un momento que pide cuidado, así que vamos despacio y por partes.'
@@ -2099,6 +2377,7 @@ function crearEscena3D(op) {
 
     out.push(h('h2', { style: 'margin-top:30px' }, 'Tus lecturas, en orden'));
     out.push(h('p', { class: 'suave', style: 'margin-top:6px' }, 'Un libro a la vez. Si ya leíste alguno, márcalo y te damos otro.'));
+    if (R.libros.length) out.push(botonGuardar(R, false));
     if (st.ans.A6 === 'no') out.push(h('p', { class: 'chico' }, 'Como prefieres evitar la autoayuda, tu lista solo incluye literatura, filosofía y ensayo.'));
     if (R.lector.audio) out.push(h('p', { class: 'chico' }, 'Como dijiste que aprendes mejor escuchando, busca estos títulos en audiolibro; no todos existen en ese formato.'));
     var aviso = h('p', { class: 'chico', role: 'status', style: 'margin:6px 0 0' }, st.mensaje || '');
@@ -2125,6 +2404,7 @@ function crearEscena3D(op) {
         } } }, 'Ya lo leí')));
     });
     out.push(lista);
+    if (R.libros.length) out.push(botonGuardar(R, true));
     if (!R.libros.length) out.push(h('p', null, 'No encontramos más libros que cumplan todo lo que respondiste. Puedes volver a empezar con otras respuestas.'));
 
     var paginas = R.libros.filter(function (e) { return e.ahora; }).reduce(function (a, e) { return a + e.b.pp; }, 0);
