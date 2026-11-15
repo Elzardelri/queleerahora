@@ -2674,10 +2674,13 @@ function crearEscena3D(op) {
   render();
 })();
 
-// Funciona sin conexión cuando se instala desde tu sitio (no aplica dentro de Claude)
-if ('serviceWorker' in navigator && location.protocol === 'https:' && !/claude/.test(location.hostname)) {
-  window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
-}
+// El modo sin conexión se retiró: si quedó instalado de una versión anterior, se da de baja y se borra lo guardado
+try {
+  if ('serviceWorker' in navigator && navigator.serviceWorker.getRegistrations) {
+    navigator.serviceWorker.getRegistrations().then(function (rs) { rs.forEach(function (r) { r.unregister(); }); }).catch(function () {});
+  }
+  if (window.caches && caches.keys) caches.keys().then(function (ks) { ks.filter(function (k) { return /^qla-/.test(k); }).forEach(function (k) { caches.delete(k); }); }).catch(function () {});
+} catch (e) {}
 </script>
 </body>
 </html>
