@@ -1459,7 +1459,7 @@ function recomendar(ans) {
   var orden = ['SENT', 'REL', 'HAB', 'MIE', 'PRO', 'ANS', 'RUP', 'HER', 'LID', 'BLO', 'FIN', 'COM'];
   // Cuidar a alguien: si pesa mucho, el cansancio sube el tema de energía y la lista se vuelve más corta y suave
   var cuidado = (scores.CUI !== null && scores.CUI !== undefined && (scores.CUI >= 6 || (marked.indexOf('CUI') >= 0 && scores.CUI >= 4))) ||
-    (ans.modo === 'corto' && marked.indexOf('CUI') >= 0); // en la ruta corta no hay módulo: basta con marcarlo
+    (marked.indexOf('CUI') >= 0 && (scores.CUI === null || scores.CUI === undefined)); // marcó que cuida a alguien y no hay respuestas del módulo (ruta corta o las saltó): basta con lo que marcó
   if (cuidado && topics.HAB) topics.HAB.idx += 1;
   var f2topics = f2.map(topicOf);
   // F2 solo desempata: medio punto nunca supera una diferencia real de un punto
@@ -1481,7 +1481,7 @@ function recomendar(ans) {
 
   // R8: todo en nivel bajo
   var conDato = Object.keys(scores).filter(function (c) { return scores[c] !== null; });
-  var todoBajo = conDato.length > 0 && conDato.every(function (c) { return scores[c] < 3; }) && !S.banner;
+  var todoBajo = conDato.length > 0 && conDato.every(function (c) { return scores[c] < 3; }) && !S.banner && !cuidado; // quien cuida a alguien con mucha carga no está en un momento «sostenido»
 
   // R4: cuántos libros
   var N = L.budget <= 300 ? 3 : (L.budget <= 900 ? 4 : (L.budget <= 1800 ? 5 : 7));
