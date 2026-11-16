@@ -539,7 +539,7 @@ button.desliza .pista-texto { white-space: nowrap; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .escenario-rosa .final p.ceja { color: #f6a9c8; } }
 /* Pantalla de carga: se ve desde el primer instante, aunque la red esté lenta */
 .cargando { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px 22px; }
-.cargando img { border-radius: 18px; box-shadow: 0 8px 22px rgba(184, 69, 122, 0.25); }
+.cargando .librito { display: block; filter: drop-shadow(0 10px 14px rgba(184, 69, 122, 0.22)); }
 .cargando .ceja { margin: 18px 0 0; font-family: var(--sans); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--etiqueta-rosa, #9a3466); }
 .cargando-t { font-family: var(--serif); font-size: 1.7rem; line-height: 1.25; color: var(--ink); margin: 8px 0 0; max-width: 20rem; }
 .cargando-s { color: var(--ink-soft); margin: 14px 0 0; }
@@ -556,7 +556,17 @@ button.desliza .pista-texto { white-space: nowrap; }
 </header>
 <main id="main" aria-live="polite">
   <div class="cargando" id="cargando">
-    <img src="apple-touch-icon.png" alt="" width="76" height="76">
+    <svg class="librito" viewBox="0 0 96 80" width="104" height="87" aria-hidden="true" focusable="false">
+      <path d="M48 9c-2.6-3.6-8.4-2.2-8.4 2.4 0 3.9 5.2 6.9 8.4 9.3 3.2-2.4 8.4-5.4 8.4-9.3 0-4.6-5.8-6-8.4-2.4z" fill="#e2649c"/>
+      <path d="M4 32q22-7 44 2q22-9 44-2v42q-22-7-44 2q-22-9-44-2z" fill="#e9a3c6"/>
+      <path d="M8 29q20-6 39 3v40q-19-8-39-2z" fill="#fffaf8" stroke="#f0b4cf" stroke-width="1.2"/>
+      <path d="M49 32q19-9 39-3v41q-20-6-39 2z" fill="#fffaf8" stroke="#f0b4cf" stroke-width="1.2"/>
+      <path d="M48 33v41" stroke="#d97aa6" stroke-width="1.6" stroke-linecap="round"/>
+      <g fill="none" stroke="#f2bfd6" stroke-width="1.8" stroke-linecap="round">
+        <path d="M14 39q14-3 27 2"/><path d="M14 46q14-3 27 2"/><path d="M14 53q14-3 27 2"/><path d="M14 60q9-2 18 1"/>
+        <path d="M55 41q13-5 27-2"/><path d="M55 48q13-5 27-2"/><path d="M55 55q13-5 27-2"/><path d="M55 62q9-3 18-1"/>
+      </g>
+    </svg>
     <p class="ceja">Qué leer ahora</p>
     <p class="cargando-t">Hay un libro para lo que sientes hoy</p>
     <p class="cargando-s" role="status">Cargando…</p>
