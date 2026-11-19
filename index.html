@@ -1299,7 +1299,7 @@ var CAPITULOS, BENEFICIOS;
   function libro(n) { return BOOKS.filter(function (b) { return b.n === n; })[0]; }
 
   // Cambio 2: la meta final admite «Todavía no lo sé»; Cambio 3: cuidar a alguien
-  Q_F2.opts.push(['Cuidar sin descuidarme a mí', 'CUI'], ['Todavía no lo sé', 'none']);
+  Q_F2.opts.push(['Cuidar sin descuidarme a mí', 'CUI'], ['Sentir paz interior y soltar lo que me pesa', 'PAZ'], ['Todavía no lo sé', 'none']);
   Q_F2.exclusive = 'none';
 
   AREA.CUI = { nombre: 'Cuidar a alguien', en: 'el cuidado de alguien' };
@@ -1369,7 +1369,20 @@ var CAPITULOS, BENEFICIOS;
     { n: 150, t: 'Arráncame la vida', a: 'Ángeles Mastretta', tipo: 'N', ar: ['MIE', 'REL'], f: 'C', nv: 1, pp: 240,
       ayuda: ['Seguir a una mujer que aprende a decidir por sí misma.', 'Leer una novela ágil y con humor, ambientada en el México de los años treinta.'], ay: 'seguir a una mujer que aprende a decidir por sí misma', cu: 'Tiene violencia política y una relación de pareja dura.', hi: true, ed: 3, aa: false },
     { n: 151, t: 'La resistencia', a: 'Ernesto Sabato', tipo: 'L', ar: ['SEN', 'HAB', 'CRI'], f: 'C', nv: 1, pp: 136,
-      ayuda: ['Recuperar lo pequeño y lo humano cuando la vida se vuelve prisa y pantalla.', 'Recuperar el gusto por lo sencillo: una conversación, una carta, un rato sin pantalla.'], ay: 'recuperar lo pequeño y lo humano cuando la vida se vuelve prisa y pantalla', cu: 'Son cinco cartas de tono melancólico, escritas en el año 2000.', hi: false, ed: 3, aa: false }
+      ayuda: ['Recuperar lo pequeño y lo humano cuando la vida se vuelve prisa y pantalla.', 'Recuperar el gusto por lo sencillo: una conversación, una carta, un rato sin pantalla.'], ay: 'recuperar lo pequeño y lo humano cuando la vida se vuelve prisa y pantalla', cu: 'Son cinco cartas de tono melancólico, escritas en el año 2000.', hi: false, ed: 3, aa: false },
+    // Conciencia y crecimiento interior (David R. Hawkins) y tres huecos de perfil: envejecer, soledad y maternidad
+    { n: 152, t: 'El poder frente a la fuerza', a: 'David R. Hawkins', tipo: 'F', ar: ['SEN', 'CRI'], f: 'C', nv: 2, pp: 303,
+      ayuda: ['Conocer el mapa de los niveles de conciencia y ver en qué nivel estás viviendo ahora.', 'Distinguir el poder, lo que nace de dentro, de la fuerza, lo que impone desde fuera.', 'Entender por qué algunos miedos y enfados te mantienen atascado y cómo se sale de ahí.'], ay: 'entender cómo los niveles de conciencia ordenan lo que sientes y decides', cu: 'La primera parte es densa: la escala de conciencia y el test muscular piden paciencia.', hi: false, ed: 1, aa: false },
+    { n: 153, t: 'Dejar ir: El camino de la liberación', a: 'David R. Hawkins', tipo: 'P', ar: ['ANS', 'HER', 'MIE'], f: 'K', nv: 1, pp: 333,
+      ayuda: ['Aprender una técnica concreta para soltar lo que te pesa en lugar de guardarlo o pelear con ello.', 'Ver cómo el miedo, la culpa y el enfado se sostienen solos cuando dejas de alimentarlos.', 'Sentir más ligereza en el día a día sin tener que arreglar tu vida primero.'], ay: 'soltar emociones y pensamientos que te pesan, sin pelear con ellos', cu: 'Es autoayuda práctica y directa; si buscas literatura o filosofía, prueba «El poder frente a la fuerza».', hi: false, ed: 1, aa: true },
+    { n: 154, t: 'Trascender los niveles de conciencia', a: 'David R. Hawkins', tipo: 'F', ar: ['SEN', 'CRI'], f: 'C', nv: 2, pp: 390,
+      ayuda: ['Ver el mapa completo de los niveles de conciencia y qué cambia en cada escalón.', 'Entender cómo se trascienden la vergüenza, la culpa y el miedo hacia el amor y la paz.', 'Tener una guía de crecimiento interior para leer poco a poco, sin prisa.'], ay: 'recorrer la escalera de la conciencia desde el miedo y la culpa hacia el amor y la paz', cu: 'Es denso y largo; conviene haber leído antes «El poder frente a la fuerza».', hi: false, ed: 1, aa: false },
+    { n: 155, t: 'Ser mortal', a: 'Atul Gawande', tipo: 'D', ar: ['SEN', 'RUP', 'CRI'], f: 'C', nv: 1, pp: 280,
+      ayuda: ['Mirar el envejecimiento y la enfermedad con honestidad, sin miedo a nombrarlos.', 'Preguntarte qué es lo que de verdad importa cuando el tiempo se acorta.', 'Acompañar mejor a un familiar mayor o enfermo, y hablar de lo difícil con calma.'], ay: 'pensar qué importa de verdad al envejecer y al final de la vida', cu: 'Habla de enfermedad y de muerte con casos reales; puede remover si estás viviendo un duelo cercano.', hi: true, ed: 1, aa: false },
+    { n: 156, t: 'Juntos', a: 'Vivek H. Murthy', tipo: 'D', ar: ['REL', 'SEN'], f: 'C', nv: 1, pp: 376,
+      ayuda: ['Entender por qué la soledad pesa tanto aunque estemos rodeados de gente.', 'Ver cómo la conexión con otros sostiene la salud y el ánimo.', 'Encontrar formas concretas de acercarte a la gente que te importa.'], ay: 'entender la soledad y reconstruir la conexión con los demás', cu: 'Es un ensayo con historias y datos; no es una novela ni un manual de ejercicios.', hi: false, ed: 1, aa: false },
+    { n: 157, t: 'La maternidad y el encuentro con la propia sombra', a: 'Laura Gutman', tipo: 'D', ar: ['REL', 'HER'], f: 'C', nv: 2, pp: 416,
+      ayuda: ['Entender por qué la llegada de un hijo remueve emociones y heridas viejas.', 'Mirar la maternidad sin culpa y sin el mandato de hacerlo todo perfecto.', 'Acompañar a tus hijos desde tu propia madurez emocional, no desde el miedo.'], ay: 'mirar lo que despierta la maternidad y crecer con ello', cu: 'Es un libro directo que cuestiona ideas muy instaladas sobre ser madre; conviene leerlo con calma.', hi: false, ed: 1, aa: false }
   );
   // «La tregua» ya estaba: su protagonista está por jubilarse, así que también habla de cambio de etapa
   (function () { var b = libro(109); if (b && b.ar.indexOf('CRI') < 0) b.ar.push('CRI'); })();
@@ -1446,7 +1459,8 @@ function recomendar(ans) {
   var L = lector(ans);
   var S = seguridad(ans);
   var marked = (ans.C0 || []).filter(function (c) { return c !== 'none'; });
-  var f2 = (ans.F2 || []).filter(function (c) { return c !== 'none'; }); // «Todavía no lo sé» no suma a ningún tema
+  var f2 = (ans.F2 || []).filter(function (c) { return c !== 'none'; }) // «Todavía no lo sé» no suma a ningún tema
+    .map(function (c) { return c === 'PAZ' ? 'SEN' : c; }); // «Sentir paz interior» suma a Rumbo y sentido; tiene su propio código para no marcarse junto con «Tener claro hacia dónde voy»
   var tipos = (ans.A5 || []).filter(function (t) { return t !== 'igual'; }).map(function (t) { return t === 'DH' ? 'D' : t; });
   var dificil = ans.A3 === 'dificil';
 
